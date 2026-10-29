@@ -1,0 +1,152 @@
+[
+  {
+    "role": "Display",
+    "name": "Large",
+    "size": 57,
+    "weight": 600,
+    "spacing": -0.5,
+    "lineHeight": 79.8,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Display",
+    "name": "Medium",
+    "size": 45,
+    "weight": 600,
+    "spacing": -0.5,
+    "lineHeight": 63.0,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Display",
+    "name": "Small",
+    "size": 36,
+    "weight": 600,
+    "spacing": -0.5,
+    "lineHeight": 50.4,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Headline",
+    "name": "Large",
+    "size": 32,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 44.8,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Headline",
+    "name": "Medium",
+    "size": 28,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 39.2,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Headline",
+    "name": "Small",
+    "size": 24,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 33.6,
+    "multiplier": 1.4,
+    "family": "Cormorant Garamond"
+  },
+  {
+    "role": "Title",
+    "name": "Large",
+    "size": 22,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 33.0,
+    "multiplier": 1.5,
+    "family": "Manrope"
+  },
+  {
+    "role": "Title",
+    "name": "Medium",
+    "size": 16,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 24.0,
+    "multiplier": 1.5,
+    "family": "Manrope"
+  },
+  {
+    "role": "Title",
+    "name": "Small",
+    "size": 14,
+    "weight": 600,
+    "spacing": 0,
+    "lineHeight": 21.0,
+    "multiplier": 1.5,
+    "family": "Manrope"
+  },
+  {
+    "role": "Body",
+    "name": "Large",
+    "size": 16,
+    "weight": 400,
+    "spacing": 0,
+    "lineHeight": 25.6,
+    "multiplier": 1.6,
+    "family": "Manrope"
+  },
+  {
+    "role": "Body",
+    "name": "Medium",
+    "size": 14,
+    "weight": 400,
+    "spacing": 0,
+    "lineHeight": 22.4,
+    "multiplier": 1.6,
+    "family": "Manrope"
+  },
+  {
+    "role": "Body",
+    "name": "Small",
+    "size": 12,
+    "weight": 400,
+    "spacing": 0,
+    "lineHeight": 19.2,
+    "multiplier": 1.6,
+    "family": "Manrope"
+  },
+  {
+    "role": "Label",
+    "name": "Large",
+    "size": 14,
+    "weight": 600,
+    "spacing": 0.2,
+    "lineHeight": 19.6,
+    "multiplier": 1.4,
+    "family": "Manrope"
+  },
+  {
+    "role": "Label",
+    "name": "Medium",
+    "size": 12,
+    "weight": 600,
+    "spacing": 0.2,
+    "lineHeight": 16.8,
+    "multiplier": 1.4,
+    "family": "Manrope"
+  },
+  {
+    "role": "Label",
+    "name": "Small",
+    "size": 11,
+    "weight": 600,
+    "spacing": 0.2,
+    "lineHeight": 15.4,
+    "multiplier": 1.4,
+    "family": "Manrope"
+  }
+]

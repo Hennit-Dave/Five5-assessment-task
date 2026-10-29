@@ -1,0 +1,42 @@
+import fs from 'node:fs';
+import {Hct,argbFromHex,hexFromArgb,SchemeTonalSpot,MaterialDynamicColors,TonalPalette} from './node_modules/@material/material-color-utilities/index.js';
+const out='outputs/m3-colour-foundation';
+const source='#334DAF',h=Hct.fromInt(argbFromHex(source));
+const base=new SchemeTonalSpot(h,false,0);
+const palettes={primary:TonalPalette.fromHueAndChroma(h.hue,h.chroma),secondary:base.secondaryPalette,tertiary:base.tertiaryPalette,neutral:base.neutralPalette,'neutral-variant':base.neutralVariantPalette,error:base.errorPalette,success:TonalPalette.fromInt(argbFromHex('#166534')),warning:TonalPalette.fromInt(argbFromHex('#854A0E'))};
+const hex=n=>hexFromArgb(n).toUpperCase();
+const kebab=s=>s.replace(/[A-Z]/g,c=>'-'+c.toLowerCase());
+const names=Object.keys(MaterialDynamicColors).filter(k=>MaterialDynamicColors[k]?.getArgb&&!k.endsWith('PaletteKeyColor'));
+const primitives={},before={},roles={Light:{},Dark:{}};
+const tones=[0,4,6,10,12,17,20,22,24,30,40,50,60,70,80,87,90,92,94,95,96,98,99,100];
+for(const [family,p]of Object.entries(palettes))for(const tone of tones)primitives[family+'/'+tone]=hex(p.tone(tone));
+primitives['primary/40']=source;
+for(const [mode,dark]of [['Light',false],['Dark',true]]){
+const raw=new SchemeTonalSpot(h,dark,0),s=new SchemeTonalSpot(h,dark,0);s.primaryPalette=palettes.primary;
+before[mode]=Object.fromEntries(names.map(k=>[kebab(k),hex(MaterialDynamicColors[k].getArgb(raw))]));
+for(const key of names){const role=MaterialDynamicColors[key],p=role.palette(s),family=Object.keys(palettes).find(k=>palettes[k]===p)||Object.keys(palettes).find(k=>Math.abs(palettes[k].hue-p.hue)<1e-7&&Math.abs(palettes[k].chroma-p.chroma)<1e-7);if(!family)throw Error('Missing palette '+key);const tone=role.getTone(s),ref=family+'/'+Number(tone.toFixed(6));if(!(ref in primitives))primitives[ref]=hex(p.tone(tone));roles[mode][kebab(key)]={ref,hex:primitives[ref]};}
+for(const family of ['success','warning'])for(const [name,tone]of [[family,dark?80:40],['on-'+family,dark?20:100],[family+'-container',dark?30:90],['on-'+family+'-container',dark?90:10]]){const ref=family+'/'+tone;roles[mode][name]={ref,hex:primitives[ref]};}
+}
+function luminance(h){return [1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0)}
+const ratio=(a,b)=>{let x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+const pairs=[];
+for(const family of ['primary','secondary','tertiary','error','success','warning']){pairs.push(['on-'+family,family,4.5],['on-'+family+'-container',family+'-container',4.5],[family,'surface',4.5]);}
+for(const surface of ['surface','surface-dim','surface-bright','surface-container-lowest','surface-container-low','surface-container','surface-container-high','surface-container-highest'])pairs.push(['on-surface',surface,4.5],['on-surface-variant',surface,4.5],['outline',surface,3]);
+for(const family of ['primary','secondary','tertiary'])for(const bg of [family+'-fixed',family+'-fixed-dim'])for(const fg of ['on-'+family+'-fixed','on-'+family+'-fixed-variant'])pairs.push([fg,bg,4.5]);
+pairs.push(['inverse-on-surface','inverse-surface',4.5],['inverse-primary','inverse-surface',4.5],['on-background','background',4.5],['on-surface-variant','surface-variant',4.5]);
+const checks=[];for(const [mode,rs]of Object.entries(roles))for(const [fg,bg,min]of pairs){const r=ratio(rs[fg].hex,rs[bg].hex);checks.push({mode,foreground:fg,background:bg,ratio:Number(r.toFixed(3)),minimum:min,pass:r>=min});}
+const data={metadata:{status:'Prepared locally; not yet imported or verified in Figma',engine:'@material/material-color-utilities 0.3.0',spec:'M3 2021-era Tonal Spot with modern surface/fixed roles supplied by MCU 0.3.0; not latest 2026 colour specification',source,sourceHCT:{hue:h.hue,chroma:h.chroma,tone:h.tone},brandPolicy:'Primary palette uses source hue/chroma; primary/40 explicitly overrides generated HCT tone 40 with the exact brand. Its measured tone is 36.19, not 40.',baseTones:tones,coreRoleCount:names.length,extensionRoleCount:8},primitives,roles,before,contrast:checks};
+fs.writeFileSync(out+'/m3-colours.json',JSON.stringify(data,null,2));
+const nested={Primitives:{},Light:{},Dark:{}};
+function put(root,path,value){const parts=path.split('/');let obj=root;for(const part of parts.slice(0,-1))obj=obj[part]??={};obj[parts.at(-1)]={value,type:'color'};}
+for(const [k,v]of Object.entries(primitives))put(nested.Primitives,'md/ref/palette/'+k,v);
+for(const [mode,rs]of Object.entries(roles))for(const [k,v]of Object.entries(rs))put(nested[mode],'md/sys/color/'+k,'{md.ref.palette.'+v.ref.replaceAll('/','.')+'}');
+nested.$themes=['Light','Dark'].map(name=>({id:'nits-cut-'+name.toLowerCase(),name,selectedTokenSets:{Primitives:'source',[name]:'enabled'}}));
+fs.writeFileSync(out+'/tokens-studio.json',JSON.stringify(nested,null,2));
+let doc='# Nits Cut — M3 colour mapping\n\nStatus: generated locally. Figma connector quota prevented creation; desktop also displayed a reconnect warning. These are not Figma exports or assessment screenshots.\n\n## Method\n\nGenerated with Google Material Color Utilities 0.3.0, pinned for reproducibility. Uses the M3 Tonal Spot scheme available in that version, not the newer 2026 specification. Primary is adjusted to source hue/chroma and primary/40 is explicitly overridden to the brand hex. Secondary, tertiary, neutral, neutral variant and error derive from the Tonal Spot scheme. Success and warning are custom HCT extensions.\n\nThe source #334DAF has measured HCT tone '+h.tone.toFixed(2)+'. Original generated primary/40 was '+hex(base.primaryPalette.tone(40))+'. Brand-hue/chroma HCT tone 40 is '+hex(palettes.primary.tone(40))+'. Final primary/40 is #334DAF, a documented exception. Do not claim its measured tone equals 40.\n\nThere are '+Object.keys(primitives).length+' primitive variables, '+names.length+' core/compatibility roles and eight extension roles in each mode. '+tones.length+' base tones cover ordinary accent, fixed and surface roles; any additional algorithm-selected tones are retained exactly. Background/on-background/surface-variant are compatibility roles. Outline-variant is a low-emphasis divider, not a text or sole control-boundary colour. Shadow and scrim are black role colours with opacity determined by usage; surface-tint is an overlay role, not body text.\n\n## Role mapping\n\n| Role | Light primitive | Light hex | Dark primitive | Dark hex |\n|---|---|---|---|---|\n';
+for(const name of Object.keys(roles.Light))doc+='| '+name+' | '+roles.Light[name].ref+' | '+roles.Light[name].hex+' | '+roles.Dark[name].ref+' | '+roles.Dark[name].hex+' |\n';
+doc+='\n## Contrast checks\n\nThese measure opaque sRGB pairs, not arbitrary combinations, focus indicators or state-layer compositing. Thresholds: 4.5:1 normal text and 3:1 control boundary. Any failed pair below is not approved for the stated purpose.\n\n| Mode | Foreground / background | Ratio | Minimum | Result |\n|---|---|---:|---:|---|\n';
+for(const c of checks)doc+='| '+c.mode+' | '+c.foreground+' / '+c.background+' | '+c.ratio+' | '+c.minimum+' | '+(c.pass?'Pass':'DO NOT USE')+' |\n';
+doc+='\n## Next Figma steps\n\nKeep the earlier RGB draft. Create M3 Primitives and M3 Colours collections; alias every role to a primitive and add Light/Dark modes. Capture the unmodified generated scheme before applying the brand override, then capture the changed scheme. Import and inspect the complete role sheets and check bindings. A local rendered preview is not a substitute for those screenshots.\n\nThe JSON for Tokens Studio is a prepared interchange file, not a tested import. Select Primitives as a source set plus one mode set at a time; when exporting variables, configure Light/Dark themes in one colour collection.\n\n## Sources\n\n- https://github.com/material-foundation/material-color-utilities\n- https://m3.material.io/styles/color/the-color-system\n- https://codelabs.developers.google.com/customizing-material-color\n\nPalette inspiration was user supplied and visibly credited to @The_Pensiler. No interview, personal rationale, or assessment evidence has been invented.\n';
+fs.writeFileSync(out+'/colour-roles-and-contrast.md',doc);
+console.log(JSON.stringify({primitives:Object.keys(primitives).length,coreRoles:names.length,extensionRoles:8,checks:checks.length,failed:checks.filter(c=>!c.pass),before:before.Light.primary,after:roles.Light.primary,brandTone:h.tone},null,2));

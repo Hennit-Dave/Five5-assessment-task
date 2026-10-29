@@ -1,0 +1,27 @@
+# macOS files
+.DS_Store
+._*
+
+# Installed dependencies
+node_modules/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Temporary editor files
+*.swp
+*.swo
+*~
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Original assessment and verbatim task extracts: local reference only
+/assessment/original-assessment.txt
+/task-*/docs/assessment-requirements.txt
+
+# Withdrawn instructions: local historical reference only
+/.local-instruction-archive/
