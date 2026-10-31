@@ -62,18 +62,19 @@ In `08-agent-typography-answer.txt` (Point 3.1), the agent claimed that `10-scre
   - `evidence/step7a-font-loading-verification-before-d8-fix.txt` (SHA-256 `0777a1f391d250cdef902639e0e313c4a51283d461889835bb750ceec406ba4a`)
 - **`D8` fix (`screen/styles.css` lines 253–268):**
   - Increased selector specificity from `.date-previous`, `.date-updated`, `.amount-paid`, `.amount-owed` (`(0, 1, 0)`) to `.record-row dd.date-previous`, `.record-row dd.date-updated`, `.record-row dd.amount-paid`, `.record-row dd.amount-owed` (`(0, 2, 1)`) so they win over `.record-row dd` (`(0, 1, 1)`).
-- **Verified rendered colours & WCAG 2.1 contrast against `.card` (`--nc-color-surface-container`) (`step7-font-loading-verification.txt`):**
-  - **Dark mode (`10-screen-with-system.png`, SHA-256 `4f30bdcff68f7980f49d434880c21579ee9f969a56742a9c6b8d6248fe5203b5`, card background `#1F1F25`):**
+- **Verified rendered colours & WCAG 2.1 contrast against `.card` (`--nc-color-surface-container`) (`step7-font-loading-verification.txt`, SHA-256 `57794448b9d24d953f7a5b39abfb558409dd01d932622aa871a7eb79e23242ea`):**
+  - **Dark mode (`10-screen-with-system.png`, SHA-256 `7960f17f3e8b8c6974467b842d66a8254ad420bcee92d36283e48a9c8c7e057a`, card background `#1F1F25`):**
     - `dd.date-previous` (`--nc-color-on-surface-variant`): `rgb(198, 197, 208)` (`#C6C5D0`) — `9.60:1` (passes AA `4.5:1`)
     - `dd.date-updated` (`--nc-color-warning`): `rgb(255, 183, 125)` (`#FFB77D`) — `9.62:1` (passes AA `4.5:1`)
     - `dd.amount-paid` (`--nc-color-success`): `rgb(139, 215, 155)` (`#8BD79B`) — `9.60:1` (passes AA `4.5:1`)
     - `dd.amount-owed` (`--nc-color-primary`): `rgb(184, 196, 255)` (`#B8C4FF`) — `9.66:1` (passes AA `4.5:1`)
-  - **Light mode (`10c-screen-with-system-light.png`, SHA-256 `a0e5bb40fe563c4a62c99eb763eebdbed8a9f1706d119837b72597e9e20dae84`, card background `#EFEDF4`):**
+  - **Light mode (`10c-screen-with-system-light.png`, SHA-256 `21e1c6b8d97d8164b4fc8d6ab23e74d9a45a7feb99c776c441477e9ce9fd4bdf`, card background `#EFEDF4`):**
     - `dd.date-previous` (`--nc-color-on-surface-variant`): `rgb(69, 70, 79)` (`#45464F`) — `8.07:1` (passes AA `4.5:1`)
     - `dd.date-updated` (`--nc-color-warning`): `rgb(140, 79, 20)` (`#8C4F14`) — `5.58:1` (passes AA `4.5:1`)
     - `dd.amount-paid` (`--nc-color-success`): `rgb(31, 108, 58)` (`#1F6C3A`) — `5.54:1` (passes AA `4.5:1`)
     - `dd.amount-owed` (`--nc-color-primary`): `rgb(51, 77, 175)` (`#334DAF`) — `6.41:1` (passes AA `4.5:1`)
-- **Desktop (`1280×960`) and narrow mobile (`375×812`, `10d-screen-with-system-mobile-dark.png`, SHA-256 `d3ca74b051ca150928ce56877c1213ea0ffebd314429a7420d72f9b973cd8b17`) layout verification:**
+- **Desktop (`1280×960`) and narrow mobile (`375×812`, `10d-screen-with-system-mobile-dark.png`, SHA-256 `a68e16ce9d9b962c803a67a1515d5c8c7d89386df69d831ce26c9309e0563552`) layout verification:**
   - Desktop (`1280×960`): `documentScrollWidth: 1265`, `hasHorizontalOverflow: false`, `overflowingElementsCount: 0`.
-  - Mobile (`375×812`): `documentScrollWidth: 375`, `documentScrollHeight: 1946`, `hasHorizontalOverflow: false`, `overflowingElementsCount: 0`.
+  - Mobile (`375×812`): `documentScrollWidth: 375`, `documentScrollHeight: 1920`, `hasHorizontalOverflow: false`, `overflowingElementsCount: 0`.
+  - Fitting date text corrected from `"Thu, 30 Oct 2026 · 4:00 PM"` to `"Fri, 30 Oct 2026 · 4:00 PM"` in both screens (`09a-screen-without-system-before-date-fix.png` preserved at `7b7d4de6…`; refreshed `09-screen-without-system.png` at `1baf3c25…`).
 

@@ -126,11 +126,11 @@ Within the assessment's required line-height formula (`font size × 1.4`, `1.5`,
 
 I would change how **`nc · m3 colour roles` was exported in `evidence/06-tokens-complete.json` (Defects `D1` and `D2` in `docs/defects.md`)**.
 
-In Step 5, the third-party Figma export plugin wrote only one flat alias per role under `nc · m3 colour roles` (`{nc · m3 primitives.primary.80}`), with no mode key indicating whether the export came from Light or Dark mode (`57/57` match with Dark `19:2`, `14/57` with Light `19:1`). To emit both `:root, [data-theme="light"]` and `[data-theme="dark"]` in `nc-tokens.css`, we had to extract a second file (`06b-tokens-colour-roles-modes-from-figma-state.json`) from our captured Figma Variables API state (`work/figma-m3-state.json`) and teach `tokens/build-css.mjs` to merge two different JSON schemas.
+In Step 5, the third-party Figma export plugin wrote only one flat alias per role under `nc · m3 colour roles` (`{nc · m3 primitives.primary.80}`), with no mode label indicating whether the export came from Light or Dark mode (`57/57` match with Dark `19:2`, `14/57` with Light `19:1`). To emit both `:root, [data-theme="light"]` and `[data-theme="dark"]` in `nc-tokens.css`, we had to extract a second file (`06b-tokens-colour-roles-modes-from-figma-state.json`) from our previously captured Figma Variables state (`work/figma-m3-state.json`) and teach `tokens/build-css.mjs` to merge two different JSON structures.
 
-**What I would do instead:** Export directly from Figma's native Variables REST/Plugin API or a W3C DTCG multi-mode exporter from day one so every role carries explicit `$extensions.modes.Light` and `$extensions.modes.Dark` aliases inside a single authoritative JSON file.
+**What I would do instead:** Use an export workflow from day one that outputs an explicit structure for Light and Dark role mappings—either a single JSON file with named `Light` and `Dark` mode maps per role or separate `tokens-roles-light.json` and `tokens-roles-dark.json` exports.
 
-**What it would cost:** Replacing the single-click third-party export plugin with a custom Figma plugin script or REST export step, and roughly doubling the role-mapping block in `nc-tokens.css` (from 57 to 114 role declarations).
+**What it would cost:** Setting up and maintaining a multi-mode exporter or script, updating the converter when modes change, and roughly doubling the role-mapping block in `nc-tokens.css` (from 57 to 114 declarations).
 
 ---
 

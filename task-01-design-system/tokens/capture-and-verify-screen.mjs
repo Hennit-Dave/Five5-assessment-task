@@ -24,7 +24,9 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const SCREEN_URL = `file://${encodeURI(join(here, '..', 'screen', 'index.html'))}`;
+const WITHOUT_SYSTEM_URL = `file://${encodeURI(join(here, '..', '..', 'outputs', 'screen-without-system', 'index.html'))}`;
 const customPng = process.argv[2];
+const OUT_WITHOUT_PNG = customPng ? null : join(here, '..', 'evidence', '09-screen-without-system.png');
 const OUT_PNG = join(here, '..', 'evidence', customPng || '10-screen-with-system.png');
 const OUT_LIGHT_PNG = customPng ? null : join(here, '..', 'evidence', '10c-screen-with-system-light.png');
 const OUT_MOBILE_PNG = customPng ? null : join(here, '..', 'evidence', '10d-screen-with-system-mobile-dark.png');
@@ -412,6 +414,18 @@ try {
       captureBeyondViewport: true,
     });
     writeFileSync(OUT_MOBILE_PNG, Buffer.from(mobileShot.data, 'base64'));
+
+    // 4. Capture 09-screen-without-system.png at 1280x960 (deviceScaleFactor: 1)
+    await send('Emulation.setDeviceMetricsOverride', {
+      width: 1280,
+      height: 960,
+      deviceScaleFactor: 1,
+      mobile: false,
+    });
+    await send('Page.navigate', { url: WITHOUT_SYSTEM_URL });
+    await delay(1000);
+    const withoutShot = await send('Page.captureScreenshot', { format: 'png' });
+    writeFileSync(OUT_WITHOUT_PNG, Buffer.from(withoutShot.data, 'base64'));
   }
 
   const output = {

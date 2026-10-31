@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-31T10:55:24.011Z",
+  "timestamp": "2026-10-31T11:33:16.072Z",
   "viewport": "1280x960 (deviceScaleFactor: 1)",
   "failedNetworkRequests": [],
   "fontLoadingVerification": {
@@ -154,7 +154,7 @@
     "viewportWidth": 375,
     "viewportHeight": 812,
     "documentScrollWidth": 375,
-    "documentScrollHeight": 1946,
+    "documentScrollHeight": 1920,
     "hasHorizontalOverflow": false,
     "overflowingElementsCount": 0,
     "overflowingElements": []

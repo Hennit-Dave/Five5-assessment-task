@@ -1,5 +1,5 @@
 # Raw Colour & Direct Primitive Reference Search Evidence (07-raw-value-search.txt)
-Generated: 2026-10-31T11:03:49.505Z
+Generated: 2026-10-31T11:37:20.947Z
 
 ## Scope and Explicit Exclusions
 - Searched first-party directories: `task-01-design-system/`, `outputs/`, `work/`
@@ -45,6 +45,7 @@ task-01-design-system/evidence/05-tokens-incomplete.json:3
 task-01-design-system/evidence/step6b-light-and-dark-css-validation.txt:1
 task-01-design-system/evidence/step6-css-build-and-validation.txt:1
 task-01-design-system/docs/shadows.md:3
+task-01-design-system/docs/interview-and-defects-study-guide.md:4
 task-01-design-system/docs/evidence-index.md:5
 task-01-design-system/docs/decision-log.md:3
 task-01-design-system/docs/figma-colour-status.md:1

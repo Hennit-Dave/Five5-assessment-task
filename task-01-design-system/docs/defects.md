@@ -14,7 +14,7 @@ Real defects found in this task's own files, with their status and resolution as
 - **What:** `06-tokens-complete.json` has no `modeId` or mode name field on its `nc · m3 colour roles` entries. By contrast, Figma's native Variables API (`work/figma-m3-state.json` / `06b-tokens-colour-roles-modes-from-figma-state.json`) keys every role by explicit `modes: [{ name: "Light", modeId: "19:1" }, { name: "Dark", modeId: "19:2" }]`. `tokens/build-css.mjs` now reads the explicit `Light` and `Dark` mode objects from `06b-tokens-colour-roles-modes-from-figma-state.json` and cross-checks that `06-tokens-complete.json` matches the Dark mode `57/57`.
 - **Cost:** Relying on a single-mode plugin export without mode metadata risks silently mislabelling themes if someone re-exports with a different mode active.
 
-## D3 — Shadow colour assumes it equals `primary/40`
+## D3 — Shadow colour assumes it equals `primary/40` (open limitation)
 
 - **Where:** `tokens/build-css.mjs`, lines 134–144 (shadow colour check and `color-mix` rewrite).
 - **What:** Shadows are rewritten as `color-mix(in srgb, var(--nc-ref-primary-40) N%, transparent)`. If the brand colour changes, shadows follow (intended). If a future shadow uses a different colour, the script falls back to the raw hex and warns (which `validate-css.mjs` would then fail). Also, `color-mix()` requires a modern browser; older browsers drop the shadow.
@@ -39,7 +39,7 @@ Real defects found in this task's own files, with their status and resolution as
 - **What:** In the initial build (`10a-screen-with-system-before-fixes.png`), `nc-type-headline-small` (`Cormorant Garamond` Semibold `24px / 33.6px`) was applied to the remaining payment balance inside Card 3, violating `docs/type-scale.md` Section 4 (*"Headline for page headers, Title for order cards and section headers"*) and `docs/business-brief.md` (which assigns order figures and payment balances to `Manrope`). Fixed by changing `dd.amount-owed` to `nc-type-title-large` (`Manrope` Semibold `22px / 33.0px`), verified in `evidence/10-screen-with-system.png` and `evidence/step7-font-loading-verification.txt`.
 - **Production cost (if left unfixed):** Renders an important financial balance in `Cormorant Garamond`'s default old-style descending numerals (`3` and `5` hang below the baseline) instead of `Manrope`'s clean geometric lining numerals (used on `₦85,000` and `− ₦50,000`).
 
-## D7 — `Manrope` lacks a glyph for the Naira currency sign (`₦`, `U+20A6`)
+## D7 — `Manrope` lacks a glyph for the Naira currency sign (`₦`, `U+20A6`) (open limitation)
 
 - **Where:** `screen/fonts/manrope-400-600-latin-ext.woff2` and `screen/index.html` lines 106, 110, and 114 (`₦85,000`, `− ₦50,000`, `₦35,000`).
 - **What:** Verified by `CSS.getPlatformFontsForNode` (`evidence/step7-font-loading-verification.txt`): on `dd.amount-owed (.nc-type-title-large)`, the 6 numeric/punctuation characters (`35,000`) render in `Manrope-SemiBold` (`isCustomFont: true`, `glyphCount: 6`), whereas the single Naira symbol `₦` (`U+20A6`) falls back to the macOS system font `.SF NS` (`isCustomFont: false`, `glyphCount: 1`). Although `Manrope`'s `@font-face` `unicode-range` declares `U+20A0-20AB`, the font file itself does not include a `U+20A6` glyph (unlike `Cormorant Garamond`, which does include `U+20A6`).

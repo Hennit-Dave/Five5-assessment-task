@@ -181,3 +181,29 @@ The 57 exported role aliases match the documented **Dark** column of `docs/colou
 5. **Updated `evidence/07-raw-value-search.txt`:**
    - Searched the entire first-party codebase (`task-01-design-system/`, `outputs/`, `work/`) with explicit exclusions (`--exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.local-instruction-archive --binary-files=without-match`), recorded exact commands and full outputs, explained all legitimate matches outside `screen/`, and confirmed `0` raw colour values and `0` `--nc-ref-*` primitive references in `task-01-design-system/screen/`.
 
+### Prompt 5 (verbatim, 2026-10-31)
+
+> Finish the remaining Task 1 corrections in /Users/blk/Developer/Five5 assessment task.
+>
+> Read the current project instructions and inspect the working tree first.
+>
+> 1. Correct the fitting date from “Thu, 30 Oct 2026” to “Fri, 30 Oct 2026” wherever it appears in the current demonstration screens. Preserve historical evidence. Refresh affected current screenshots and verification records, including their hashes.
+> 2. Revise interview answer 11 so it recommends explicit Light and Dark mappings without presenting $extensions.modes.Light and $extensions.modes.Dark as a required official standard. Keep the answer under 200 words.
+> 3. Update docs/interview-and-defects-study-guide.md to reflect those corrections. Preserve its simple explanations and distinguish saved Figma state from a fresh live export.
+> 4. Run the relevant token validation and screenshot checks. Confirm the blue brand palette, both themes, correct fonts and date/payment colours remain intact.
+> 5. Update the evidence index and relevant documentation with actual results. Keep D3 and D7 visible as remaining limitations.
+> 6. Follow the commit-quality rules, review and stage only the relevant files, and create a local commit including the study guide. Do not push or rewrite history.
+>
+> Report the checks, commit ID and remaining learner actions. Do not mark my interview rehearsal or optional walkthrough as completed. Stop before Task 2.
+
+### What the agent did
+
+1. **Fitting date correction and screenshot refresh:**
+   - Preserved `evidence/09a-screen-without-system-before-date-fix.png` (`7b7d4de6…`) alongside `10a-screen-with-system-before-fixes.png` (`c5e0252e…`) and `10b-screen-with-system-before-d8-specificity-fix.png` (`620dad09…`).
+   - Changed `"Thu, 30 Oct 2026 · 4:00 PM"` to `"Fri, 30 Oct 2026 · 4:00 PM"` in `task-01-design-system/screen/index.html` and `outputs/screen-without-system/index.html`.
+   - Reran `tokens/capture-and-verify-screen.mjs` to refresh `09-screen-without-system.png` (`1baf3c25…`), `10-screen-with-system.png` (`7960f17f…`), `10c-screen-with-system-light.png` (`21e1c6b8…`), `10d-screen-with-system-mobile-dark.png` (`a68e16ce…`), and `step7-font-loading-verification.txt` (`57794448…`).
+2. **Revised Interview Answer 11 (`docs/interview-answers.md`):**
+   - Replaced the `$extensions.modes.Light` / `$extensions.modes.Dark` phrasing with a recommendation for an explicit structure for Light and Dark role mappings (either named `Light` and `Dark` mode maps in one JSON file or separate `tokens-roles-light.json` and `tokens-roles-dark.json` files), verified at `175` words (`< 200` words).
+3. **Updated `docs/interview-and-defects-study-guide.md`, `docs/evidence-index.md`, `docs/defects.md`, `docs/decision-log.md`, and `PROGRESS.md`:**
+   - Recorded the date and Answer 11 corrections in `docs/interview-and-defects-study-guide.md`, clearly distinguished the previously captured Figma state (`work/figma-m3-state.json` → `06b-tokens-colour-roles-modes-from-figma-state.json`) from a fresh live export, kept `D3` and `D7` marked as open limitations, and refreshed `07-raw-value-search.txt` and `validate-css.mjs` (`15/15` passing).
+
