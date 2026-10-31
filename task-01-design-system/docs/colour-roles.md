@@ -1,16 +1,41 @@
-# Nits Cut — M3 colour mapping
+# Nit's Cut — M3 Colour Roles and Contrast
 
-Status: colour variables and palette/role sheets were created and visually checked in Figma. Source colour calculations were generated locally; the prepared JSON is not the required complete Figma export. Palette presentation simplified on 2026-10-29.
+Status: colour variables and palette/role sheets were created and visually checked in Figma (`ws3fJaZYN6oRFm3dQMIiXm`, page `02 · M3 colours`). Source colour calculations were generated locally; the prepared JSON in `outputs/` is not the required complete Figma export of colours, typography, and effects. Palette presentation on the Figma canvas was simplified on 2026-10-29.
 
-## Method
+## 1. Brand Colour Origin
+I selected `#334DAF` from a six-blue inspiration palette credited to `@The_Pensiler` (not claiming original authorship of that inspiration palette). I want Nit's Cut to feel dependable when presenting order dates and payment records.
 
-Generated with Google Material Color Utilities 0.3.0, pinned for reproducibility. Uses the M3 Tonal Spot scheme available in that version, not the newer 2026 specification. Primary is adjusted to source hue/chroma and primary/40 is explicitly overridden to the brand hex. Secondary, tertiary, neutral, neutral variant and error derive from the Tonal Spot scheme. Success and warning are custom HCT extensions.
+## 2. Pinning Primary 40 and Visible Difference
+Generated with Google Material Color Utilities (MCU) `0.3.0`, pinned for reproducibility, using the M3 Tonal Spot scheme available in that version (not claiming the newer 2026 specification).
 
-The source #334DAF has measured HCT tone 36.19. Original generated primary/40 was #4F5B92. Brand-hue/chroma HCT tone 40 is #3D57B9. Final primary/40 is #334DAF, a documented exception. Do not claim its measured tone equals 40.
+In our Material Color Utilities `0.3.0` Tonal Spot configuration, an unadjusted Tonal Spot scheme derived from `#334DAF` produces `#4F5B92` at `primary/40`. Even after locking the Primary palette to the source colour's hue and chroma, the calculated HCT tone 40 is `#3D57B9` because `#334DAF` has a measured HCT tone of `36.19`. To preserve the exact brand colour, `primary/40` is explicitly overridden to `#334DAF` as a documented HCT-tone exception (do not claim its measured tone equals 40).
 
-There are 192 primitive variables, 49 core/compatibility roles and eight extension roles in each mode. 24 base tones cover ordinary accent, fixed and surface roles; any additional algorithm-selected tones are retained exactly. Background/on-background/surface-variant are compatibility roles. Outline-variant is a low-emphasis divider, not a text or sole control-boundary colour. Shadow and scrim are black role colours with opacity determined by usage; surface-tint is an overlay role, not body text.
+**Visible difference (`evidence/01-palette-before-pin.png` vs `evidence/02-palette-after-pin.png`):**
+In `01-palette-before-pin.png`, the `primary/40` swatch shows the calculated tone-40 blue (`#3D57B9`), which looks noticeably brighter and lighter than the source swatch on the left. In `02-palette-after-pin.png`, `primary/40` is pinned to the exact brand hex `#334DAF`, making the `40` cell visibly deeper and darker (sitting closer in lightness to `primary/30` `#213DA0`), while the remaining 23 tones in the `primary` row and all other palette rows remain unchanged. Because the Light-mode `primary` role aliases `primary/40`, Light-mode components assigned the `primary` role will use this exact `#334DAF` blue rather than a lighter or muted algorithmic substitute.
 
-## Role mapping
+## 3. Tonal Palettes (24 Tones per Family)
+There are 192 primitive variables across eight colour families (`primary`, `secondary`, `tertiary`, `neutral`, `neutral-variant`, `error`, `warning`, `success`), each with 24 tones (`0, 4, 6, 10, 12, 17, 20, 22, 24, 30, 40, 50, 60, 70, 80, 87, 90, 92, 94, 95, 96, 98, 99, 100`).
+
+- **Source derivation:** `primary` uses the `#334DAF` source hue/chroma (with `primary/40` pinned to `#334DAF`). `secondary`, `tertiary`, `neutral`, `neutral-variant`, and `error` derive from the MCU `0.3.0` Tonal Spot scheme. `success` and `warning` are custom HCT extensions generated from separately chosen green and amber source colours—all eight families do not derive solely from the brand blue.
+- **Why 24 tones suffice for Light and Dark modes:** Light and Dark modes select different tones from the same palettes (for example, Light mode maps `primary` to `primary/40` and `on-primary` to `primary/100`, whereas Dark mode maps `primary` to `primary/80` and `on-primary` to `primary/20`, while surfaces draw from fine dark steps `4–24` and light steps `87–100`). These 24 tones cover every reference used by our current 57 role mappings across both modes; they are sufficient for this system, not a universal M3 requirement.
+
+## 4. Functional Colours (Proposed Usage Rules)
+Because Nit's Cut has not yet been built as a running application, the following are **proposed usage rules** for our functional colour families:
+- **Error (`error`, `on-error`, `error-container`, `on-error-container`):** For failed operations and invalid user inputs, such as an invalid payment amount or a missing required measurement field. (Late orders are a business status rather than an input error.)
+- **Warning (`warning`, `on-warning`, `warning-container`, `on-warning-container`):** For schedule delays with a clear reason (for example, *"Delivery delayed — power outage"*) or when an unpaid balance reaches a defined payment deadline that makes it actionable.
+- **Success (`success`, `on-success`, `success-container`, `on-success-container`):** For completed milestones, such as an outfit marked *"Ready for collection"* or a payment recorded as fully settled.
+
+## 5. Semantic Colour Roles — Planned Uses in Nit's Cut
+A colour role defines a job in the interface, not a raw colour value. Every role in the `NC · M3 Colour roles` collection aliases a primitive in `NC · M3 Primitives`. Any `on-*` role (such as `on-primary` or `on-surface`) means the text and icons placed directly on top of that matching background role, not a separate standalone action colour.
+
+- **Surfaces (`surface`, `surface-dim`, `surface-bright`, `surface-container-lowest` to `highest`, `background`):** Planned for page backgrounds, order summary cards, measurement tables, and payment history panels. `background`, `on-background`, and `surface-variant` are retained as M3 compatibility roles.
+- **On-surface text (`on-surface`, `on-surface-variant`, `on-background`):** `on-surface` is for primary reading text (client names, garment stages, agreed dates, and amounts). `on-surface-variant` is for secondary labels and supporting metadata.
+- **Primary (`primary`, `on-primary`, `primary-container`, `on-primary-container`, `primary-fixed*`):** `primary` is for main high-emphasis actions, with `on-primary` for the text/icon sitting on that `primary` fill. `primary-container` and `on-primary-container` are for softer highlighted states, such as the active stage in an order progress tracker.
+- **Secondary and Tertiary (`secondary*`, `tertiary*`):** `secondary` roles are planned for supporting UI elements like garment-type chips or filters (native wear, trousers, shirts). `tertiary` roles are planned for complementary highlights such as upcoming fitting reminders.
+- **Outlines (`outline`, `outline-variant`):** `outline` is for essential control boundaries such as form input borders (meeting at least 3:1 contrast against surfaces). `outline-variant` is a low-emphasis divider between list rows and must not be used for text or as the sole boundary of an interactive control.
+- **Utility and Inverse roles (`inverse-surface`, `inverse-on-surface`, `inverse-primary`, `surface-tint`, `scrim`, `shadow`):** Inverse roles are for high-contrast snackbars or banners. `surface-tint` is an elevation overlay colour, `scrim` is a modal backdrop colour with opacity applied in usage, and `shadow` (`#000000`) is retained only as an M3 baseline compatibility token (Nit's Cut component elevation styles instead use the custom `#334DAF` brand shadows documented in `docs/shadows.md`).
+
+### Role Mapping Table
 
 | Role | Light primitive | Light hex | Dark primitive | Dark hex |
 |---|---|---|---|---|
@@ -72,9 +97,14 @@ There are 192 primitive variables, 49 core/compatibility roles and eight extensi
 | warning-container | warning/90 | #FFDCC3 | warning/30 | #6E3900 |
 | on-warning-container | warning/10 | #2F1500 | warning/90 | #FFDCC3 |
 
-## Contrast checks
+## 6. Contrast Checks and Restricted Pairs
 
-These measure opaque sRGB pairs, not arbitrary combinations, focus indicators or state-layer compositing. Thresholds: 4.5:1 normal text and 3:1 control boundary. Any failed pair below is not approved for the stated purpose.
+All 116 tested opaque colour pairs below meet their selected contrast thresholds: `4.5:1` for normal text and `3:1` for essential control boundaries. This does not establish full application accessibility; actual text sizes, interactive states, translucent overlays, focus indicators, and component usage still need testing when screens are built.
+
+**Pairs below threshold / explicitly not used for text or essential boundaries:**
+- `outline-variant / surface`: measures `1.66:1` in Light mode (`#C6C5D0` on `#FBF8FF`) and `1.97:1` in Dark mode (`#45464F` on `#121318`). Because this is below both `4.5:1` and `3:1`, `outline-variant` is documented as decorative/divider-only and must never be used for text or required form input borders.
+- `surface-tint`, `scrim`, and `shadow`: non-text overlay/backdrop roles; never paired as text foregrounds.
+- Container-on-surface combinations (e.g. `primary-container` `#DDE1FF` on `surface` `#FBF8FF`): low-contrast surface fills intended to hold `on-*-container` text, never used as text colours themselves.
 
 | Mode | Foreground / background | Ratio | Minimum | Result |
 |---|---|---:|---:|---|
@@ -195,29 +225,22 @@ These measure opaque sRGB pairs, not arbitrary combinations, focus indicators or
 | Dark | on-background / background | 14.322 | 4.5 | Pass |
 | Dark | on-surface-variant / surface-variant | 5.485 | 4.5 | Pass |
 
-## Figma implementation and evidence
+## Figma Implementation and Provenance
 
-The NC · M3 Colour roles collection references NC · M3 Primitives through aliases, with Light and Dark modes. The separate plugin material-theme collection is not a dependency of these sheets.
+The `NC · M3 Colour roles` collection references `NC · M3 Primitives` through aliases, with Light and Dark modes. The separate plugin `material-theme` collection is not a dependency of these sheets.
 
-The captured before state is source-hue/chroma Primary 40 #3D57B9, not the default Tonal Spot #4F5B92. The after state is the exact brand override #334DAF. Other tones did not change during that pinning step. Existing before/after captures are preserved in evidence/01-palette-before-pin.png and evidence/02-palette-after-pin.png.
+The captured before state (`evidence/01-palette-before-pin.png`) shows source-hue/chroma `primary/40` `#3D57B9`, not the default Tonal Spot `#4F5B92`. The after state (`evidence/02-palette-after-pin.png`) shows the exact brand override `#334DAF`. Other tones did not change during that pinning step.
 
-## Notes moved off the palette sheet
+The palette sheet on the Figma canvas (`evidence/palette-after-pin-clean-layout.png`) keeps its title, colour-family names, tone numbers, hex values, and a short after-pin label. Layout reference: the learner's Practice Canvas example (`https://www.figma.com/design/jKtu8ENQaKkq63uRwfE828?node-id=173-3`).
 
-- Generation: M3 / Google Material Color Utilities 0.3.0, using HCT palettes with a documented brand override.
-- Primary uses the source hue/chroma. Other core palettes use Tonal Spot. Success and warning are custom extensions.
-- There are 24 tones per family and 192 editable primitive variables; these provide the tones used by the Light/Dark surface and accent roles.
-- Primary 40 is the token name. The pinned #334DAF has measured HCT tone 36.19; it is an intentional exception, not an exact measured tone 40.
-- Inspiration: user-supplied six-blue palette credited to @The_Pensiler; do not claim original authorship of the inspiration palette.
-- Layout reference: the learner's Practice Canvas example, https://www.figma.com/design/jKtu8ENQaKkq63uRwfE828?node-id=173-3 .
+The Tokens Studio JSON in `outputs/` remains a prepared interchange file, not a tested import or a complete assessment export of colours, typography, and effects.
 
-The palette sheet keeps its title, colour-family names, tone numbers, hex values and a short after-pin label. This is a presentation cleanup; colour values and aliases are unchanged. Earlier screenshots retain their original annotations and are not overwritten.
+## Deliberate Regression Proof (Step 8)
 
-The Tokens Studio JSON remains a prepared interchange file, not a tested import or a complete assessment export of colours, typography and effects.
+When we changed the `--nc-ref-primary-*` palette at the source from royal blue (`#334DAF` at tone 40) to emerald green (`#006D3B` at tone 40), every role still referencing the palette via `var()`—including `--nc-color-primary` on the `NC` badge, eyebrow, active-stage border, `Active` pill, and primary button, plus `--nc-color-on-primary-container` on the active stage text—updated automatically across the screen. Because `--nc-color-primary-container` had been broken to point at the raw hex `#213DA0` instead of `var(--nc-ref-primary-30)`, the `Being sewn` status pill and active stage card background stayed stuck in the old royal blue underneath green borders, green badges, and mint-green text (`evidence/11-broken-referencing.png`). That visual split is the whole argument for token referencing: when roles alias primitives and components consume only roles, a palette or theme change updates the entire interface from one place instead of leaving orphaned colours behind or forcing a manual search-and-replace across the codebase.
 
 ## Sources
 
 - https://github.com/material-foundation/material-color-utilities
 - https://m3.material.io/styles/color/the-color-system
 - https://codelabs.developers.google.com/customizing-material-color
-
-Palette inspiration was user supplied and visibly credited to @The_Pensiler. No interview, personal rationale, or assessment evidence has been invented.

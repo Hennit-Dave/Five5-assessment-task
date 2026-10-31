@@ -1,0 +1,79 @@
+# Step 7 — Subsequent Typography & Font-Loading Investigation, Fixes, and Verification (2026-10-30)
+
+This file records the investigation, corrections, fixes, and browser verification performed after `08-agent-typography-answer.txt` was recorded. `08-agent-typography-answer.txt` is preserved unchanged as historical evidence of the original answer.
+
+---
+
+## 1. Investigation of the Original Screenshot (`10a-screen-with-system-before-fixes.png`)
+
+In `08-agent-typography-answer.txt` (Point 3.1), the agent claimed that `10-screen-with-system.png` (now preserved as `10a-screen-with-system-before-fixes.png`, SHA-256 `c5e0252e7a3f3aeeb12df7cab22c402780df9a06d5513eb0a9853409b143757d`) had rendered the fallback font `Georgia` instead of `Cormorant Garamond` and `system-ui` instead of `Manrope`.
+
+**Why that claim was unsupported and wrong:**
+- The agent had checked `/Library/Fonts` and `~/Library/Fonts` (where neither font is installed locally) and noticed old-style descending digits (`3` and `5`) on `₦35,000`, assuming from those two observations that headless Chrome had failed to load Google Fonts before capturing.
+- When inspected directly in headless Chrome via Chrome DevTools Protocol (`tokens/capture-and-verify-screen.mjs`, `DOM.enable` + `CSS.enable` + `CSS.getPlatformFontsForNode`), the original unedited page showed:
+  - `failedNetworkRequests: []` (the remote Google Fonts stylesheet and `.woff2` subsets returned HTTP 200 when Chrome ran outside the sandbox).
+  - `document.fonts.status: "loaded"`, with `document.fonts.check('600 32px "Cormorant Garamond"') === true`, `document.fonts.check('400 16px "Manrope"') === true`, and `document.fonts.check('600 16px "Manrope"') === true`.
+  - `h1.hero-title` (*"Two-Piece Senator Native Wear & Fitted Trousers"*) rendered `47` glyphs using `CormorantGaramondLight-SemiBold` (`isCustomFont: true`), with an inline text width of `629.58px` (matching `Cormorant Garamond` `600` at `32px`: `629.57px`, whereas `Georgia` `600` at `32px` measures `816.03px`).
+  - `dd.amount-owed` (*"₦35,000"*) rendered `7` glyphs using `CormorantGaramondLight-SemiBold` (`isCustomFont: true`).
+  - Why `₦35,000` displayed descending digits `3` and `5`: `Cormorant Garamond` uses proportional old-style numerals (`onum`) by default. They appeared on `₦35,000` only because `screen/index.html` had misapplied `.nc-type-headline-small` (`Cormorant Garamond`) to that payment balance (Point 3.2 of `08-agent-typography-answer.txt`).
+
+---
+
+## 2. Fixes Applied Before Step 8
+
+1. **Fixed the remaining-balance typography role (`screen/index.html` line 114):**
+   - Changed `<dd class="amount-owed nc-type-headline-small">₦35,000</dd>` to `<dd class="amount-owed nc-type-title-large">₦35,000</dd>`.
+   - Computed style in Chrome (`step7-font-loading-verification.txt`): `font-family: "Manrope, system-ui, sans-serif"`, `font-weight: 600`, `font-size: 22px`, `line-height: 33px` (`22px × 1.5`), `letter-spacing: normal` (`0px`).
+   - This matches `docs/type-scale.md` (`Title` for order cards and section headers) and `docs/business-brief.md` (`Manrope` for dates, prices, and numeric data).
+
+2. **Bundled local `.woff2` font files and preserved upstream OFL 1.1 licence notices (`screen/fonts/`):**
+   - Replaced the external `<link href="https://fonts.googleapis.com/...">` dependency in `screen/index.html` with `<link rel="stylesheet" href="./fonts/fonts.css">`.
+   - Self-hosted the `.woff2` subsets in `task-01-design-system/screen/fonts/`:
+     - `cormorant-garamond-600-latin.woff2` (`23,384` bytes)
+     - `cormorant-garamond-600-latin-ext.woff2` (`20,300` bytes)
+     - `manrope-400-600-latin.woff2` (`24,436` bytes)
+     - `manrope-400-600-latin-ext.woff2` (`15,212` bytes)
+   - Preserved full SIL Open Font License 1.1 notices in `screen/fonts/OFL-Cormorant-Garamond.txt` and `screen/fonts/OFL-Manrope.txt`.
+
+---
+
+## 3. Verification Results (`step7-font-loading-verification.txt` & `07-raw-value-search.txt`)
+
+- **Updated screenshot:** `evidence/10-screen-with-system.png` (`1280×960`, `deviceScaleFactor: 1`, SHA-256 `620dad0993691fc85c113d526c95e6e9b618c5eed930ec6d0b3a43e7fb1e6a35`).
+- **Font readiness:** `document.fonts.status === "loaded"`, `checkCormorant600 === true`, `checkManrope400 === true`, `checkManrope600 === true`, `failedNetworkRequests: []`, `resources: []` (zero external network requests).
+- **Platform fonts rendered (`CSS.getPlatformFontsForNode`):**
+  - `h1.hero-title (.nc-type-headline-large)`: `CormorantGaramondLight-SemiBold` (`isCustomFont: true`, `47` glyphs). *(Note: CoreText reports the variable font's base master `Light` plus the active named instance `-SemiBold` in `postScriptName`.)*
+  - `h2.card-title (.nc-type-title-large)`, `button.btn-primary (.nc-type-label-large)`, `span.order-ref (.nc-type-label-medium)`, `span.stage-badge (.nc-type-label-small)`: `Manrope-SemiBold` (`isCustomFont: true`).
+  - `p.hero-copy (.nc-type-body-large)`, `p.delay-text (.nc-type-body-medium)`, `p.footnote (.nc-type-body-small)`: `Manrope-Regular` (`isCustomFont: true`).
+  - `dd.amount-owed (.nc-type-title-large)`: `Manrope-SemiBold` (`isCustomFont: true`, `6` glyphs for `35,000`) and `.SF NS` (`isCustomFont: false`, `1` glyph for `₦`, `U+20A6`).
+- **Remaining glyph coverage limitation (recorded in `docs/defects.md`):**
+  - While `Cormorant Garamond` includes a glyph for the Naira sign `₦` (`U+20A6`), `Manrope`'s `latin-ext` subset does not include a glyph for `U+20A6` even though its `@font-face` `unicode-range` spans `U+20A0-20AB`. Consequently, on `₦85,000`, `− ₦50,000`, and `₦35,000`, the `₦` currency symbol (`1` glyph) falls back to the system sans-serif font (`.SF NS` on macOS) while all numeric digits and punctuation render in `Manrope-SemiBold`.
+- **Colour-token checks (`evidence/07-raw-value-search.txt` and `tokens/validate-css.mjs`):**
+  - Raw hex/rgb/hsl search across `task-01-design-system/screen/` (including `screen/fonts/fonts.css`): `0` matches (`exit=1`).
+  - Direct primitive reference (`--nc-ref-*`) search across `task-01-design-system/screen/`: `0` matches (`exit=1`).
+  - `node task-01-design-system/tokens/validate-css.mjs`: `14/14` checks passed (`exit=0`).
+
+---
+
+## 4. Subsequent Update (2026-10-31): `D8` Colour-Override Specificity Fix, Light-Mode Verification, and Mobile Viewport Check
+
+- **Preserved pre-`D8` artefacts:**
+  - `evidence/10b-screen-with-system-before-d8-specificity-fix.png` (`1280×960`, SHA-256 `620dad0993691fc85c113d526c95e6e9b618c5eed930ec6d0b3a43e7fb1e6a35`)
+  - `evidence/step7a-font-loading-verification-before-d8-fix.txt` (SHA-256 `0777a1f391d250cdef902639e0e313c4a51283d461889835bb750ceec406ba4a`)
+- **`D8` fix (`screen/styles.css` lines 253–268):**
+  - Increased selector specificity from `.date-previous`, `.date-updated`, `.amount-paid`, `.amount-owed` (`(0, 1, 0)`) to `.record-row dd.date-previous`, `.record-row dd.date-updated`, `.record-row dd.amount-paid`, `.record-row dd.amount-owed` (`(0, 2, 1)`) so they win over `.record-row dd` (`(0, 1, 1)`).
+- **Verified rendered colours & WCAG 2.1 contrast against `.card` (`--nc-color-surface-container`) (`step7-font-loading-verification.txt`):**
+  - **Dark mode (`10-screen-with-system.png`, SHA-256 `4f30bdcff68f7980f49d434880c21579ee9f969a56742a9c6b8d6248fe5203b5`, card background `#1F1F25`):**
+    - `dd.date-previous` (`--nc-color-on-surface-variant`): `rgb(198, 197, 208)` (`#C6C5D0`) — `9.60:1` (passes AA `4.5:1`)
+    - `dd.date-updated` (`--nc-color-warning`): `rgb(255, 183, 125)` (`#FFB77D`) — `9.62:1` (passes AA `4.5:1`)
+    - `dd.amount-paid` (`--nc-color-success`): `rgb(139, 215, 155)` (`#8BD79B`) — `9.60:1` (passes AA `4.5:1`)
+    - `dd.amount-owed` (`--nc-color-primary`): `rgb(184, 196, 255)` (`#B8C4FF`) — `9.66:1` (passes AA `4.5:1`)
+  - **Light mode (`10c-screen-with-system-light.png`, SHA-256 `a0e5bb40fe563c4a62c99eb763eebdbed8a9f1706d119837b72597e9e20dae84`, card background `#EFEDF4`):**
+    - `dd.date-previous` (`--nc-color-on-surface-variant`): `rgb(69, 70, 79)` (`#45464F`) — `8.07:1` (passes AA `4.5:1`)
+    - `dd.date-updated` (`--nc-color-warning`): `rgb(140, 79, 20)` (`#8C4F14`) — `5.58:1` (passes AA `4.5:1`)
+    - `dd.amount-paid` (`--nc-color-success`): `rgb(31, 108, 58)` (`#1F6C3A`) — `5.54:1` (passes AA `4.5:1`)
+    - `dd.amount-owed` (`--nc-color-primary`): `rgb(51, 77, 175)` (`#334DAF`) — `6.41:1` (passes AA `4.5:1`)
+- **Desktop (`1280×960`) and narrow mobile (`375×812`, `10d-screen-with-system-mobile-dark.png`, SHA-256 `d3ca74b051ca150928ce56877c1213ea0ffebd314429a7420d72f9b973cd8b17`) layout verification:**
+  - Desktop (`1280×960`): `documentScrollWidth: 1265`, `hasHorizontalOverflow: false`, `overflowingElementsCount: 0`.
+  - Mobile (`375×812`): `documentScrollWidth: 375`, `documentScrollHeight: 1946`, `hasHorizontalOverflow: false`, `overflowingElementsCount: 0`.
+

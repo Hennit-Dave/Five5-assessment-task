@@ -1,0 +1,34 @@
+## Learner Question (verbatim, 2026-10-30)
+
+Which exact typography style did you use for “Two-Piece Senator Native Wear & Fitted Trousers”?
+
+Inspect the HTML and CSS before answering. State the style name, font family, weight, size, line height and letter spacing, and explain whether it matches our type-scale.md usage rules.
+
+Distinguish the intended font from the font actually rendered in the screenshot. If the style is wrong or a fallback font rendered, admit that clearly. Record your original answer before making any corrections.
+
+Save my exact question and your answer in task-01-design-system/evidence/08-agent-typography-answer.txt. Record any subsequent fixes and verification separately.
+
+---
+
+## Agent Original Answer (verbatim, 2026-10-30, before any corrections)
+
+1. **Inspecting the HTML and CSS (`task-01-design-system/screen/index.html` and `styles.css`):**
+   - In `task-01-design-system/screen/index.html` (line 28), the element is:
+     `<h1 class="hero-title nc-type-headline-large">Two-Piece Senator Native Wear &amp; Fitted Trousers</h1>`
+   - In `task-01-design-system/screen/styles.css` (lines 73–76), `.hero-title` only sets `color: var(--nc-color-on-surface)` and `margin-bottom: 0.5rem`. All typography properties come from `.nc-type-headline-large` in `task-01-design-system/tokens/generated/nc-tokens.css` (lines 289–293 and 376–382).
+
+2. **Exact token values applied:**
+   - **Style name:** `Headline Large` (`NC/Headline/Large`, CSS class `.nc-type-headline-large`)
+   - **Intended font family:** `Cormorant Garamond` (CSS stack: `"Cormorant Garamond", Georgia, serif`)
+   - **Weight:** `600` (Semibold)
+   - **Size:** `32px` (`2rem`)
+   - **Line height:** `44.8px` (`2.8rem`, using the `× 1.4` multiplier)
+   - **Letter spacing:** `0px`
+
+3. **Does this match `docs/type-scale.md` usage rules?**
+   - **For the `<h1>` page header itself:** Yes — Section 4 of `docs/type-scale.md` states: *"Use Display for short introductory text, Headline for page headers, Title for order cards and section headers, Body for multi-line explanations, and Label for buttons, badges, and form controls."* Because “Two-Piece Senator Native Wear & Fitted Trousers” is the main page header for the order screen, `Headline Large` matches that rule.
+   - **However, I must admit two real problems on this screen:**
+     1. **A fallback font rendered in `evidence/10-screen-with-system.png`, not `Cormorant Garamond`:**
+        Although the CSS specifies `"Cormorant Garamond", Georgia, serif` and `index.html` links Google Fonts (`https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600&display=swap`), the screenshot `10-screen-with-system.png` actually rendered the fallback font **`Georgia`** (and **`system-ui`** instead of `Manrope` for the rest of the screen). Neither `Cormorant Garamond` nor `Manrope` is installed in `/Library/Fonts` or `~/Library/Fonts` on this Mac, and headless Chrome captured the screenshot without loading the remote Google Fonts. Visually, the capital `W` in “Wear” in `10-screen-with-system.png` lacks `Cormorant Garamond`’s crossed central diagonals and instead shows `Georgia`’s serif forms.
+     2. **I also misused a `Headline` style elsewhere on the same screen (`index.html` line 117):**
+        On `<dd class="amount-owed nc-type-headline-small">₦35,000</dd>`, I applied `Headline Small` (`Cormorant Garamond` 600, `24px / 33.6px`) to a payment balance figure inside an order card, even though `docs/type-scale.md` restricts `Headline` to page headers and `docs/business-brief.md` assigns order figures and payment records to `Manrope` (`Title` / `Body` / `Label`).

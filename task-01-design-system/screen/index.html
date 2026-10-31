@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nit's Cut — Order Progress &amp; Payment Record</title>
+  <link rel="stylesheet" href="./fonts/fonts.css">
+  <link rel="stylesheet" href="../tokens/generated/nc-tokens.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-badge nc-type-title-medium">NC</span>
+        <div>
+          <p class="brand-name nc-type-title-medium">Nit's Cut</p>
+          <p class="brand-sub nc-type-body-small">Bespoke Men's Tailoring · Native Wear, Trousers &amp; Shirts</p>
+        </div>
+      </div>
+      <span class="order-ref nc-type-label-medium">Order #NC-204</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow nc-type-label-large">Client Order Record · Chinedu Okafor</p>
+      <h1 class="hero-title nc-type-headline-large">Two-Piece Senator Native Wear &amp; Fitted Trousers</h1>
+      <p class="hero-copy nc-type-body-large">Live workshop stage, agreed fitting and collection schedule, and recorded payment balance.</p>
+    </section>
+
+    <section class="delay-banner" role="status">
+      <span class="delay-tag nc-type-label-medium">Delivery delayed — power outage</span>
+      <p class="delay-text nc-type-body-medium">Collection moved from Sat, 31 Oct to Mon, 02 Nov 2026 because a workshop power outage halted machine finishing and steam pressing.</p>
+    </section>
+
+    <div class="grid">
+      <article class="card">
+        <div class="card-header">
+          <h2 class="card-title nc-type-title-large">1. What stage is my outfit at?</h2>
+          <span class="status-pill nc-type-label-medium">Being sewn</span>
+        </div>
+        <ol class="stages">
+          <li class="stage stage-done">
+            <span class="stage-badge nc-type-label-small">Done</span>
+            <div class="stage-body">
+              <p class="stage-name nc-type-title-medium">Waiting</p>
+              <p class="stage-detail nc-type-body-medium">Navy cashmere-blend fabric logged and inspected.</p>
+              <p class="stage-meta nc-type-body-small">Completed 24 Oct 2026</p>
+            </div>
+          </li>
+          <li class="stage stage-done">
+            <span class="stage-badge nc-type-label-small">Done</span>
+            <div class="stage-body">
+              <p class="stage-name nc-type-title-medium">Being cut</p>
+              <p class="stage-detail nc-type-body-medium">Cut to file measurements: Chest 42 in, Shoulder 18.5 in, Trouser length 41 in.</p>
+              <p class="stage-meta nc-type-body-small">Completed 26 Oct 2026</p>
+            </div>
+          </li>
+          <li class="stage stage-active">
+            <span class="stage-badge stage-badge-active nc-type-label-small">Active</span>
+            <div class="stage-body">
+              <p class="stage-name stage-name-active nc-type-title-medium">Being sewn</p>
+              <p class="stage-detail stage-detail-active nc-type-body-medium">Senator top chest panel complete; trouser waistband assembly in progress.</p>
+              <p class="stage-meta stage-meta-active nc-type-body-small">Updated 30 Oct 2026 · Tailor on bench</p>
+            </div>
+          </li>
+          <li class="stage">
+            <span class="stage-badge stage-badge-pending nc-type-label-small">Next</span>
+            <div class="stage-body">
+              <p class="stage-name nc-type-title-medium">Ready for collection</p>
+              <p class="stage-detail nc-type-body-medium">Final steam pressing and packaging after fitting check.</p>
+            </div>
+          </li>
+        </ol>
+      </article>
+
+      <div class="side-stack">
+        <article class="card">
+          <div class="card-header">
+            <h2 class="card-title nc-type-title-large">2. Fitting &amp; collection dates</h2>
+          </div>
+          <dl class="record-list">
+            <div class="record-row">
+              <dt class="nc-type-body-medium">Agreed fitting</dt>
+              <dd class="nc-type-title-medium">Thu, 30 Oct 2026 · 4:00 PM</dd>
+            </div>
+            <div class="record-row">
+              <dt class="nc-type-body-medium">Original collection</dt>
+              <dd class="date-previous nc-type-body-medium">Sat, 31 Oct 2026</dd>
+            </div>
+            <div class="record-row record-row-last">
+              <dt class="nc-type-body-medium">Revised collection</dt>
+              <dd class="date-updated nc-type-title-medium">Mon, 02 Nov 2026 · 12:00 PM</dd>
+            </div>
+          </dl>
+          <p class="footnote nc-type-body-small">Secondary note: SMS reminder will be sent once pressing starts.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <h2 class="card-title nc-type-title-large">3. Payments &amp; remaining balance</h2>
+            <span class="payment-pill nc-type-label-medium">Part-paid</span>
+          </div>
+          <dl class="record-list">
+            <div class="record-row">
+              <dt class="nc-type-body-medium">Total outfit price</dt>
+              <dd class="nc-type-title-medium">₦85,000</dd>
+            </div>
+            <div class="record-row">
+              <dt class="nc-type-body-medium">Recorded deposit (24 Oct)</dt>
+              <dd class="amount-paid nc-type-title-medium">− ₦50,000</dd>
+            </div>
+            <div class="record-row record-row-last">
+              <dt class="nc-type-title-small">Remaining balance still owed</dt>
+              <dd class="amount-owed nc-type-title-large">₦35,000</dd>
+            </div>
+          </dl>
+          <div class="actions">
+            <button type="button" class="btn-primary nc-type-label-large">Confirm fitting time</button>
+            <button type="button" class="btn-secondary nc-type-label-large">View measurement record</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

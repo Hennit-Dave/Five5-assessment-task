@@ -1,0 +1,45 @@
+$ date
+Fri Oct 30 13:00:48 CDT 2026
+
+# 1. Commands executed to create, commit on, and delete the unmerged regression branch:
+$ git checkout -b regression/broken-token-reference
+Switched to a new branch 'regression/broken-token-reference'
+$ git add "task-01-design-system/tokens/generated/nc-tokens.css"
+$ git commit -m "test(task-01): break primary-container token reference and shift brand source palette"
+[regression/broken-token-reference 017694d] test(task-01): break primary-container token reference and shift brand source palette
+ 1 file changed, 459 insertions(+)
+ create mode 100644 task-01-design-system/tokens/generated/nc-tokens.css
+$ git checkout main
+Switched to branch 'main'
+$ git branch -D regression/broken-token-reference
+Deleted branch regression/broken-token-reference (was 017694d).
+
+# 2. Current branches (proving regression/broken-token-reference was deleted):
+$ git branch -a
+* main
+
+# 3. Commit graph and log on all branches (proving 017694d is not on main or any active branch):
+$ git log --all --graph --oneline --decorate
+* 7880a04 (HEAD -> main) docs: add assessment structure and design documentation
+
+# 4. Check whether any branch contains the unmerged regression commit 017694d (empty output = unmerged):
+$ git branch --contains 017694d
+exit=0
+
+# 5. Reflog proving branch creation, commit 017694d, checkout back to main, without merge:
+$ git reflog -n 5
+7880a04 HEAD@{0}: checkout: moving from regression/broken-token-reference to main
+017694d HEAD@{1}: commit: test(task-01): break primary-container token reference and shift brand source palette
+7880a04 HEAD@{2}: checkout: moving from main to regression/broken-token-reference
+7880a04 HEAD@{3}: commit (initial): docs: add assessment structure and design documentation
+
+# 6. Metadata of the unmerged commit 017694d (still reachable in object store via reflog):
+$ git show --stat 017694d
+commit 017694dbfd2a4eb817549dff1f23832cbe3165f6
+Author: Enitan Oluwaseun David (Dave Hennit) <hennitdave8@gmail.com>
+Date:   Fri Oct 30 12:49:28 2026 -0500
+
+    test(task-01): break primary-container token reference and shift brand source palette
+
+ .../tokens/generated/nc-tokens.css                 | 459 +++++++++++++++++++++
+ 1 file changed, 459 insertions(+)

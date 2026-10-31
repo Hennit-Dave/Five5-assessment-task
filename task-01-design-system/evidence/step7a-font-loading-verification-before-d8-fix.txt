@@ -1,0 +1,150 @@
+{
+  "timestamp": "2026-10-30T15:40:06.510Z",
+  "viewport": "1280x960 (deviceScaleFactor: 1)",
+  "failedNetworkRequests": [],
+  "fontLoadingVerification": {
+    "fontsStatus": "loaded",
+    "checkCormorant600": true,
+    "checkManrope400": true,
+    "checkManrope600": true,
+    "h1ComputedTypography": {
+      "className": "hero-title nc-type-headline-large",
+      "fontFamily": "\"Cormorant Garamond\", Georgia, serif",
+      "fontWeight": "600",
+      "fontSize": "32px",
+      "lineHeight": "44.8px",
+      "letterSpacing": "normal"
+    },
+    "amountOwedComputedTypography": {
+      "className": "amount-owed nc-type-title-large",
+      "fontFamily": "Manrope, system-ui, sans-serif",
+      "fontWeight": "600",
+      "fontSize": "22px",
+      "lineHeight": "33px",
+      "letterSpacing": "normal"
+    },
+    "h1InlineTextWidthPx": 629.578125,
+    "canvasWidthComparisonPx": {
+      "cormorantGaramond600At32px": 629.5675659179688,
+      "georgia600At32px": 816.03125
+    },
+    "loadedFontFaces": [
+      {
+        "family": "Cormorant Garamond",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "family": "Manrope",
+        "weight": "400",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "family": "Manrope",
+        "weight": "400",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "family": "Manrope",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "family": "Manrope",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ],
+    "resources": []
+  },
+  "renderedPlatformFontsByElement": {
+    "h1.hero-title (.nc-type-headline-large)": [
+      {
+        "familyName": "Cormorant Garamond Light SemiBold",
+        "postScriptName": "CormorantGaramondLight-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 47
+      }
+    ],
+    "h2.card-title (.nc-type-title-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 29
+      }
+    ],
+    "p.hero-copy (.nc-type-body-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 88
+      }
+    ],
+    "p.delay-text (.nc-type-body-medium)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 129
+      }
+    ],
+    "p.footnote (.nc-type-body-small)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 63
+      }
+    ],
+    "button.btn-primary (.nc-type-label-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 20
+      }
+    ],
+    "span.order-ref (.nc-type-label-medium)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 13
+      }
+    ],
+    "span.stage-badge (.nc-type-label-small)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 4
+      }
+    ],
+    "dd.amount-owed (.nc-type-title-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 6
+      },
+      {
+        "familyName": ".SF NS",
+        "postScriptName": ".SFNS-Regular_wdth_opsz160000_GRAD_wght2580000",
+        "isCustomFont": false,
+        "glyphCount": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "timestamp": "2026-10-31T10:55:24.011Z",
+  "viewport": "1280x960 (deviceScaleFactor: 1)",
+  "failedNetworkRequests": [],
+  "fontLoadingVerification": {
+    "fontsStatus": "loaded",
+    "checkCormorant600": true,
+    "checkManrope400": true,
+    "checkManrope600": true,
+    "h1ComputedTypography": {
+      "className": "hero-title nc-type-headline-large",
+      "fontFamily": "\"Cormorant Garamond\", Georgia, serif",
+      "fontWeight": "600",
+      "fontSize": "32px",
+      "lineHeight": "44.8px",
+      "letterSpacing": "normal"
+    },
+    "amountOwedComputedTypography": {
+      "className": "amount-owed nc-type-title-large",
+      "fontFamily": "Manrope, system-ui, sans-serif",
+      "fontWeight": "600",
+      "fontSize": "22px",
+      "lineHeight": "33px",
+      "letterSpacing": "normal"
+    },
+    "h1InlineTextWidthPx": 629.578125,
+    "canvasWidthComparisonPx": {
+      "cormorantGaramond600At32px": 629.5675659179688,
+      "georgia600At32px": 816.03125
+    },
+    "darkColourVerification": {
+      "theme": "dark",
+      "surfaceBackgroundHex": "#121318",
+      "onSurfaceTextHex": "#E3E1E9",
+      "surfaceContrastRatio": 14.32,
+      "cardSurfaceContainerHex": "#1F1F25",
+      "recordRowOverrides": {
+        "dd.date-previous (--nc-color-on-surface-variant)": {
+          "computedColor": "rgb(198, 197, 208)",
+          "computedHex": "#C6C5D0",
+          "backgroundHex": "#1F1F25",
+          "contrastRatio": 9.6,
+          "passesWCAG_AA_4_5": true
+        },
+        "dd.date-updated (--nc-color-warning)": {
+          "computedColor": "rgb(255, 183, 125)",
+          "computedHex": "#FFB77D",
+          "backgroundHex": "#1F1F25",
+          "contrastRatio": 9.62,
+          "passesWCAG_AA_4_5": true
+        },
+        "dd.amount-paid (--nc-color-success)": {
+          "computedColor": "rgb(139, 215, 155)",
+          "computedHex": "#8BD79B",
+          "backgroundHex": "#1F1F25",
+          "contrastRatio": 9.6,
+          "passesWCAG_AA_4_5": true
+        },
+        "dd.amount-owed (--nc-color-primary)": {
+          "computedColor": "rgb(184, 196, 255)",
+          "computedHex": "#B8C4FF",
+          "backgroundHex": "#1F1F25",
+          "contrastRatio": 9.66,
+          "passesWCAG_AA_4_5": true
+        }
+      }
+    },
+    "desktopLayoutCheck": {
+      "viewportWidth": 1280,
+      "viewportHeight": 960,
+      "documentScrollWidth": 1265,
+      "documentScrollHeight": 965,
+      "hasHorizontalOverflow": false,
+      "overflowingElementsCount": 0,
+      "overflowingElements": []
+    },
+    "loadedFontFaces": [
+      {
+        "family": "Cormorant Garamond",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "family": "Manrope",
+        "weight": "400",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "family": "Manrope",
+        "weight": "400",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      },
+      {
+        "family": "Manrope",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+100-2BA, U+2BD-2C5, U+2C7-2CC, U+2CE-2D7, U+2DD-2FF, U+304, U+308, U+329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF"
+      },
+      {
+        "family": "Manrope",
+        "weight": "600",
+        "style": "normal",
+        "status": "loaded",
+        "unicodeRange": "U+0-FF, U+131, U+152-153, U+2BB-2BC, U+2C6, U+2DA, U+2DC, U+304, U+308, U+329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD"
+      }
+    ],
+    "resources": []
+  },
+  "lightModeColourVerification": {
+    "theme": "light",
+    "surfaceBackgroundHex": "#FBF8FF",
+    "onSurfaceTextHex": "#1B1B21",
+    "surfaceContrastRatio": 16.3,
+    "cardSurfaceContainerHex": "#EFEDF4",
+    "recordRowOverrides": {
+      "dd.date-previous (--nc-color-on-surface-variant)": {
+        "computedColor": "rgb(69, 70, 79)",
+        "computedHex": "#45464F",
+        "backgroundHex": "#EFEDF4",
+        "contrastRatio": 8.07,
+        "passesWCAG_AA_4_5": true
+      },
+      "dd.date-updated (--nc-color-warning)": {
+        "computedColor": "rgb(140, 79, 20)",
+        "computedHex": "#8C4F14",
+        "backgroundHex": "#EFEDF4",
+        "contrastRatio": 5.58,
+        "passesWCAG_AA_4_5": true
+      },
+      "dd.amount-paid (--nc-color-success)": {
+        "computedColor": "rgb(31, 108, 58)",
+        "computedHex": "#1F6C3A",
+        "backgroundHex": "#EFEDF4",
+        "contrastRatio": 5.54,
+        "passesWCAG_AA_4_5": true
+      },
+      "dd.amount-owed (--nc-color-primary)": {
+        "computedColor": "rgb(51, 77, 175)",
+        "computedHex": "#334DAF",
+        "backgroundHex": "#EFEDF4",
+        "contrastRatio": 6.41,
+        "passesWCAG_AA_4_5": true
+      }
+    }
+  },
+  "mobileViewportLayoutCheck": {
+    "viewportWidth": 375,
+    "viewportHeight": 812,
+    "documentScrollWidth": 375,
+    "documentScrollHeight": 1946,
+    "hasHorizontalOverflow": false,
+    "overflowingElementsCount": 0,
+    "overflowingElements": []
+  },
+  "renderedPlatformFontsByElement": {
+    "h1.hero-title (.nc-type-headline-large)": [
+      {
+        "familyName": "Cormorant Garamond Light SemiBold",
+        "postScriptName": "CormorantGaramondLight-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 47
+      }
+    ],
+    "h2.card-title (.nc-type-title-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 29
+      }
+    ],
+    "p.hero-copy (.nc-type-body-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 88
+      }
+    ],
+    "p.delay-text (.nc-type-body-medium)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 129
+      }
+    ],
+    "p.footnote (.nc-type-body-small)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-Regular",
+        "isCustomFont": true,
+        "glyphCount": 63
+      }
+    ],
+    "button.btn-primary (.nc-type-label-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 20
+      }
+    ],
+    "span.order-ref (.nc-type-label-medium)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 13
+      }
+    ],
+    "span.stage-badge (.nc-type-label-small)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 4
+      }
+    ],
+    "dd.amount-owed (.nc-type-title-large)": [
+      {
+        "familyName": "Manrope ExtraLight",
+        "postScriptName": "Manrope-SemiBold",
+        "isCustomFont": true,
+        "glyphCount": 6
+      },
+      {
+        "familyName": ".SF NS",
+        "postScriptName": ".SFNS-Regular_wdth_opsz160000_GRAD_wght2580000",
+        "isCustomFont": false,
+        "glyphCount": 1
+      }
+    ]
+  }
+}

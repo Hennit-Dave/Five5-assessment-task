@@ -1,0 +1,319 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--nc-color-surface);
+  color: var(--nc-color-on-surface);
+  font-family: var(--nc-type-body-medium-family);
+  padding: 2rem 1.5rem;
+}
+
+.page {
+  max-width: 68rem;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--nc-color-surface-container-low);
+  border: 1px solid var(--nc-color-outline-variant);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--nc-shadow-soft);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-badge {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--nc-color-primary);
+  color: var(--nc-color-on-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--nc-shadow-hard);
+}
+
+.brand-name {
+  color: var(--nc-color-on-surface);
+}
+
+.brand-sub {
+  color: var(--nc-color-on-surface-variant);
+}
+
+.order-ref {
+  background-color: var(--nc-color-secondary-container);
+  color: var(--nc-color-on-secondary-container);
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+}
+
+.hero {
+  margin-bottom: 1.25rem;
+}
+
+.eyebrow {
+  color: var(--nc-color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.hero-title {
+  color: var(--nc-color-on-surface);
+  margin-bottom: 0.5rem;
+}
+
+.hero-copy {
+  color: var(--nc-color-on-surface-variant);
+  max-width: 46rem;
+}
+
+.delay-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--nc-color-warning-container);
+  color: var(--nc-color-on-warning-container);
+  border: 1px solid var(--nc-color-warning);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--nc-shadow-soft);
+}
+
+.delay-tag {
+  background-color: var(--nc-color-warning);
+  color: var(--nc-color-on-warning);
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+}
+
+.delay-text {
+  color: var(--nc-color-on-warning-container);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.12fr 0.88fr;
+  gap: 1.25rem;
+}
+
+.side-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.card {
+  background-color: var(--nc-color-surface-container);
+  border: 1px solid var(--nc-color-outline-variant);
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  box-shadow: var(--nc-shadow-medium);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  color: var(--nc-color-on-surface);
+}
+
+.status-pill {
+  background-color: var(--nc-color-primary-container);
+  color: var(--nc-color-on-primary-container);
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.payment-pill {
+  background-color: var(--nc-color-tertiary-container);
+  color: var(--nc-color-on-tertiary-container);
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stages {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.625rem;
+  background-color: var(--nc-color-surface-container-high);
+  border: 1px solid var(--nc-color-outline-variant);
+}
+
+.stage-active {
+  background-color: var(--nc-color-primary-container);
+  border: 1px solid var(--nc-color-primary);
+}
+
+.stage-badge {
+  background-color: var(--nc-color-success-container);
+  color: var(--nc-color-on-success-container);
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.stage-badge-active {
+  background-color: var(--nc-color-primary);
+  color: var(--nc-color-on-primary);
+}
+
+.stage-badge-pending {
+  background-color: var(--nc-color-surface-container-highest);
+  color: var(--nc-color-on-surface-variant);
+}
+
+.stage-name {
+  color: var(--nc-color-on-surface);
+}
+
+.stage-name-active {
+  color: var(--nc-color-on-primary-container);
+}
+
+.stage-detail {
+  color: var(--nc-color-on-surface-variant);
+  margin-top: 0.125rem;
+}
+
+.stage-detail-active {
+  color: var(--nc-color-on-primary-container);
+}
+
+.stage-meta {
+  color: var(--nc-color-on-surface-variant);
+  margin-top: 0.25rem;
+}
+
+.stage-meta-active {
+  color: var(--nc-color-on-primary-container);
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.record-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--nc-color-outline-variant);
+}
+
+.record-row-last {
+  border-bottom: none;
+  padding-bottom: 0;
+  padding-top: 0.25rem;
+}
+
+.record-row dt {
+  color: var(--nc-color-on-surface-variant);
+}
+
+.record-row dd {
+  color: var(--nc-color-on-surface);
+}
+
+.record-row dd.date-previous {
+  text-decoration: line-through;
+  color: var(--nc-color-on-surface-variant);
+}
+
+.record-row dd.date-updated {
+  color: var(--nc-color-warning);
+}
+
+.record-row dd.amount-paid {
+  color: var(--nc-color-success);
+}
+
+.record-row dd.amount-owed {
+  color: var(--nc-color-primary);
+}
+
+.footnote {
+  margin-top: 0.75rem;
+  color: var(--nc-color-on-surface-variant);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--nc-color-primary);
+  color: var(--nc-color-on-primary);
+  border: 1px solid var(--nc-color-primary);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  box-shadow: var(--nc-shadow-soft);
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: var(--nc-color-surface-container-high);
+  color: var(--nc-color-on-surface);
+  border: 1px solid var(--nc-color-outline);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 48rem) {
+  body {
+    padding: 1.25rem 1rem;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .record-row {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+}

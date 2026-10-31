@@ -1,0 +1,29 @@
+$ date
+Fri Oct 30 08:46:08 CDT 2026
+$ node --version
+v24.16.0
+$ node task-01-design-system/tokens/build-css.mjs
+Wrote /Users/blk/Developer/Five5 assessment task/task-01-design-system/tokens/generated/nc-tokens.css
+{"primitives":192,"roles":57,"typography":15,"shadows":3}
+exit=0
+$ node task-01-design-system/tokens/validate-css.mjs
+PASS  all var() references resolve (135 uses, undefined: [])
+PASS  raw hex confined to --nc-ref-* primitives (192 hex lines, 0 elsewhere)
+PASS  all 57 role variables alias a primitive
+PASS  typography classes do not reference primitives
+PASS  coverage {"primitives":192,"roles":57,"typography":15,"shadows":3} (expected 192/57/15/3)
+PASS  draft collections absent from output (comments ignored)
+INFO  exported aliases vs docs: match Light 14/57, match Dark 57/57
+PASS  export role aliases match the documented Dark mapping
+PASS  Display Large = Cormorant Garamond 600, 57px (3.5625rem) / 79.8px (4.9875rem), -0.5px
+PASS  Body Large = Manrope 400
+PASS  Soft shadow 0/2/8/0 at 10% primary/40
+PASS  Medium shadow 0/6/18/0 at 16% primary/40
+PASS  Hard shadow 0/4/2/0 at 24% primary/40
+PASS  primary/40 primitive = #334DAF
+
+All checks passed
+exit=0
+$ shasum -a 256 task-01-design-system/evidence/06-tokens-complete.json task-01-design-system/tokens/generated/nc-tokens.css
+8c3072de953918a6bdbd4ad86a1e8821e6b54a9e9ddc9f0a6ba3fedd9af92d33  task-01-design-system/evidence/06-tokens-complete.json
+539ee096b6ccc1ee423d32b1493b832e2fec4e76b7269c0bfe0813885a9049ac  task-01-design-system/tokens/generated/nc-tokens.css

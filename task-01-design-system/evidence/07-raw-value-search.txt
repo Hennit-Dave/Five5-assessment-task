@@ -1,0 +1,524 @@
+# Raw Colour & Direct Primitive Reference Search Evidence (07-raw-value-search.txt)
+Generated: 2026-10-31T11:03:49.505Z
+
+## Scope and Explicit Exclusions
+- Searched first-party directories: `task-01-design-system/`, `outputs/`, `work/`
+- Explicit exclusions:
+  - `--exclude-dir=.git` (Git object database and internal logs)
+  - `--exclude-dir=node_modules` (third-party npm package `@material/material-color-utilities` under `work/m3/node_modules`)
+  - `--exclude-dir=.local-instruction-archive` (withdrawn historical instruction archive)
+  - `--binary-files=without-match` (binary PNG screenshots in `evidence/` and WOFF2 font binaries in `screen/fonts/`)
+  - `--exclude=07-raw-value-search.txt` (this report file itself during the per-file summary count)
+
+---
+
+## 1. Token-Consuming Screen Check: Raw Colour Values (`task-01-design-system/screen/`)
+Command:
+$ grep -rnE --binary-files=without-match '(#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\()' task-01-design-system/screen
+Exit code: 1
+Output:
+(no matches — 0 raw hex, rgb/rgba, or hsl/hsla colour values in index.html, styles.css, or fonts/fonts.css)
+
+---
+
+## 2. Token-Consuming Screen Check: Direct Primitive References (`--nc-ref-*` in `task-01-design-system/screen/`)
+Command:
+$ grep -rn --binary-files=without-match '\-\-nc-ref-' task-01-design-system/screen
+Exit code: 1
+Output:
+(no matches — 0 direct --nc-ref-* primitive references in index.html, styles.css, or fonts/fonts.css; all colours use semantic --nc-color-* roles)
+
+---
+
+## 3. Whole First-Party Codebase Summary (Per-File Match Counts)
+Command:
+$ grep -rcE --binary-files=without-match --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.local-instruction-archive --exclude=07-raw-value-search.txt '(#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\()' task-01-design-system outputs work | grep -v ':0$'
+Exit code: 0
+Output:
+task-01-design-system/evidence/06-tokens-complete.json:229
+task-01-design-system/evidence/tokens-incomplete.json:3
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:193
+task-01-design-system/evidence/tokens-complete.json:229
+task-01-design-system/evidence/step7-font-loading-verification.txt:30
+task-01-design-system/evidence/08b-typography-and-font-fixes-verification.txt:10
+task-01-design-system/evidence/05-tokens-incomplete.json:3
+task-01-design-system/evidence/step6b-light-and-dark-css-validation.txt:1
+task-01-design-system/evidence/step6-css-build-and-validation.txt:1
+task-01-design-system/docs/shadows.md:3
+task-01-design-system/docs/evidence-index.md:5
+task-01-design-system/docs/decision-log.md:3
+task-01-design-system/docs/figma-colour-status.md:1
+task-01-design-system/docs/business-brief.md:1
+task-01-design-system/docs/colour-roles.md:66
+task-01-design-system/docs/interview-answers.md:5
+task-01-design-system/docs/prompts.md:5
+task-01-design-system/docs/defects.md:2
+task-01-design-system/README.md:5
+task-01-design-system/tokens/generated/nc-tokens.css:192
+task-01-design-system/tokens/generated/build-report.json:114
+task-01-design-system/tokens/validate-css.mjs:1
+task-01-design-system/tokens/README.md:1
+outputs/m3-colour-foundation/m3-colours.json:405
+outputs/m3-colour-foundation/colour-roles-and-contrast.md:58
+outputs/m3-colour-foundation/figma-status.md:1
+outputs/m3-colour-foundation/tokens-studio.json:192
+outputs/screen-without-system/styles.css:46
+work/m3/generate.mjs:3
+
+### Explanation of Legitimate Raw-Colour Matches Outside `task-01-design-system/screen/`
+1. **Generated CSS token foundation (`task-01-design-system/tokens/generated/nc-tokens.css`: 192 matches)**
+   - Defines the 192 internal `--nc-ref-*` primitive custom properties on `:root` (lines 14–205). All 114 semantic colour role declarations across Light (`:root, [data-theme="light"]`) and Dark (`[data-theme="dark"]`) modes (lines 209–330) use `var(--nc-ref-*)` aliases with zero raw hex values.
+2. **Archived Step 8 broken-referencing evidence (`task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css`: 193 matches)**
+   - Preserved copy of the deliberate Step 8 regression stylesheet on the deleted unmerged branch (`regression/broken-token-reference`), containing the 192 `--nc-ref-*` primitives plus 1 deliberately hardcoded semantic role (`--nc-color-primary-container: #213DA0;` on line 233).
+3. **Intentional "without design system" comparison screen (`outputs/screen-without-system/styles.css`: 46 matches)**
+   - Built in Step 7 (evidence `09-screen-without-system.png`) specifically to demonstrate an ad-hoc screen with hardcoded Tailwind-like hex values (`#2563eb`, `#f3f4f6`, `#fef3c7`, etc.) and `rgba()` box shadows before applying the Nit's Cut token system.
+4. **Token generator & validator scripts (`task-01-design-system/tokens/validate-css.mjs`: 1 match; `work/m3/generate.mjs`: 3 matches)**
+   - `validate-css.mjs` line 56 asserts that `--nc-ref-primary-40` equals the canonical brand seed `#334DAF` (catching regressions like the Step 8 `#006D3B` change).
+   - `work/m3/generate.mjs` lines 4, 6, 36 define the three M3 HCT seed hexes (`#334DAF` primary, `#166534` success, `#854A0E` warning) used to generate the tonal palettes.
+5. **Token JSON exports & build/verification logs (`evidence/*.json`, `evidence/*.txt`, `tokens/generated/build-report.json`, `outputs/m3-colour-foundation/*.json`)**
+   - Raw JSON variable exports from Figma and automated verification logs recording hex values and computed RGB contrast checks.
+6. **Design system documentation (`task-01-design-system/docs/*.md`, `README.md`, `outputs/m3-colour-foundation/*.md`)**
+   - Markdown tables and prose documenting primitive tones, semantic role mappings, WCAG contrast ratios, and defect analyses.
+
+---
+
+## 4. Full Line-by-Line Output Across All First-Party Code Files (`*.html`, `*.css`, `*.mjs`, `*.js`)
+Command:
+$ grep -rnE --binary-files=without-match --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.local-instruction-archive --include='*.html' --include='*.css' --include='*.mjs' --include='*.js' '(#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\()' task-01-design-system outputs work
+Exit code: 0
+Output:
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:16:  --nc-ref-primary-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:17:  --nc-ref-primary-4: #001509;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:18:  --nc-ref-primary-6: #001B0D;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:19:  --nc-ref-primary-10: #002111;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:20:  --nc-ref-primary-12: #002614;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:21:  --nc-ref-primary-17: #00311B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:22:  --nc-ref-primary-20: #00391C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:23:  --nc-ref-primary-22: #003E1F;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:24:  --nc-ref-primary-24: #004322;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:25:  --nc-ref-primary-30: #00522B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:26:  --nc-ref-primary-40: #006D3B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:27:  --nc-ref-primary-50: #00894C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:28:  --nc-ref-primary-60: #28A564;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:29:  --nc-ref-primary-70: #4BC17C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:30:  --nc-ref-primary-80: #6BDD96;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:31:  --nc-ref-primary-87: #96F7B6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:32:  --nc-ref-primary-90: #A6F2BE;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:33:  --nc-ref-primary-92: #B9F7CB;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:34:  --nc-ref-primary-94: #CCFBD9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:35:  --nc-ref-primary-95: #D6FDE0;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:36:  --nc-ref-primary-96: #E1FEE8;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:37:  --nc-ref-primary-98: #F4FFF6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:38:  --nc-ref-primary-99: #FAFFFA;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:39:  --nc-ref-primary-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:40:  --nc-ref-secondary-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:41:  --nc-ref-secondary-4: #090D1E;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:42:  --nc-ref-secondary-6: #0E1223;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:43:  --nc-ref-secondary-10: #171B2C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:44:  --nc-ref-secondary-12: #1B1F30;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:45:  --nc-ref-secondary-17: #25293B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:46:  --nc-ref-secondary-20: #2C2F42;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:47:  --nc-ref-secondary-22: #303446;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:48:  --nc-ref-secondary-24: #35384B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:49:  --nc-ref-secondary-30: #424659;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:50:  --nc-ref-secondary-40: #5A5D72;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:51:  --nc-ref-secondary-50: #73768B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:52:  --nc-ref-secondary-60: #8C8FA6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:53:  --nc-ref-secondary-70: #A7AAC1;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:54:  --nc-ref-secondary-80: #C2C5DD;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:55:  --nc-ref-secondary-87: #D6D9F1;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:56:  --nc-ref-secondary-90: #DFE1F9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:57:  --nc-ref-secondary-92: #E4E7FF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:58:  --nc-ref-secondary-94: #ECECFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:59:  --nc-ref-secondary-95: #EFEFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:60:  --nc-ref-secondary-96: #F3F2FF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:61:  --nc-ref-secondary-98: #FBF8FF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:62:  --nc-ref-secondary-99: #FEFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:63:  --nc-ref-secondary-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:64:  --nc-ref-tertiary-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:65:  --nc-ref-tertiary-4: #1D051B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:66:  --nc-ref-tertiary-6: #230920;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:67:  --nc-ref-tertiary-10: #2C1229;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:68:  --nc-ref-tertiary-12: #31162D;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:69:  --nc-ref-tertiary-17: #3C2038;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:70:  --nc-ref-tertiary-20: #43273F;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:71:  --nc-ref-tertiary-22: #482B43;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:72:  --nc-ref-tertiary-24: #4D2F48;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:73:  --nc-ref-tertiary-30: #5C3D56;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:74:  --nc-ref-tertiary-40: #75546E;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:75:  --nc-ref-tertiary-50: #906C88;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:76:  --nc-ref-tertiary-60: #AB85A2;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:77:  --nc-ref-tertiary-70: #C79FBD;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:78:  --nc-ref-tertiary-80: #E4BAD9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:79:  --nc-ref-tertiary-87: #F9CDED;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:80:  --nc-ref-tertiary-90: #FFD7F4;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:81:  --nc-ref-tertiary-92: #FFDFF5;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:82:  --nc-ref-tertiary-94: #FFE7F6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:83:  --nc-ref-tertiary-95: #FFEBF7;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:84:  --nc-ref-tertiary-96: #FFEFF8;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:85:  --nc-ref-tertiary-98: #FFF7F9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:86:  --nc-ref-tertiary-99: #FFFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:87:  --nc-ref-tertiary-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:88:  --nc-ref-neutral-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:89:  --nc-ref-neutral-4: #0D0E13;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:90:  --nc-ref-neutral-6: #121318;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:91:  --nc-ref-neutral-10: #1B1B21;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:92:  --nc-ref-neutral-12: #1F1F25;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:93:  --nc-ref-neutral-17: #292A2F;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:94:  --nc-ref-neutral-20: #2F3036;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:95:  --nc-ref-neutral-22: #34343A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:96:  --nc-ref-neutral-24: #38393F;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:97:  --nc-ref-neutral-30: #46464C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:98:  --nc-ref-neutral-40: #5E5E64;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:99:  --nc-ref-neutral-50: #77767D;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:100:  --nc-ref-neutral-60: #919097;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:101:  --nc-ref-neutral-70: #ABAAB1;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:102:  --nc-ref-neutral-80: #C7C5CD;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:103:  --nc-ref-neutral-87: #DBD9E0;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:104:  --nc-ref-neutral-90: #E3E1E9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:105:  --nc-ref-neutral-92: #E9E7EF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:106:  --nc-ref-neutral-94: #EFEDF4;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:107:  --nc-ref-neutral-95: #F2F0F7;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:108:  --nc-ref-neutral-96: #F5F2FA;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:109:  --nc-ref-neutral-98: #FBF8FF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:110:  --nc-ref-neutral-99: #FEFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:111:  --nc-ref-neutral-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:112:  --nc-ref-neutral-variant-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:113:  --nc-ref-neutral-variant-4: #0C0E15;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:114:  --nc-ref-neutral-variant-6: #12131A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:115:  --nc-ref-neutral-variant-10: #1A1B23;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:116:  --nc-ref-neutral-variant-12: #1E1F27;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:117:  --nc-ref-neutral-variant-17: #282931;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:118:  --nc-ref-neutral-variant-20: #2F3038;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:119:  --nc-ref-neutral-variant-22: #33343C;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:120:  --nc-ref-neutral-variant-24: #383941;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:121:  --nc-ref-neutral-variant-30: #45464F;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:122:  --nc-ref-neutral-variant-40: #5D5E67;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:123:  --nc-ref-neutral-variant-50: #767680;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:124:  --nc-ref-neutral-variant-60: #90909A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:125:  --nc-ref-neutral-variant-70: #ABAAB4;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:126:  --nc-ref-neutral-variant-80: #C6C5D0;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:127:  --nc-ref-neutral-variant-87: #DAD9E4;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:128:  --nc-ref-neutral-variant-90: #E2E1EC;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:129:  --nc-ref-neutral-variant-92: #E8E7F2;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:130:  --nc-ref-neutral-variant-94: #EEEDF8;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:131:  --nc-ref-neutral-variant-95: #F1F0FA;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:132:  --nc-ref-neutral-variant-96: #F4F2FD;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:133:  --nc-ref-neutral-variant-98: #FBF8FF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:134:  --nc-ref-neutral-variant-99: #FEFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:135:  --nc-ref-neutral-variant-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:136:  --nc-ref-error-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:137:  --nc-ref-error-4: #280001;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:138:  --nc-ref-error-6: #310001;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:139:  --nc-ref-error-10: #410002;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:140:  --nc-ref-error-12: #490002;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:141:  --nc-ref-error-17: #5C0004;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:142:  --nc-ref-error-20: #690005;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:143:  --nc-ref-error-22: #710005;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:144:  --nc-ref-error-24: #790006;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:145:  --nc-ref-error-30: #93000A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:146:  --nc-ref-error-40: #BA1A1A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:147:  --nc-ref-error-50: #DE3730;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:148:  --nc-ref-error-60: #FF5449;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:149:  --nc-ref-error-70: #FF897D;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:150:  --nc-ref-error-80: #FFB4AB;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:151:  --nc-ref-error-87: #FFCFC9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:152:  --nc-ref-error-90: #FFDAD6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:153:  --nc-ref-error-92: #FFE2DE;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:154:  --nc-ref-error-94: #FFE9E6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:155:  --nc-ref-error-95: #FFEDEA;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:156:  --nc-ref-error-96: #FFF0EE;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:157:  --nc-ref-error-98: #FFF8F7;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:158:  --nc-ref-error-99: #FFFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:159:  --nc-ref-error-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:160:  --nc-ref-success-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:161:  --nc-ref-success-4: #001204;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:162:  --nc-ref-success-6: #001807;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:163:  --nc-ref-success-10: #00210B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:164:  --nc-ref-success-12: #00260E;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:165:  --nc-ref-success-17: #003214;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:166:  --nc-ref-success-20: #003918;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:167:  --nc-ref-success-22: #003E1B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:168:  --nc-ref-success-24: #00431E;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:169:  --nc-ref-success-30: #005226;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:170:  --nc-ref-success-40: #1F6C3A;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:171:  --nc-ref-success-50: #3B8551;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:172:  --nc-ref-success-60: #56A068;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:173:  --nc-ref-success-70: #70BB81;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:174:  --nc-ref-success-80: #8BD79B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:175:  --nc-ref-success-87: #9EECAD;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:176:  --nc-ref-success-90: #A6F4B5;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:177:  --nc-ref-success-92: #ACFABA;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:178:  --nc-ref-success-94: #B5FFC2;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:179:  --nc-ref-success-95: #C4FFCC;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:180:  --nc-ref-success-96: #D2FFD6;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:181:  --nc-ref-success-98: #EAFFE9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:182:  --nc-ref-success-99: #F5FFF2;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:183:  --nc-ref-success-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:184:  --nc-ref-warning-0: #000000;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:185:  --nc-ref-warning-4: #1B0A00;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:186:  --nc-ref-warning-6: #230E00;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:187:  --nc-ref-warning-10: #2F1500;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:188:  --nc-ref-warning-12: #341800;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:189:  --nc-ref-warning-17: #442100;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:190:  --nc-ref-warning-20: #4D2600;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:191:  --nc-ref-warning-22: #532A00;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:192:  --nc-ref-warning-24: #5A2E00;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:193:  --nc-ref-warning-30: #6E3900;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:194:  --nc-ref-warning-40: #8C4F14;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:195:  --nc-ref-warning-50: #A9672B;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:196:  --nc-ref-warning-60: #C88042;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:197:  --nc-ref-warning-70: #E69A59;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:198:  --nc-ref-warning-80: #FFB77D;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:199:  --nc-ref-warning-87: #FFD1AF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:200:  --nc-ref-warning-90: #FFDCC3;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:201:  --nc-ref-warning-92: #FFE3D0;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:202:  --nc-ref-warning-94: #FFEADC;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:203:  --nc-ref-warning-95: #FFEDE3;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:204:  --nc-ref-warning-96: #FFF1E9;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:205:  --nc-ref-warning-98: #FFF8F5;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:206:  --nc-ref-warning-99: #FFFBFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:207:  --nc-ref-warning-100: #FFFFFF;
+task-01-design-system/evidence/11b-broken-referencing-nc-tokens.css:235:  --nc-color-primary-container: #213DA0;
+task-01-design-system/tokens/generated/nc-tokens.css:14:  --nc-ref-primary-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:15:  --nc-ref-primary-4: #000934;
+task-01-design-system/tokens/generated/nc-tokens.css:16:  --nc-ref-primary-6: #000D40;
+task-01-design-system/tokens/generated/nc-tokens.css:17:  --nc-ref-primary-10: #001454;
+task-01-design-system/tokens/generated/nc-tokens.css:18:  --nc-ref-primary-12: #00175D;
+task-01-design-system/tokens/generated/nc-tokens.css:19:  --nc-ref-primary-17: #001F76;
+task-01-design-system/tokens/generated/nc-tokens.css:20:  --nc-ref-primary-20: #002585;
+task-01-design-system/tokens/generated/nc-tokens.css:21:  --nc-ref-primary-22: #02298D;
+task-01-design-system/tokens/generated/nc-tokens.css:22:  --nc-ref-primary-24: #0C2E92;
+task-01-design-system/tokens/generated/nc-tokens.css:23:  --nc-ref-primary-30: #213DA0;
+task-01-design-system/tokens/generated/nc-tokens.css:24:  --nc-ref-primary-40: #334DAF;
+task-01-design-system/tokens/generated/nc-tokens.css:25:  --nc-ref-primary-50: #5870D4;
+task-01-design-system/tokens/generated/nc-tokens.css:26:  --nc-ref-primary-60: #728AF0;
+task-01-design-system/tokens/generated/nc-tokens.css:27:  --nc-ref-primary-70: #92A6FF;
+task-01-design-system/tokens/generated/nc-tokens.css:28:  --nc-ref-primary-80: #B8C4FF;
+task-01-design-system/tokens/generated/nc-tokens.css:29:  --nc-ref-primary-87: #D2D8FF;
+task-01-design-system/tokens/generated/nc-tokens.css:30:  --nc-ref-primary-90: #DDE1FF;
+task-01-design-system/tokens/generated/nc-tokens.css:31:  --nc-ref-primary-92: #E4E7FF;
+task-01-design-system/tokens/generated/nc-tokens.css:32:  --nc-ref-primary-94: #ECECFF;
+task-01-design-system/tokens/generated/nc-tokens.css:33:  --nc-ref-primary-95: #EFEFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:34:  --nc-ref-primary-96: #F3F2FF;
+task-01-design-system/tokens/generated/nc-tokens.css:35:  --nc-ref-primary-98: #FBF8FF;
+task-01-design-system/tokens/generated/nc-tokens.css:36:  --nc-ref-primary-99: #FEFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:37:  --nc-ref-primary-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:38:  --nc-ref-secondary-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:39:  --nc-ref-secondary-4: #090D1E;
+task-01-design-system/tokens/generated/nc-tokens.css:40:  --nc-ref-secondary-6: #0E1223;
+task-01-design-system/tokens/generated/nc-tokens.css:41:  --nc-ref-secondary-10: #171B2C;
+task-01-design-system/tokens/generated/nc-tokens.css:42:  --nc-ref-secondary-12: #1B1F30;
+task-01-design-system/tokens/generated/nc-tokens.css:43:  --nc-ref-secondary-17: #25293B;
+task-01-design-system/tokens/generated/nc-tokens.css:44:  --nc-ref-secondary-20: #2C2F42;
+task-01-design-system/tokens/generated/nc-tokens.css:45:  --nc-ref-secondary-22: #303446;
+task-01-design-system/tokens/generated/nc-tokens.css:46:  --nc-ref-secondary-24: #35384B;
+task-01-design-system/tokens/generated/nc-tokens.css:47:  --nc-ref-secondary-30: #424659;
+task-01-design-system/tokens/generated/nc-tokens.css:48:  --nc-ref-secondary-40: #5A5D72;
+task-01-design-system/tokens/generated/nc-tokens.css:49:  --nc-ref-secondary-50: #73768B;
+task-01-design-system/tokens/generated/nc-tokens.css:50:  --nc-ref-secondary-60: #8C8FA6;
+task-01-design-system/tokens/generated/nc-tokens.css:51:  --nc-ref-secondary-70: #A7AAC1;
+task-01-design-system/tokens/generated/nc-tokens.css:52:  --nc-ref-secondary-80: #C2C5DD;
+task-01-design-system/tokens/generated/nc-tokens.css:53:  --nc-ref-secondary-87: #D6D9F1;
+task-01-design-system/tokens/generated/nc-tokens.css:54:  --nc-ref-secondary-90: #DFE1F9;
+task-01-design-system/tokens/generated/nc-tokens.css:55:  --nc-ref-secondary-92: #E4E7FF;
+task-01-design-system/tokens/generated/nc-tokens.css:56:  --nc-ref-secondary-94: #ECECFF;
+task-01-design-system/tokens/generated/nc-tokens.css:57:  --nc-ref-secondary-95: #EFEFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:58:  --nc-ref-secondary-96: #F3F2FF;
+task-01-design-system/tokens/generated/nc-tokens.css:59:  --nc-ref-secondary-98: #FBF8FF;
+task-01-design-system/tokens/generated/nc-tokens.css:60:  --nc-ref-secondary-99: #FEFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:61:  --nc-ref-secondary-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:62:  --nc-ref-tertiary-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:63:  --nc-ref-tertiary-4: #1D051B;
+task-01-design-system/tokens/generated/nc-tokens.css:64:  --nc-ref-tertiary-6: #230920;
+task-01-design-system/tokens/generated/nc-tokens.css:65:  --nc-ref-tertiary-10: #2C1229;
+task-01-design-system/tokens/generated/nc-tokens.css:66:  --nc-ref-tertiary-12: #31162D;
+task-01-design-system/tokens/generated/nc-tokens.css:67:  --nc-ref-tertiary-17: #3C2038;
+task-01-design-system/tokens/generated/nc-tokens.css:68:  --nc-ref-tertiary-20: #43273F;
+task-01-design-system/tokens/generated/nc-tokens.css:69:  --nc-ref-tertiary-22: #482B43;
+task-01-design-system/tokens/generated/nc-tokens.css:70:  --nc-ref-tertiary-24: #4D2F48;
+task-01-design-system/tokens/generated/nc-tokens.css:71:  --nc-ref-tertiary-30: #5C3D56;
+task-01-design-system/tokens/generated/nc-tokens.css:72:  --nc-ref-tertiary-40: #75546E;
+task-01-design-system/tokens/generated/nc-tokens.css:73:  --nc-ref-tertiary-50: #906C88;
+task-01-design-system/tokens/generated/nc-tokens.css:74:  --nc-ref-tertiary-60: #AB85A2;
+task-01-design-system/tokens/generated/nc-tokens.css:75:  --nc-ref-tertiary-70: #C79FBD;
+task-01-design-system/tokens/generated/nc-tokens.css:76:  --nc-ref-tertiary-80: #E4BAD9;
+task-01-design-system/tokens/generated/nc-tokens.css:77:  --nc-ref-tertiary-87: #F9CDED;
+task-01-design-system/tokens/generated/nc-tokens.css:78:  --nc-ref-tertiary-90: #FFD7F4;
+task-01-design-system/tokens/generated/nc-tokens.css:79:  --nc-ref-tertiary-92: #FFDFF5;
+task-01-design-system/tokens/generated/nc-tokens.css:80:  --nc-ref-tertiary-94: #FFE7F6;
+task-01-design-system/tokens/generated/nc-tokens.css:81:  --nc-ref-tertiary-95: #FFEBF7;
+task-01-design-system/tokens/generated/nc-tokens.css:82:  --nc-ref-tertiary-96: #FFEFF8;
+task-01-design-system/tokens/generated/nc-tokens.css:83:  --nc-ref-tertiary-98: #FFF7F9;
+task-01-design-system/tokens/generated/nc-tokens.css:84:  --nc-ref-tertiary-99: #FFFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:85:  --nc-ref-tertiary-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:86:  --nc-ref-neutral-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:87:  --nc-ref-neutral-4: #0D0E13;
+task-01-design-system/tokens/generated/nc-tokens.css:88:  --nc-ref-neutral-6: #121318;
+task-01-design-system/tokens/generated/nc-tokens.css:89:  --nc-ref-neutral-10: #1B1B21;
+task-01-design-system/tokens/generated/nc-tokens.css:90:  --nc-ref-neutral-12: #1F1F25;
+task-01-design-system/tokens/generated/nc-tokens.css:91:  --nc-ref-neutral-17: #292A2F;
+task-01-design-system/tokens/generated/nc-tokens.css:92:  --nc-ref-neutral-20: #2F3036;
+task-01-design-system/tokens/generated/nc-tokens.css:93:  --nc-ref-neutral-22: #34343A;
+task-01-design-system/tokens/generated/nc-tokens.css:94:  --nc-ref-neutral-24: #38393F;
+task-01-design-system/tokens/generated/nc-tokens.css:95:  --nc-ref-neutral-30: #46464C;
+task-01-design-system/tokens/generated/nc-tokens.css:96:  --nc-ref-neutral-40: #5E5E64;
+task-01-design-system/tokens/generated/nc-tokens.css:97:  --nc-ref-neutral-50: #77767D;
+task-01-design-system/tokens/generated/nc-tokens.css:98:  --nc-ref-neutral-60: #919097;
+task-01-design-system/tokens/generated/nc-tokens.css:99:  --nc-ref-neutral-70: #ABAAB1;
+task-01-design-system/tokens/generated/nc-tokens.css:100:  --nc-ref-neutral-80: #C7C5CD;
+task-01-design-system/tokens/generated/nc-tokens.css:101:  --nc-ref-neutral-87: #DBD9E0;
+task-01-design-system/tokens/generated/nc-tokens.css:102:  --nc-ref-neutral-90: #E3E1E9;
+task-01-design-system/tokens/generated/nc-tokens.css:103:  --nc-ref-neutral-92: #E9E7EF;
+task-01-design-system/tokens/generated/nc-tokens.css:104:  --nc-ref-neutral-94: #EFEDF4;
+task-01-design-system/tokens/generated/nc-tokens.css:105:  --nc-ref-neutral-95: #F2F0F7;
+task-01-design-system/tokens/generated/nc-tokens.css:106:  --nc-ref-neutral-96: #F5F2FA;
+task-01-design-system/tokens/generated/nc-tokens.css:107:  --nc-ref-neutral-98: #FBF8FF;
+task-01-design-system/tokens/generated/nc-tokens.css:108:  --nc-ref-neutral-99: #FEFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:109:  --nc-ref-neutral-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:110:  --nc-ref-neutral-variant-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:111:  --nc-ref-neutral-variant-4: #0C0E15;
+task-01-design-system/tokens/generated/nc-tokens.css:112:  --nc-ref-neutral-variant-6: #12131A;
+task-01-design-system/tokens/generated/nc-tokens.css:113:  --nc-ref-neutral-variant-10: #1A1B23;
+task-01-design-system/tokens/generated/nc-tokens.css:114:  --nc-ref-neutral-variant-12: #1E1F27;
+task-01-design-system/tokens/generated/nc-tokens.css:115:  --nc-ref-neutral-variant-17: #282931;
+task-01-design-system/tokens/generated/nc-tokens.css:116:  --nc-ref-neutral-variant-20: #2F3038;
+task-01-design-system/tokens/generated/nc-tokens.css:117:  --nc-ref-neutral-variant-22: #33343C;
+task-01-design-system/tokens/generated/nc-tokens.css:118:  --nc-ref-neutral-variant-24: #383941;
+task-01-design-system/tokens/generated/nc-tokens.css:119:  --nc-ref-neutral-variant-30: #45464F;
+task-01-design-system/tokens/generated/nc-tokens.css:120:  --nc-ref-neutral-variant-40: #5D5E67;
+task-01-design-system/tokens/generated/nc-tokens.css:121:  --nc-ref-neutral-variant-50: #767680;
+task-01-design-system/tokens/generated/nc-tokens.css:122:  --nc-ref-neutral-variant-60: #90909A;
+task-01-design-system/tokens/generated/nc-tokens.css:123:  --nc-ref-neutral-variant-70: #ABAAB4;
+task-01-design-system/tokens/generated/nc-tokens.css:124:  --nc-ref-neutral-variant-80: #C6C5D0;
+task-01-design-system/tokens/generated/nc-tokens.css:125:  --nc-ref-neutral-variant-87: #DAD9E4;
+task-01-design-system/tokens/generated/nc-tokens.css:126:  --nc-ref-neutral-variant-90: #E2E1EC;
+task-01-design-system/tokens/generated/nc-tokens.css:127:  --nc-ref-neutral-variant-92: #E8E7F2;
+task-01-design-system/tokens/generated/nc-tokens.css:128:  --nc-ref-neutral-variant-94: #EEEDF8;
+task-01-design-system/tokens/generated/nc-tokens.css:129:  --nc-ref-neutral-variant-95: #F1F0FA;
+task-01-design-system/tokens/generated/nc-tokens.css:130:  --nc-ref-neutral-variant-96: #F4F2FD;
+task-01-design-system/tokens/generated/nc-tokens.css:131:  --nc-ref-neutral-variant-98: #FBF8FF;
+task-01-design-system/tokens/generated/nc-tokens.css:132:  --nc-ref-neutral-variant-99: #FEFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:133:  --nc-ref-neutral-variant-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:134:  --nc-ref-error-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:135:  --nc-ref-error-4: #280001;
+task-01-design-system/tokens/generated/nc-tokens.css:136:  --nc-ref-error-6: #310001;
+task-01-design-system/tokens/generated/nc-tokens.css:137:  --nc-ref-error-10: #410002;
+task-01-design-system/tokens/generated/nc-tokens.css:138:  --nc-ref-error-12: #490002;
+task-01-design-system/tokens/generated/nc-tokens.css:139:  --nc-ref-error-17: #5C0004;
+task-01-design-system/tokens/generated/nc-tokens.css:140:  --nc-ref-error-20: #690005;
+task-01-design-system/tokens/generated/nc-tokens.css:141:  --nc-ref-error-22: #710005;
+task-01-design-system/tokens/generated/nc-tokens.css:142:  --nc-ref-error-24: #790006;
+task-01-design-system/tokens/generated/nc-tokens.css:143:  --nc-ref-error-30: #93000A;
+task-01-design-system/tokens/generated/nc-tokens.css:144:  --nc-ref-error-40: #BA1A1A;
+task-01-design-system/tokens/generated/nc-tokens.css:145:  --nc-ref-error-50: #DE3730;
+task-01-design-system/tokens/generated/nc-tokens.css:146:  --nc-ref-error-60: #FF5449;
+task-01-design-system/tokens/generated/nc-tokens.css:147:  --nc-ref-error-70: #FF897D;
+task-01-design-system/tokens/generated/nc-tokens.css:148:  --nc-ref-error-80: #FFB4AB;
+task-01-design-system/tokens/generated/nc-tokens.css:149:  --nc-ref-error-87: #FFCFC9;
+task-01-design-system/tokens/generated/nc-tokens.css:150:  --nc-ref-error-90: #FFDAD6;
+task-01-design-system/tokens/generated/nc-tokens.css:151:  --nc-ref-error-92: #FFE2DE;
+task-01-design-system/tokens/generated/nc-tokens.css:152:  --nc-ref-error-94: #FFE9E6;
+task-01-design-system/tokens/generated/nc-tokens.css:153:  --nc-ref-error-95: #FFEDEA;
+task-01-design-system/tokens/generated/nc-tokens.css:154:  --nc-ref-error-96: #FFF0EE;
+task-01-design-system/tokens/generated/nc-tokens.css:155:  --nc-ref-error-98: #FFF8F7;
+task-01-design-system/tokens/generated/nc-tokens.css:156:  --nc-ref-error-99: #FFFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:157:  --nc-ref-error-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:158:  --nc-ref-success-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:159:  --nc-ref-success-4: #001204;
+task-01-design-system/tokens/generated/nc-tokens.css:160:  --nc-ref-success-6: #001807;
+task-01-design-system/tokens/generated/nc-tokens.css:161:  --nc-ref-success-10: #00210B;
+task-01-design-system/tokens/generated/nc-tokens.css:162:  --nc-ref-success-12: #00260E;
+task-01-design-system/tokens/generated/nc-tokens.css:163:  --nc-ref-success-17: #003214;
+task-01-design-system/tokens/generated/nc-tokens.css:164:  --nc-ref-success-20: #003918;
+task-01-design-system/tokens/generated/nc-tokens.css:165:  --nc-ref-success-22: #003E1B;
+task-01-design-system/tokens/generated/nc-tokens.css:166:  --nc-ref-success-24: #00431E;
+task-01-design-system/tokens/generated/nc-tokens.css:167:  --nc-ref-success-30: #005226;
+task-01-design-system/tokens/generated/nc-tokens.css:168:  --nc-ref-success-40: #1F6C3A;
+task-01-design-system/tokens/generated/nc-tokens.css:169:  --nc-ref-success-50: #3B8551;
+task-01-design-system/tokens/generated/nc-tokens.css:170:  --nc-ref-success-60: #56A068;
+task-01-design-system/tokens/generated/nc-tokens.css:171:  --nc-ref-success-70: #70BB81;
+task-01-design-system/tokens/generated/nc-tokens.css:172:  --nc-ref-success-80: #8BD79B;
+task-01-design-system/tokens/generated/nc-tokens.css:173:  --nc-ref-success-87: #9EECAD;
+task-01-design-system/tokens/generated/nc-tokens.css:174:  --nc-ref-success-90: #A6F4B5;
+task-01-design-system/tokens/generated/nc-tokens.css:175:  --nc-ref-success-92: #ACFABA;
+task-01-design-system/tokens/generated/nc-tokens.css:176:  --nc-ref-success-94: #B5FFC2;
+task-01-design-system/tokens/generated/nc-tokens.css:177:  --nc-ref-success-95: #C4FFCC;
+task-01-design-system/tokens/generated/nc-tokens.css:178:  --nc-ref-success-96: #D2FFD6;
+task-01-design-system/tokens/generated/nc-tokens.css:179:  --nc-ref-success-98: #EAFFE9;
+task-01-design-system/tokens/generated/nc-tokens.css:180:  --nc-ref-success-99: #F5FFF2;
+task-01-design-system/tokens/generated/nc-tokens.css:181:  --nc-ref-success-100: #FFFFFF;
+task-01-design-system/tokens/generated/nc-tokens.css:182:  --nc-ref-warning-0: #000000;
+task-01-design-system/tokens/generated/nc-tokens.css:183:  --nc-ref-warning-4: #1B0A00;
+task-01-design-system/tokens/generated/nc-tokens.css:184:  --nc-ref-warning-6: #230E00;
+task-01-design-system/tokens/generated/nc-tokens.css:185:  --nc-ref-warning-10: #2F1500;
+task-01-design-system/tokens/generated/nc-tokens.css:186:  --nc-ref-warning-12: #341800;
+task-01-design-system/tokens/generated/nc-tokens.css:187:  --nc-ref-warning-17: #442100;
+task-01-design-system/tokens/generated/nc-tokens.css:188:  --nc-ref-warning-20: #4D2600;
+task-01-design-system/tokens/generated/nc-tokens.css:189:  --nc-ref-warning-22: #532A00;
+task-01-design-system/tokens/generated/nc-tokens.css:190:  --nc-ref-warning-24: #5A2E00;
+task-01-design-system/tokens/generated/nc-tokens.css:191:  --nc-ref-warning-30: #6E3900;
+task-01-design-system/tokens/generated/nc-tokens.css:192:  --nc-ref-warning-40: #8C4F14;
+task-01-design-system/tokens/generated/nc-tokens.css:193:  --nc-ref-warning-50: #A9672B;
+task-01-design-system/tokens/generated/nc-tokens.css:194:  --nc-ref-warning-60: #C88042;
+task-01-design-system/tokens/generated/nc-tokens.css:195:  --nc-ref-warning-70: #E69A59;
+task-01-design-system/tokens/generated/nc-tokens.css:196:  --nc-ref-warning-80: #FFB77D;
+task-01-design-system/tokens/generated/nc-tokens.css:197:  --nc-ref-warning-87: #FFD1AF;
+task-01-design-system/tokens/generated/nc-tokens.css:198:  --nc-ref-warning-90: #FFDCC3;
+task-01-design-system/tokens/generated/nc-tokens.css:199:  --nc-ref-warning-92: #FFE3D0;
+task-01-design-system/tokens/generated/nc-tokens.css:200:  --nc-ref-warning-94: #FFEADC;
+task-01-design-system/tokens/generated/nc-tokens.css:201:  --nc-ref-warning-95: #FFEDE3;
+task-01-design-system/tokens/generated/nc-tokens.css:202:  --nc-ref-warning-96: #FFF1E9;
+task-01-design-system/tokens/generated/nc-tokens.css:203:  --nc-ref-warning-98: #FFF8F5;
+task-01-design-system/tokens/generated/nc-tokens.css:204:  --nc-ref-warning-99: #FFFBFF;
+task-01-design-system/tokens/generated/nc-tokens.css:205:  --nc-ref-warning-100: #FFFFFF;
+task-01-design-system/tokens/validate-css.mjs:65:check(/--nc-ref-primary-40: #334DAF;/.test(css), 'primary/40 primitive = #334DAF');
+outputs/screen-without-system/styles.css:9:  background-color: #f3f4f6;
+outputs/screen-without-system/styles.css:10:  color: #111827;
+outputs/screen-without-system/styles.css:24:  background: #ffffff;
+outputs/screen-without-system/styles.css:25:  border: 1px solid #e5e7eb;
+outputs/screen-without-system/styles.css:29:  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+outputs/screen-without-system/styles.css:42:  background: #2563eb;
+outputs/screen-without-system/styles.css:43:  color: #ffffff;
+outputs/screen-without-system/styles.css:54:  color: #111827;
+outputs/screen-without-system/styles.css:59:  color: #6b7280;
+outputs/screen-without-system/styles.css:65:  color: #374151;
+outputs/screen-without-system/styles.css:66:  background: #f3f4f6;
+outputs/screen-without-system/styles.css:80:  color: #2563eb;
+outputs/screen-without-system/styles.css:87:  color: #111827;
+outputs/screen-without-system/styles.css:93:  color: #4b5563;
+outputs/screen-without-system/styles.css:98:  background: #fef3c7;
+outputs/screen-without-system/styles.css:99:  border: 1px solid #f59e0b;
+outputs/screen-without-system/styles.css:100:  color: #92400e;
+outputs/screen-without-system/styles.css:120:  background: #ffffff;
+outputs/screen-without-system/styles.css:121:  border: 1px solid #e5e7eb;
+outputs/screen-without-system/styles.css:124:  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+outputs/screen-without-system/styles.css:137:  color: #111827;
+outputs/screen-without-system/styles.css:143:  background: #dbeafe;
+outputs/screen-without-system/styles.css:144:  color: #1d4ed8;
+outputs/screen-without-system/styles.css:152:  background: #fef3c7;
+outputs/screen-without-system/styles.css:153:  color: #b45309;
+outputs/screen-without-system/styles.css:171:  background: #f9fafb;
+outputs/screen-without-system/styles.css:172:  border: 1px solid #e5e7eb;
+outputs/screen-without-system/styles.css:176:  background: #eff6ff;
+outputs/screen-without-system/styles.css:177:  border-color: #93c5fd;
+outputs/screen-without-system/styles.css:186:  background: #9ca3af;
+outputs/screen-without-system/styles.css:190:  background: #16a34a;
+outputs/screen-without-system/styles.css:194:  background: #2563eb;
+outputs/screen-without-system/styles.css:200:  color: #111827;
+outputs/screen-without-system/styles.css:205:  color: #6b7280;
+outputs/screen-without-system/styles.css:223:  border-bottom: 1px solid #f3f4f6;
+outputs/screen-without-system/styles.css:228:  color: #4b5563;
+outputs/screen-without-system/styles.css:234:  color: #111827;
+outputs/screen-without-system/styles.css:239:  color: #9ca3af !important;
+outputs/screen-without-system/styles.css:243:  color: #b45309 !important;
+outputs/screen-without-system/styles.css:247:  color: #15803d !important;
+outputs/screen-without-system/styles.css:259:  color: #6b7280;
+outputs/screen-without-system/styles.css:269:  background: #2563eb;
+outputs/screen-without-system/styles.css:270:  color: #ffffff;
+outputs/screen-without-system/styles.css:280:  background: #ffffff;
+outputs/screen-without-system/styles.css:281:  color: #374151;
+outputs/screen-without-system/styles.css:282:  border: 1px solid #d1d5db;
+work/m3/generate.mjs:4:const source='#334DAF',h=Hct.fromInt(argbFromHex(source));
+work/m3/generate.mjs:6:const palettes={primary:TonalPalette.fromHueAndChroma(h.hue,h.chroma),secondary:base.secondaryPalette,tertiary:base.tertiaryPalette,neutral:base.neutralPalette,'neutral-variant':base.neutralVariantPalette,error:base.errorPalette,success:TonalPalette.fromInt(argbFromHex('#166534')),warning:TonalPalette.fromInt(argbFromHex('#854A0E'))};
+work/m3/generate.mjs:36:let doc='# Nits Cut — M3 colour mapping\n\nStatus: generated locally. Figma connector quota prevented creation; desktop also displayed a reconnect warning. These are not Figma exports or assessment screenshots.\n\n## Method\n\nGenerated with Google Material Color Utilities 0.3.0, pinned for reproducibility. Uses the M3 Tonal Spot scheme available in that version, not the newer 2026 specification. Primary is adjusted to source hue/chroma and primary/40 is explicitly overridden to the brand hex. Secondary, tertiary, neutral, neutral variant and error derive from the Tonal Spot scheme. Success and warning are custom HCT extensions.\n\nThe source #334DAF has measured HCT tone '+h.tone.toFixed(2)+'. Original generated primary/40 was '+hex(base.primaryPalette.tone(40))+'. Brand-hue/chroma HCT tone 40 is '+hex(palettes.primary.tone(40))+'. Final primary/40 is #334DAF, a documented exception. Do not claim its measured tone equals 40.\n\nThere are '+Object.keys(primitives).length+' primitive variables, '+names.length+' core/compatibility roles and eight extension roles in each mode. '+tones.length+' base tones cover ordinary accent, fixed and surface roles; any additional algorithm-selected tones are retained exactly. Background/on-background/surface-variant are compatibility roles. Outline-variant is a low-emphasis divider, not a text or sole control-boundary colour. Shadow and scrim are black role colours with opacity determined by usage; surface-tint is an overlay role, not body text.\n\n## Role mapping\n\n| Role | Light primitive | Light hex | Dark primitive | Dark hex |\n|---|---|---|---|---|\n';

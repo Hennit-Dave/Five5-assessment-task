@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nit's Cut — Order Tracker</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-badge">NC</span>
+        <div>
+          <p class="brand-name">Nit's Cut</p>
+          <p class="brand-sub">Bespoke Men's Tailoring · Lagos</p>
+        </div>
+      </div>
+      <span class="order-ref">Order #NC-204</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Client Order Portal</p>
+      <h1>Two-Piece Senator Native Wear &amp; Fitted Trousers</h1>
+      <p class="hero-copy">Prepared for Chinedu Okafor. Track your current tailoring stage, agreed fitting and collection dates, and payment balance below.</p>
+    </section>
+
+    <section class="alert-banner" role="status">
+      <strong>Schedule notice:</strong> Collection moved from 31 Oct to 02 Nov 2026 — Workshop power outage delayed final steam pressing and hem finishing.
+    </section>
+
+    <div class="grid">
+      <article class="card">
+        <div class="card-header">
+          <h2>1. What stage is my outfit at?</h2>
+          <span class="status-pill">Being sewn</span>
+        </div>
+        <ol class="stages">
+          <li class="stage done">
+            <span class="stage-dot"></span>
+            <div>
+              <p class="stage-title">Waiting for cut</p>
+              <p class="stage-meta">Completed 24 Oct · Navy cashmere-blend fabric inspected</p>
+            </div>
+          </li>
+          <li class="stage done">
+            <span class="stage-dot"></span>
+            <div>
+              <p class="stage-title">Being cut</p>
+              <p class="stage-meta">Completed 26 Oct · Chest 42 in, Shoulder 18.5 in, Trouser length 41 in</p>
+            </div>
+          </li>
+          <li class="stage current">
+            <span class="stage-dot"></span>
+            <div>
+              <p class="stage-title">Being sewn</p>
+              <p class="stage-meta">In progress · Senator top embroidery complete; trouser waistband joining</p>
+            </div>
+          </li>
+          <li class="stage upcoming">
+            <span class="stage-dot"></span>
+            <div>
+              <p class="stage-title">Ready for collection</p>
+              <p class="stage-meta">Pending final fitting check and pressing</p>
+            </div>
+          </li>
+        </ol>
+      </article>
+
+      <div class="side-stack">
+        <article class="card">
+          <div class="card-header">
+            <h2>2. Fitting &amp; collection dates</h2>
+          </div>
+          <dl class="date-list">
+            <div class="date-row">
+              <dt>First fitting</dt>
+              <dd>Thu, 30 Oct 2026 · 4:00 PM</dd>
+            </div>
+            <div class="date-row">
+              <dt>Original collection</dt>
+              <dd class="struck">Sat, 31 Oct 2026</dd>
+            </div>
+            <div class="date-row">
+              <dt>Updated collection</dt>
+              <dd class="highlight">Mon, 02 Nov 2026 · 12:00 PM</dd>
+            </div>
+          </dl>
+          <p class="footnote">Reason for change: 14-hour mains outage on 28 Oct paused machine sewing and heavy pressing.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <h2>3. Payments &amp; balance</h2>
+            <span class="payment-pill">Part-paid</span>
+          </div>
+          <dl class="amount-list">
+            <div class="amount-row">
+              <dt>Total agreed price</dt>
+              <dd>₦85,000</dd>
+            </div>
+            <div class="amount-row">
+              <dt>Deposit paid (24 Oct · Transfer)</dt>
+              <dd class="paid">− ₦50,000</dd>
+            </div>
+            <div class="amount-row total-due">
+              <dt>Remaining balance due at collection</dt>
+              <dd>₦35,000</dd>
+            </div>
+          </dl>
+          <div class="actions">
+            <button type="button" class="btn-primary">Confirm fitting time</button>
+            <button type="button" class="btn-secondary">View measurement record</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

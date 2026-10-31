@@ -1,0 +1,29 @@
+$ date
+Sat Oct 31 05:49:15 CDT 2026
+$ node -v
+v24.16.0
+$ node task-01-design-system/tokens/build-css.mjs
+Wrote /Users/blk/Developer/Five5 assessment task/task-01-design-system/tokens/generated/nc-tokens.css
+{"primitives":192,"rolesPerMode":57,"lightRoles":57,"darkRoles":57,"typography":15,"shadows":3}
+$ node task-01-design-system/tokens/validate-css.mjs
+PASS  all var() references resolve (192 uses, undefined: [])
+PASS  raw hex confined to --nc-ref-* primitives (192 hex lines, 0 elsewhere)
+PASS  all 114 role declarations (57 Light + 57 Dark) alias a primitive
+PASS  typography classes do not reference primitives
+PASS  coverage {"primitives":192,"rolesPerMode":57,"lightRoles":57,"darkRoles":57,"typography":15,"shadows":3} (expected 192 primitives, 57 light, 57 dark, 15 typography, 3 shadows)
+PASS  draft collections absent from output (comments ignored)
+INFO  role aliases vs docs: Light 57/57, Dark 57/57
+PASS  Light-mode role aliases match documented Light mapping (57/57)
+PASS  Dark-mode role aliases match documented Dark mapping (57/57)
+PASS  Display Large = Cormorant Garamond 600, 57px (3.5625rem) / 79.8px (4.9875rem), -0.5px
+PASS  Body Large = Manrope 400
+PASS  Soft shadow 0/2/8/0 at 10% primary/40
+PASS  Medium shadow 0/6/18/0 at 16% primary/40
+PASS  Hard shadow 0/4/2/0 at 24% primary/40
+PASS  primary/40 primitive = #334DAF
+
+All checks passed
+$ shasum -a 256 task-01-design-system/evidence/06-tokens-complete.json task-01-design-system/evidence/06b-tokens-colour-roles-modes-from-figma-state.json task-01-design-system/tokens/generated/nc-tokens.css
+8c3072de953918a6bdbd4ad86a1e8821e6b54a9e9ddc9f0a6ba3fedd9af92d33  task-01-design-system/evidence/06-tokens-complete.json
+9042051d3dbf89ccbdf77b5eb6a994de60183147f8d657f0a5264d34eab4feab  task-01-design-system/evidence/06b-tokens-colour-roles-modes-from-figma-state.json
+cc5a14df1346b5a936b380d09979de910ab15a25245b0f1370aa33bc9ba25c0b  task-01-design-system/tokens/generated/nc-tokens.css

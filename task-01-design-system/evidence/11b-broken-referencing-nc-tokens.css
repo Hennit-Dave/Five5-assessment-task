@@ -1,0 +1,459 @@
+/* GENERATED FILE — do not edit by hand.
+ * Source: task-01-design-system/evidence/06-tokens-complete.json
+ * Regenerate: node task-01-design-system/tokens/build-css.mjs
+ * Excluded draft collections: nc · primitives, nc · colour roles
+ *
+ * Interface code: use --nc-color-*, --nc-type-*, --nc-shadow-* only.
+ * --nc-ref-* primitives exist so roles can reference them; do not use them in components.
+ *
+ * KNOWN GAP: this export contains only one set of role aliases, which match the
+ * documented Dark-mode mapping. Light-mode role mappings are NOT in the export, so no
+ * Light theme is generated. See task-01-design-system/docs/defects.md.
+ */
+
+/* Primitives (internal) */
+:root {
+  --nc-ref-primary-0: #000000;
+  --nc-ref-primary-4: #001509;
+  --nc-ref-primary-6: #001B0D;
+  --nc-ref-primary-10: #002111;
+  --nc-ref-primary-12: #002614;
+  --nc-ref-primary-17: #00311B;
+  --nc-ref-primary-20: #00391C;
+  --nc-ref-primary-22: #003E1F;
+  --nc-ref-primary-24: #004322;
+  --nc-ref-primary-30: #00522B;
+  --nc-ref-primary-40: #006D3B;
+  --nc-ref-primary-50: #00894C;
+  --nc-ref-primary-60: #28A564;
+  --nc-ref-primary-70: #4BC17C;
+  --nc-ref-primary-80: #6BDD96;
+  --nc-ref-primary-87: #96F7B6;
+  --nc-ref-primary-90: #A6F2BE;
+  --nc-ref-primary-92: #B9F7CB;
+  --nc-ref-primary-94: #CCFBD9;
+  --nc-ref-primary-95: #D6FDE0;
+  --nc-ref-primary-96: #E1FEE8;
+  --nc-ref-primary-98: #F4FFF6;
+  --nc-ref-primary-99: #FAFFFA;
+  --nc-ref-primary-100: #FFFFFF;
+  --nc-ref-secondary-0: #000000;
+  --nc-ref-secondary-4: #090D1E;
+  --nc-ref-secondary-6: #0E1223;
+  --nc-ref-secondary-10: #171B2C;
+  --nc-ref-secondary-12: #1B1F30;
+  --nc-ref-secondary-17: #25293B;
+  --nc-ref-secondary-20: #2C2F42;
+  --nc-ref-secondary-22: #303446;
+  --nc-ref-secondary-24: #35384B;
+  --nc-ref-secondary-30: #424659;
+  --nc-ref-secondary-40: #5A5D72;
+  --nc-ref-secondary-50: #73768B;
+  --nc-ref-secondary-60: #8C8FA6;
+  --nc-ref-secondary-70: #A7AAC1;
+  --nc-ref-secondary-80: #C2C5DD;
+  --nc-ref-secondary-87: #D6D9F1;
+  --nc-ref-secondary-90: #DFE1F9;
+  --nc-ref-secondary-92: #E4E7FF;
+  --nc-ref-secondary-94: #ECECFF;
+  --nc-ref-secondary-95: #EFEFFF;
+  --nc-ref-secondary-96: #F3F2FF;
+  --nc-ref-secondary-98: #FBF8FF;
+  --nc-ref-secondary-99: #FEFBFF;
+  --nc-ref-secondary-100: #FFFFFF;
+  --nc-ref-tertiary-0: #000000;
+  --nc-ref-tertiary-4: #1D051B;
+  --nc-ref-tertiary-6: #230920;
+  --nc-ref-tertiary-10: #2C1229;
+  --nc-ref-tertiary-12: #31162D;
+  --nc-ref-tertiary-17: #3C2038;
+  --nc-ref-tertiary-20: #43273F;
+  --nc-ref-tertiary-22: #482B43;
+  --nc-ref-tertiary-24: #4D2F48;
+  --nc-ref-tertiary-30: #5C3D56;
+  --nc-ref-tertiary-40: #75546E;
+  --nc-ref-tertiary-50: #906C88;
+  --nc-ref-tertiary-60: #AB85A2;
+  --nc-ref-tertiary-70: #C79FBD;
+  --nc-ref-tertiary-80: #E4BAD9;
+  --nc-ref-tertiary-87: #F9CDED;
+  --nc-ref-tertiary-90: #FFD7F4;
+  --nc-ref-tertiary-92: #FFDFF5;
+  --nc-ref-tertiary-94: #FFE7F6;
+  --nc-ref-tertiary-95: #FFEBF7;
+  --nc-ref-tertiary-96: #FFEFF8;
+  --nc-ref-tertiary-98: #FFF7F9;
+  --nc-ref-tertiary-99: #FFFBFF;
+  --nc-ref-tertiary-100: #FFFFFF;
+  --nc-ref-neutral-0: #000000;
+  --nc-ref-neutral-4: #0D0E13;
+  --nc-ref-neutral-6: #121318;
+  --nc-ref-neutral-10: #1B1B21;
+  --nc-ref-neutral-12: #1F1F25;
+  --nc-ref-neutral-17: #292A2F;
+  --nc-ref-neutral-20: #2F3036;
+  --nc-ref-neutral-22: #34343A;
+  --nc-ref-neutral-24: #38393F;
+  --nc-ref-neutral-30: #46464C;
+  --nc-ref-neutral-40: #5E5E64;
+  --nc-ref-neutral-50: #77767D;
+  --nc-ref-neutral-60: #919097;
+  --nc-ref-neutral-70: #ABAAB1;
+  --nc-ref-neutral-80: #C7C5CD;
+  --nc-ref-neutral-87: #DBD9E0;
+  --nc-ref-neutral-90: #E3E1E9;
+  --nc-ref-neutral-92: #E9E7EF;
+  --nc-ref-neutral-94: #EFEDF4;
+  --nc-ref-neutral-95: #F2F0F7;
+  --nc-ref-neutral-96: #F5F2FA;
+  --nc-ref-neutral-98: #FBF8FF;
+  --nc-ref-neutral-99: #FEFBFF;
+  --nc-ref-neutral-100: #FFFFFF;
+  --nc-ref-neutral-variant-0: #000000;
+  --nc-ref-neutral-variant-4: #0C0E15;
+  --nc-ref-neutral-variant-6: #12131A;
+  --nc-ref-neutral-variant-10: #1A1B23;
+  --nc-ref-neutral-variant-12: #1E1F27;
+  --nc-ref-neutral-variant-17: #282931;
+  --nc-ref-neutral-variant-20: #2F3038;
+  --nc-ref-neutral-variant-22: #33343C;
+  --nc-ref-neutral-variant-24: #383941;
+  --nc-ref-neutral-variant-30: #45464F;
+  --nc-ref-neutral-variant-40: #5D5E67;
+  --nc-ref-neutral-variant-50: #767680;
+  --nc-ref-neutral-variant-60: #90909A;
+  --nc-ref-neutral-variant-70: #ABAAB4;
+  --nc-ref-neutral-variant-80: #C6C5D0;
+  --nc-ref-neutral-variant-87: #DAD9E4;
+  --nc-ref-neutral-variant-90: #E2E1EC;
+  --nc-ref-neutral-variant-92: #E8E7F2;
+  --nc-ref-neutral-variant-94: #EEEDF8;
+  --nc-ref-neutral-variant-95: #F1F0FA;
+  --nc-ref-neutral-variant-96: #F4F2FD;
+  --nc-ref-neutral-variant-98: #FBF8FF;
+  --nc-ref-neutral-variant-99: #FEFBFF;
+  --nc-ref-neutral-variant-100: #FFFFFF;
+  --nc-ref-error-0: #000000;
+  --nc-ref-error-4: #280001;
+  --nc-ref-error-6: #310001;
+  --nc-ref-error-10: #410002;
+  --nc-ref-error-12: #490002;
+  --nc-ref-error-17: #5C0004;
+  --nc-ref-error-20: #690005;
+  --nc-ref-error-22: #710005;
+  --nc-ref-error-24: #790006;
+  --nc-ref-error-30: #93000A;
+  --nc-ref-error-40: #BA1A1A;
+  --nc-ref-error-50: #DE3730;
+  --nc-ref-error-60: #FF5449;
+  --nc-ref-error-70: #FF897D;
+  --nc-ref-error-80: #FFB4AB;
+  --nc-ref-error-87: #FFCFC9;
+  --nc-ref-error-90: #FFDAD6;
+  --nc-ref-error-92: #FFE2DE;
+  --nc-ref-error-94: #FFE9E6;
+  --nc-ref-error-95: #FFEDEA;
+  --nc-ref-error-96: #FFF0EE;
+  --nc-ref-error-98: #FFF8F7;
+  --nc-ref-error-99: #FFFBFF;
+  --nc-ref-error-100: #FFFFFF;
+  --nc-ref-success-0: #000000;
+  --nc-ref-success-4: #001204;
+  --nc-ref-success-6: #001807;
+  --nc-ref-success-10: #00210B;
+  --nc-ref-success-12: #00260E;
+  --nc-ref-success-17: #003214;
+  --nc-ref-success-20: #003918;
+  --nc-ref-success-22: #003E1B;
+  --nc-ref-success-24: #00431E;
+  --nc-ref-success-30: #005226;
+  --nc-ref-success-40: #1F6C3A;
+  --nc-ref-success-50: #3B8551;
+  --nc-ref-success-60: #56A068;
+  --nc-ref-success-70: #70BB81;
+  --nc-ref-success-80: #8BD79B;
+  --nc-ref-success-87: #9EECAD;
+  --nc-ref-success-90: #A6F4B5;
+  --nc-ref-success-92: #ACFABA;
+  --nc-ref-success-94: #B5FFC2;
+  --nc-ref-success-95: #C4FFCC;
+  --nc-ref-success-96: #D2FFD6;
+  --nc-ref-success-98: #EAFFE9;
+  --nc-ref-success-99: #F5FFF2;
+  --nc-ref-success-100: #FFFFFF;
+  --nc-ref-warning-0: #000000;
+  --nc-ref-warning-4: #1B0A00;
+  --nc-ref-warning-6: #230E00;
+  --nc-ref-warning-10: #2F1500;
+  --nc-ref-warning-12: #341800;
+  --nc-ref-warning-17: #442100;
+  --nc-ref-warning-20: #4D2600;
+  --nc-ref-warning-22: #532A00;
+  --nc-ref-warning-24: #5A2E00;
+  --nc-ref-warning-30: #6E3900;
+  --nc-ref-warning-40: #8C4F14;
+  --nc-ref-warning-50: #A9672B;
+  --nc-ref-warning-60: #C88042;
+  --nc-ref-warning-70: #E69A59;
+  --nc-ref-warning-80: #FFB77D;
+  --nc-ref-warning-87: #FFD1AF;
+  --nc-ref-warning-90: #FFDCC3;
+  --nc-ref-warning-92: #FFE3D0;
+  --nc-ref-warning-94: #FFEADC;
+  --nc-ref-warning-95: #FFEDE3;
+  --nc-ref-warning-96: #FFF1E9;
+  --nc-ref-warning-98: #FFF8F5;
+  --nc-ref-warning-99: #FFFBFF;
+  --nc-ref-warning-100: #FFFFFF;
+}
+
+/* Colour roles — DARK mode (the only mode present in the export) */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --nc-color-background: var(--nc-ref-neutral-6);
+  --nc-color-on-background: var(--nc-ref-neutral-90);
+  --nc-color-surface: var(--nc-ref-neutral-6);
+  --nc-color-surface-dim: var(--nc-ref-neutral-6);
+  --nc-color-surface-bright: var(--nc-ref-neutral-24);
+  --nc-color-surface-container-lowest: var(--nc-ref-neutral-4);
+  --nc-color-surface-container-low: var(--nc-ref-neutral-10);
+  --nc-color-surface-container: var(--nc-ref-neutral-12);
+  --nc-color-surface-container-high: var(--nc-ref-neutral-17);
+  --nc-color-surface-container-highest: var(--nc-ref-neutral-22);
+  --nc-color-on-surface: var(--nc-ref-neutral-90);
+  --nc-color-surface-variant: var(--nc-ref-neutral-variant-30);
+  --nc-color-on-surface-variant: var(--nc-ref-neutral-variant-80);
+  --nc-color-inverse-surface: var(--nc-ref-neutral-90);
+  --nc-color-inverse-on-surface: var(--nc-ref-neutral-20);
+  --nc-color-outline: var(--nc-ref-neutral-variant-60);
+  --nc-color-outline-variant: var(--nc-ref-neutral-variant-30);
+  --nc-color-shadow: var(--nc-ref-neutral-0);
+  --nc-color-scrim: var(--nc-ref-neutral-0);
+  --nc-color-surface-tint: var(--nc-ref-primary-80);
+  --nc-color-primary: var(--nc-ref-primary-80);
+  --nc-color-on-primary: var(--nc-ref-primary-20);
+  --nc-color-primary-container: #213DA0;
+  --nc-color-on-primary-container: var(--nc-ref-primary-90);
+  --nc-color-inverse-primary: var(--nc-ref-primary-40);
+  --nc-color-secondary: var(--nc-ref-secondary-80);
+  --nc-color-on-secondary: var(--nc-ref-secondary-20);
+  --nc-color-secondary-container: var(--nc-ref-secondary-30);
+  --nc-color-on-secondary-container: var(--nc-ref-secondary-90);
+  --nc-color-tertiary: var(--nc-ref-tertiary-80);
+  --nc-color-on-tertiary: var(--nc-ref-tertiary-20);
+  --nc-color-tertiary-container: var(--nc-ref-tertiary-30);
+  --nc-color-on-tertiary-container: var(--nc-ref-tertiary-90);
+  --nc-color-error: var(--nc-ref-error-80);
+  --nc-color-on-error: var(--nc-ref-error-20);
+  --nc-color-error-container: var(--nc-ref-error-30);
+  --nc-color-on-error-container: var(--nc-ref-error-90);
+  --nc-color-primary-fixed: var(--nc-ref-primary-90);
+  --nc-color-primary-fixed-dim: var(--nc-ref-primary-80);
+  --nc-color-on-primary-fixed: var(--nc-ref-primary-10);
+  --nc-color-on-primary-fixed-variant: var(--nc-ref-primary-30);
+  --nc-color-secondary-fixed: var(--nc-ref-secondary-90);
+  --nc-color-secondary-fixed-dim: var(--nc-ref-secondary-80);
+  --nc-color-on-secondary-fixed: var(--nc-ref-secondary-10);
+  --nc-color-on-secondary-fixed-variant: var(--nc-ref-secondary-30);
+  --nc-color-tertiary-fixed: var(--nc-ref-tertiary-90);
+  --nc-color-tertiary-fixed-dim: var(--nc-ref-tertiary-80);
+  --nc-color-on-tertiary-fixed: var(--nc-ref-tertiary-10);
+  --nc-color-on-tertiary-fixed-variant: var(--nc-ref-tertiary-30);
+  --nc-color-success: var(--nc-ref-success-80);
+  --nc-color-on-success: var(--nc-ref-success-20);
+  --nc-color-success-container: var(--nc-ref-success-30);
+  --nc-color-on-success-container: var(--nc-ref-success-90);
+  --nc-color-warning: var(--nc-ref-warning-80);
+  --nc-color-on-warning: var(--nc-ref-warning-20);
+  --nc-color-warning-container: var(--nc-ref-warning-30);
+  --nc-color-on-warning-container: var(--nc-ref-warning-90);
+}
+
+/* Typography and shadows (theme-independent) */
+:root {
+  --nc-type-display-large-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-display-large-weight: 600;
+  --nc-type-display-large-size: 3.5625rem;
+  --nc-type-display-large-line-height: 4.9875rem;
+  --nc-type-display-large-tracking: -0.5px;
+  --nc-type-display-medium-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-display-medium-weight: 600;
+  --nc-type-display-medium-size: 2.8125rem;
+  --nc-type-display-medium-line-height: 3.9375rem;
+  --nc-type-display-medium-tracking: -0.5px;
+  --nc-type-display-small-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-display-small-weight: 600;
+  --nc-type-display-small-size: 2.25rem;
+  --nc-type-display-small-line-height: 3.15rem;
+  --nc-type-display-small-tracking: -0.5px;
+  --nc-type-headline-large-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-headline-large-weight: 600;
+  --nc-type-headline-large-size: 2rem;
+  --nc-type-headline-large-line-height: 2.8rem;
+  --nc-type-headline-large-tracking: 0px;
+  --nc-type-headline-medium-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-headline-medium-weight: 600;
+  --nc-type-headline-medium-size: 1.75rem;
+  --nc-type-headline-medium-line-height: 2.45rem;
+  --nc-type-headline-medium-tracking: 0px;
+  --nc-type-headline-small-family: "Cormorant Garamond", Georgia, serif;
+  --nc-type-headline-small-weight: 600;
+  --nc-type-headline-small-size: 1.5rem;
+  --nc-type-headline-small-line-height: 2.1rem;
+  --nc-type-headline-small-tracking: 0px;
+  --nc-type-title-large-family: "Manrope", system-ui, sans-serif;
+  --nc-type-title-large-weight: 600;
+  --nc-type-title-large-size: 1.375rem;
+  --nc-type-title-large-line-height: 2.0625rem;
+  --nc-type-title-large-tracking: 0px;
+  --nc-type-title-medium-family: "Manrope", system-ui, sans-serif;
+  --nc-type-title-medium-weight: 600;
+  --nc-type-title-medium-size: 1rem;
+  --nc-type-title-medium-line-height: 1.5rem;
+  --nc-type-title-medium-tracking: 0px;
+  --nc-type-title-small-family: "Manrope", system-ui, sans-serif;
+  --nc-type-title-small-weight: 600;
+  --nc-type-title-small-size: 0.875rem;
+  --nc-type-title-small-line-height: 1.3125rem;
+  --nc-type-title-small-tracking: 0px;
+  --nc-type-body-large-family: "Manrope", system-ui, sans-serif;
+  --nc-type-body-large-weight: 400;
+  --nc-type-body-large-size: 1rem;
+  --nc-type-body-large-line-height: 1.6rem;
+  --nc-type-body-large-tracking: 0px;
+  --nc-type-body-medium-family: "Manrope", system-ui, sans-serif;
+  --nc-type-body-medium-weight: 400;
+  --nc-type-body-medium-size: 0.875rem;
+  --nc-type-body-medium-line-height: 1.4rem;
+  --nc-type-body-medium-tracking: 0px;
+  --nc-type-body-small-family: "Manrope", system-ui, sans-serif;
+  --nc-type-body-small-weight: 400;
+  --nc-type-body-small-size: 0.75rem;
+  --nc-type-body-small-line-height: 1.2rem;
+  --nc-type-body-small-tracking: 0px;
+  --nc-type-label-large-family: "Manrope", system-ui, sans-serif;
+  --nc-type-label-large-weight: 600;
+  --nc-type-label-large-size: 0.875rem;
+  --nc-type-label-large-line-height: 1.225rem;
+  --nc-type-label-large-tracking: 0.2px;
+  --nc-type-label-medium-family: "Manrope", system-ui, sans-serif;
+  --nc-type-label-medium-weight: 600;
+  --nc-type-label-medium-size: 0.75rem;
+  --nc-type-label-medium-line-height: 1.05rem;
+  --nc-type-label-medium-tracking: 0.2px;
+  --nc-type-label-small-family: "Manrope", system-ui, sans-serif;
+  --nc-type-label-small-weight: 600;
+  --nc-type-label-small-size: 0.6875rem;
+  --nc-type-label-small-line-height: 0.9625rem;
+  --nc-type-label-small-tracking: 0.2px;
+  --nc-shadow-soft: 0px 2px 8px 0px color-mix(in srgb, var(--nc-ref-primary-40) 10%, transparent);
+  --nc-shadow-medium: 0px 6px 18px 0px color-mix(in srgb, var(--nc-ref-primary-40) 16%, transparent);
+  --nc-shadow-hard: 0px 4px 2px 0px color-mix(in srgb, var(--nc-ref-primary-40) 24%, transparent);
+}
+
+/* Typography classes — reference tokens only, no colour */
+.nc-type-display-large {
+  font-family: var(--nc-type-display-large-family);
+  font-weight: var(--nc-type-display-large-weight);
+  font-size: var(--nc-type-display-large-size);
+  line-height: var(--nc-type-display-large-line-height);
+  letter-spacing: var(--nc-type-display-large-tracking);
+}
+.nc-type-display-medium {
+  font-family: var(--nc-type-display-medium-family);
+  font-weight: var(--nc-type-display-medium-weight);
+  font-size: var(--nc-type-display-medium-size);
+  line-height: var(--nc-type-display-medium-line-height);
+  letter-spacing: var(--nc-type-display-medium-tracking);
+}
+.nc-type-display-small {
+  font-family: var(--nc-type-display-small-family);
+  font-weight: var(--nc-type-display-small-weight);
+  font-size: var(--nc-type-display-small-size);
+  line-height: var(--nc-type-display-small-line-height);
+  letter-spacing: var(--nc-type-display-small-tracking);
+}
+.nc-type-headline-large {
+  font-family: var(--nc-type-headline-large-family);
+  font-weight: var(--nc-type-headline-large-weight);
+  font-size: var(--nc-type-headline-large-size);
+  line-height: var(--nc-type-headline-large-line-height);
+  letter-spacing: var(--nc-type-headline-large-tracking);
+}
+.nc-type-headline-medium {
+  font-family: var(--nc-type-headline-medium-family);
+  font-weight: var(--nc-type-headline-medium-weight);
+  font-size: var(--nc-type-headline-medium-size);
+  line-height: var(--nc-type-headline-medium-line-height);
+  letter-spacing: var(--nc-type-headline-medium-tracking);
+}
+.nc-type-headline-small {
+  font-family: var(--nc-type-headline-small-family);
+  font-weight: var(--nc-type-headline-small-weight);
+  font-size: var(--nc-type-headline-small-size);
+  line-height: var(--nc-type-headline-small-line-height);
+  letter-spacing: var(--nc-type-headline-small-tracking);
+}
+.nc-type-title-large {
+  font-family: var(--nc-type-title-large-family);
+  font-weight: var(--nc-type-title-large-weight);
+  font-size: var(--nc-type-title-large-size);
+  line-height: var(--nc-type-title-large-line-height);
+  letter-spacing: var(--nc-type-title-large-tracking);
+}
+.nc-type-title-medium {
+  font-family: var(--nc-type-title-medium-family);
+  font-weight: var(--nc-type-title-medium-weight);
+  font-size: var(--nc-type-title-medium-size);
+  line-height: var(--nc-type-title-medium-line-height);
+  letter-spacing: var(--nc-type-title-medium-tracking);
+}
+.nc-type-title-small {
+  font-family: var(--nc-type-title-small-family);
+  font-weight: var(--nc-type-title-small-weight);
+  font-size: var(--nc-type-title-small-size);
+  line-height: var(--nc-type-title-small-line-height);
+  letter-spacing: var(--nc-type-title-small-tracking);
+}
+.nc-type-body-large {
+  font-family: var(--nc-type-body-large-family);
+  font-weight: var(--nc-type-body-large-weight);
+  font-size: var(--nc-type-body-large-size);
+  line-height: var(--nc-type-body-large-line-height);
+  letter-spacing: var(--nc-type-body-large-tracking);
+}
+.nc-type-body-medium {
+  font-family: var(--nc-type-body-medium-family);
+  font-weight: var(--nc-type-body-medium-weight);
+  font-size: var(--nc-type-body-medium-size);
+  line-height: var(--nc-type-body-medium-line-height);
+  letter-spacing: var(--nc-type-body-medium-tracking);
+}
+.nc-type-body-small {
+  font-family: var(--nc-type-body-small-family);
+  font-weight: var(--nc-type-body-small-weight);
+  font-size: var(--nc-type-body-small-size);
+  line-height: var(--nc-type-body-small-line-height);
+  letter-spacing: var(--nc-type-body-small-tracking);
+}
+.nc-type-label-large {
+  font-family: var(--nc-type-label-large-family);
+  font-weight: var(--nc-type-label-large-weight);
+  font-size: var(--nc-type-label-large-size);
+  line-height: var(--nc-type-label-large-line-height);
+  letter-spacing: var(--nc-type-label-large-tracking);
+}
+.nc-type-label-medium {
+  font-family: var(--nc-type-label-medium-family);
+  font-weight: var(--nc-type-label-medium-weight);
+  font-size: var(--nc-type-label-medium-size);
+  line-height: var(--nc-type-label-medium-line-height);
+  letter-spacing: var(--nc-type-label-medium-tracking);
+}
+.nc-type-label-small {
+  font-family: var(--nc-type-label-small-family);
+  font-weight: var(--nc-type-label-small-weight);
+  font-size: var(--nc-type-label-small-size);
+  line-height: var(--nc-type-label-small-line-height);
+  letter-spacing: var(--nc-type-label-small-tracking);
+}
