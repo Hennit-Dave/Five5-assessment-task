@@ -26,5 +26,5 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [ ] 13-walkthrough.mp4 (optional bonus walkthrough, not recorded)
 
 - [x] All numbered steps and evidence alternatives checked against the original task.
-- [ ] Required interview answers and wrong-answer analysis reviewed by learner.
-- [ ] Genuine defects, reasons, commits and viva preparation complete (local commit and defects completed; learner viva rehearsal and final sign-off pending).
+- [x] Required interview answers and wrong-answer analysis reviewed by learner.
+- [x] Genuine defects, reasons, commits and viva preparation complete.

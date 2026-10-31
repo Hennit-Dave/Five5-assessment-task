@@ -69,3 +69,8 @@ Observed result: All 15 CSS validation checks pass (`exit=0`); `0` raw colours a
 Requirement: Correct `"Thu, 30 Oct 2026"` to `"Fri, 30 Oct 2026"` in both demonstration screens while preserving historical evidence; revise Interview Answer 11 without presenting `$extensions.modes.*` as a required official standard; update `docs/interview-and-defects-study-guide.md` and `docs/evidence-index.md`; re-verify tokens and screenshots; and commit locally on `main`.
 Decision and reason: Preserved `09a-screen-without-system-before-date-fix.png` (`7b7d4de6…`), updated `screen/index.html` and `outputs/screen-without-system/index.html` to `"Fri, 30 Oct 2026 · 4:00 PM"`, refreshed `09`, `10`, `10c`, `10d`, and `step7-font-loading-verification.txt` via `tokens/capture-and-verify-screen.mjs`, simplified Answer 11 in `docs/interview-answers.md` (`175` words), and updated `docs/interview-and-defects-study-guide.md`, `docs/evidence-index.md`, and `docs/defects.md` (keeping `D3` and `D7` clearly marked as open limitations).
 Observed result: `validate-css.mjs` passes `15/15` checks (`exit=0`); all 12 interview answers are `134`–`182` words; refreshed screenshots and SHA-256 hashes verified and committed locally on `main`.
+
+## Learner review sign-off on interview answers and viva preparation — 2026-10-31
+Requirement: Learner explicitly reviewed and confirmed the required interview answers, wrong-answer analysis, genuine defects, and viva preparation.
+Decision and reason: Marked both review gates complete (`[x]`) in `docs/deliverables-checklist.md` following learner confirmation, keeping the optional bonus walkthrough (`13-walkthrough.mp4`) as unrecorded.
+Observed result: `deliverables-checklist.md` and `PROGRESS.md` updated.

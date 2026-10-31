@@ -1,6 +1,6 @@
 # Five5 progress
 
-Updated 2026-10-31. Active task: Task 1 — all mandatory technical work, Light/Dark token generation, `D8` specificity fix, desktop/mobile rendering verification, codebase-wide raw-colour audit, documentation reconciliation, and local Git commit completed. Remaining learner actions: learner review/rehearsal of `docs/interview-answers.md` and optional bonus walkthrough (`13-walkthrough.mp4`). Tasks 2–5: not started.
+Updated 2026-10-31. Active task: Task 1 — all mandatory technical work, Light/Dark token generation, `D8` specificity fix, desktop/mobile rendering verification, codebase-wide raw-colour audit, documentation reconciliation, learner interview review, and local Git commits completed. Optional learner action: bonus walkthrough (`13-walkthrough.mp4`, unrecorded). Tasks 2–5: not started.
 
 ## Confirmed work
 - Fictional men's tailoring business Nit's Cut; observed missed deadlines during training (power outages and single-tailor overload), not a verified interview.
@@ -13,10 +13,9 @@ Updated 2026-10-31. Active task: Task 1 — all mandatory technical work, Light/
 - Completed `task-01-design-system/docs/interview-answers.md` (all 12 interview defence questions answered using Nit's Cut's actual figures and defects, verified at `134`–`182` words each, under the 200-word limit) and `task-01-design-system/README.md` (4-minute technical interviewer summary).
 
 ## Next action
-Learner review and spoken practice of `task-01-design-system/docs/interview-answers.md` and `task-01-design-system/README.md`, and optional recording of `13-walkthrough.mp4` if desired.
+Optional recording of `13-walkthrough.mp4` if desired, or proceed to Task 2.
 
 ## Outstanding Task 1 work
-- Learner review and spoken defence rehearsal of `docs/interview-answers.md` (left unchecked on `docs/deliverables-checklist.md` until learner confirms).
 - Optional bonus video walkthrough (`evidence/13-walkthrough.mp4`, not recorded).
 - Documented technical limitations in `docs/defects.md`: `D3` (shadow `color-mix()` assumes `primary/40` and modern browser support) and `D7` (`Manrope` lacks `U+20A6` `₦` glyph, falling back to system sans-serif for that 1 character).
 
