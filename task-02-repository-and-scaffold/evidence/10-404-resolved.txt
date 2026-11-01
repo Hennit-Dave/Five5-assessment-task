@@ -1,0 +1,62 @@
+# Recovery 3: 404 and Blank Page Diagnostic & Resolution
+Evidence File: evidence/10-404-resolved.txt
+Diagnostic Timestamp: 2026-10-31T17:41:01.162Z
+
+---
+
+## What was checked, in order, before asking for help:
+
+1. **Checked Express Route Registry in Source Code:**
+   - Inspected `app/src/server.js` lines 28–34 to verify all registered route handlers.
+   - Observation: Only `app.get('/', ...)` is registered. There is no route registered for `/orders/:id/download-receipt`.
+
+2. **Checked HTTP Request Method, URL Path, and Case Sensitivity:**
+   - Verified that the client requested `GET /orders/NC-204/download-receipt`.
+   - Confirmed no trailing slash mismatch, port mismatch, or method typo (e.g. POST vs GET). The route simply does not exist in the routing table.
+
+3. **Checked Scope Boundaries and Task 2 Requirements:**
+   - Reviewed `task-02-repository-and-scaffold/docs/decision-log.md` and `evidence/01-agent-plan.txt`.
+   - Confirmed: Under Step 1 & 2 requirements, the application scaffold is intentionally restricted to project setup and a minimal home screen. Receipt downloads and order lookup features are product features deferred to later steps.
+
+4. **Checked Error Handling and Fallback Middleware:**
+   - Inspected `app/src/server.js` lines 36–43 to verify how unmatched routes are caught:
+     ```javascript
+     app.use((req, res) => {
+       res.status(404).render('home', {
+         pageTitle: "Page Not Found — Nit's Cut",
+         theme: 'dark',
+         errorMessage: `Route ${req.originalUrl} was not found on this server.`
+       });
+     });
+     ```
+   - Inspected `app/views/home.ejs` lines 5–14 to check if the error was presented cleanly:
+     - Instead of crashing the Node process or returning an unstyled white browser error / blank screen, the server correctly returned an HTTP `404` status code with a tokenized alert card:
+       `<section class="card" role="alert">`
+       `<h1 class="card-title nc-type-headline-medium">404 · Page Not Found</h1>`
+       `<span class="badge badge-error nc-type-label-medium">Route Unrecognized</span>`
+       `<p class="card-desc nc-type-body-large">Route /orders/NC-204/download-receipt was not found on this server.</p>`
+       `<a href="/" ...>portal home</a>`
+
+5. **Checked Resolution, Clean Navigation, and Demonstrated Recovery:**
+   - For an accidental link or typo, clicking the provided link back to `/` successfully returns the user to the portal home screen with HTTP 200.
+   - For intentional feature implementation in future phases, the resolution is to register the missing endpoint in `src/server.js`:
+     ```javascript
+     app.get('/orders/:id/download-receipt', (req, res) => {
+       res.render('receipt', { orderId: req.params.id });
+     });
+     ```
+   - Verified that the diagnostic sequence identified the missing route cleanly without requiring an uninformed agent prompt.
+
+---
+
+## 6. Demonstrated Recovery Terminal Log:
+
+```text
+# Step 1: Navigating back to the verified portal home route
+$ curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)\n" http://127.0.0.1:3000/
+HTTP 200 (0.003920s)
+
+# Server log confirming recovery from 404 state to clean 200 rendering:
+[2026-10-31T17:41:01.057Z] GET /orders/NC-204/download-receipt 404 (6ms)
+[2026-10-31T17:41:01.210Z] GET / 200 (4ms)
+```

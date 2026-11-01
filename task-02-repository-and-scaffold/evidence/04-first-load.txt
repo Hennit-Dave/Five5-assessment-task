@@ -1,0 +1,24 @@
+HTTP First Page Load Diagnostic
+Captured: 2026-10-31T17:37:59.883Z
+Target URL: http://127.0.0.1:3000/
+
+Initial Request (Cold First Load):
+- HTTP Status: 200 OK
+- Client-Measured Elapsed Time: 25.25 ms
+- Response Content-Type: text/html; charset=utf-8
+- Response Content-Length: 3596 bytes
+- Server Request Log:
+  [2026-10-31T17:37:59.677Z] GET / 200 (6ms)
+
+Subsequent Request (Reload):
+- HTTP Status: 200 OK
+- Client-Measured Elapsed Time: 2.47 ms
+- Response Content-Length: 3596 bytes
+- Server Request Log:
+  [2026-10-31T17:37:59.782Z] GET / 200 (1ms)
+
+Full Server Console Output During Session:
+[Nit's Cut Server] Process 48216 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000
+[2026-10-31T17:37:59.677Z] GET / 200 (6ms)
+[2026-10-31T17:37:59.782Z] GET / 200 (1ms)

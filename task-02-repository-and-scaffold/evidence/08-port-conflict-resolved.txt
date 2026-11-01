@@ -1,0 +1,15 @@
+Port Conflict Diagnostic & Clean Recovery
+Date: 2026-10-31T17:40:17.146Z
+
+1. Identify the process ID holding port 3000:
+$ lsof -i :3000
+COMMAND   PID USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    48446  blk   12u  IPv6 0xec441f4ff0aaec00      0t0  TCP *:hbci (LISTEN)
+
+2. Terminate the blocking process:
+$ kill 48446
+
+3. Restart the server cleanly on port 3000:
+$ cd app && node src/server.js
+[Nit's Cut Server] Process 48457 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000

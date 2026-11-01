@@ -1,0 +1,61 @@
+# Agent Scaffolding Plan (evidence/01-agent-plan.txt)
+Generated: 2026-10-31T12:15:00Z
+Status: APPROVED BY LEARNER — EXECUTING SCAFFOLD
+
+---
+
+## 1. Summary of Understanding
+
+- **Business & User Context:**
+  Nit's Cut is a fictional Nigerian bespoke men's tailoring business making native wear, trousers, and shirts. It serves everyday mobile web users (ages 16+) on Nigerian mobile networks where connectivity can be unstable. The application's core job is providing dependable visibility into garment order stages, revised fitting/collection dates, and recorded payments.
+  
+- **Task 2 Scope Boundary (Strictly Minimal):**
+  We are building ONLY the project setup and a minimal home screen inside a dedicated `app/` folder. We are NOT building database schemas, tables, authentication, booking flows, or the full tailoring product at this step. The database (SQLite via `better-sqlite3` with raw SQL prepared statements and versioned migrations) and database-writing form are deliberately deferred to Step 6 of Task 2.
+
+- **Design System Integration:**
+  The scaffold must consume the Task 1 tokens (`nc-tokens.css`: colours, typography, shadows) and the Task 2 layout tokens (`nc-layout-tokens.css`: spacing, radii, layout max-widths). All UI elements must use semantic colour roles (`--nc-color-*`), typography styles (`--nc-type-*`), and layout tokens (`--nc-space-*`, `--nc-radius-*`). No hardcoded styling values (raw hex, arbitrary rem/px margins or paddings) are allowed in component styles.
+
+---
+
+## 2. Proposed Files to Create Inside `app/`
+
+| Path | Purpose |
+|---|---|
+| `app/package.json` | Node.js project manifest defining metadata, dependencies (`express`, `ejs`), and scripts (`"start": "node src/server.js"`, `"dev": "node --watch src/server.js"`). Configured for ESM or standard Node.js. |
+| `app/src/server.js` | Express web server configuring port (defaults to `3000` via `process.env.PORT`), static asset serving (`/public`), EJS view engine setup, route handling, startup terminal logging with PID, and 404/500 handlers. |
+| `app/public/css/nc-tokens.css` | Copy of the validated Task 1 CSS tokens (`192` primitives, `57` Light roles, `57` Dark roles, `15` typography styles, `3` brand shadows). |
+| `app/public/css/nc-layout-tokens.css` | Copy of the Task 2 layout tokens defining rem spacing scales, component-specific padding/gap tokens, border radii, and content max-widths. |
+| `app/public/css/fonts.css` | Self-hosted `@font-face` definitions pointing to local `.woff2` font files. |
+| `app/public/fonts/` | Local bundled font files from Task 1 (`cormorant-garamond-600-latin.woff2`, `manrope-400-600-latin.woff2`, and `latin-ext` subsets) ensuring zero runtime Google CDN requests. |
+| `app/public/css/app.css` | Minimal application stylesheet binding HTML tags to tokens (page container max-width, semantic colours, typography tokens). |
+| `app/views/partials/head.ejs` | Reusable HTML `<head>` partial with meta tags, responsive viewport, page title variable, and stylesheet `<link>` tags. |
+| `app/views/partials/header.ejs` | Reusable header displaying the "NC" brand badge, "Nit's Cut" name, and bespoke tailoring tagline. |
+| `app/views/partials/footer.ejs` | Minimal semantic footer with brand and status note. |
+| `app/views/home.ejs` | Minimal server-rendered home view introducing the bespoke tailoring client portal, showcasing brand typography and semantic card layout without unapproved product workflows. |
+
+---
+
+## 3. Stated Assumptions & Verifications
+
+1. **Node.js Environment:**
+   - *Assumption:* The host machine has a modern Node.js runtime supporting `--watch` and standard Express 4/5.
+   - *What was checked:* `node -v` previously reported `v24.16.0`, which fully supports Node.js `--watch` and modern ES/CommonJS features without needing external dev-dependencies like `nodemon`.
+2. **Database Deferral:**
+   - *Assumption:* `better-sqlite3` does not need to be installed or initialized in `package.json` during this initial scaffold step.
+   - *Reasoning:* Step 1 and Step 2 of Task 2 explicitly restrict the initial scaffold to project setup and a minimal home screen. Adding the database and its dependencies in Step 6 provides a clean commit and clear evidence progression.
+3. **Static File Hosting:**
+   - *Assumption:* Bundling the static CSS tokens and fonts into `app/public/` is cleaner and more robust than mounting directories outside `app/` via Express static routes, as it makes `app/` self-contained and reproducible on any machine.
+4. **Theme Mode:**
+   - *Assumption:* The minimal home screen defaults to Dark mode (`data-theme="dark"` on `<html>`), consistent with the Task 1 primary presentation, while maintaining full token compatibility with Light mode (`data-theme="light"`).
+5. **Port Configuration:**
+   - *Assumption:* Port `3000` is the default port, but `process.env.PORT` is respected so that Step 5's deliberate port conflict experiment can easily override or conflict with this port.
+
+---
+
+## 4. Planned Verification Steps (Upon Approval)
+
+1. Check that `npm install` inside `app/` succeeds cleanly without peer dependency conflicts.
+2. Start the Express server (`npm start` or `node src/server.js`) and record PID, port, and startup logs.
+3. Perform an HTTP request (`curl -I http://localhost:3000/`) and verify HTTP `200 OK`.
+4. Inspect the rendered HTML to verify zero hardcoded colour hexes or un-tokenized styling rules.
+5. Generate `task-02-repository-and-scaffold/evidence/02-files-created.txt` logging every created file.

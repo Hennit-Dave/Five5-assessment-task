@@ -1,0 +1,29 @@
+Deliberate Database Failure Diagnostic (Broken Connection)
+Date: 2026-11-01T08:09:31.684Z
+Target: POST http://127.0.0.1:3000/inquiries
+Environment Override: DATABASE_PATH="/dev/null/broken_directory/nits_cut.db"
+
+Request Diagnostic:
+- Attempted Form Payload:
+  clientName: "Ibrahim Danladi"
+  phone: "+234 809 111 2233"
+  garmentType: "Traditional Three-Piece Agbada"
+  fabricChoice: "Gold Guinea Brocade"
+  fittingDate: "2026-11-15"
+
+Observed Response:
+- HTTP Status: 500 Internal Server Error
+- Client-Measured Elapsed Time: 31.04 ms
+- Content-Type: text/html; charset=utf-8
+
+Terminal Server Output (Including Database Exception Trace):
+[Nit's Cut Server] Process 57614 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000
+[Database Failure] 500 Internal Server Error: Failed to write to inquiries table: ENOTDIR: not a directory, mkdir '/dev/null/broken_directory'
+[2026-11-01T08:09:31.479Z] POST /inquiries 500 (6ms)
+
+Interface Presentation:
+- The server returned an explicit HTTP 500 Internal Server Error status code.
+- The UI presented an error alert card: "Status Notification · Error Occurred" and informed the user:
+  "Database write operation failed: ENOTDIR: not a directory, mkdir '/dev/null/broken_directory'. Your record was NOT stored."
+- Crucially, zero records were written to disk, and the user was NOT falsely told that their order inquiry was recorded.

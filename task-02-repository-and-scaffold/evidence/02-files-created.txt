@@ -1,0 +1,55 @@
+# Created Files Record (evidence/02-files-created.txt)
+Generated: 2026-10-31T17:20:00Z
+Task: Task 2 — Step 2 Scaffolding Execution
+Execution Status: Successfully executed following explicit approval of evidence/01-agent-plan.txt
+
+---
+
+## 1. Inventory of Created Files
+
+| File Path | Type | Purpose | Verification Status |
+|---|---|---|---|
+| `app/package.json` | Configuration | Defines the Node.js project manifest, dependencies (`express`, `ejs`), scripts (`start`, `dev` with `--watch`), and `"type": "module"`. | Verified: JSON valid, installed dependencies cleanly. |
+| `app/package-lock.json` | Lockfile | Deterministic lockfile tracking exact npm dependency trees (Express 4.21.2, EJS 3.1.10). | Verified: 77 packages audited, clean install. |
+| `app/src/server.js` | Server Application | Express entry point configuring dynamic PORT (default 3000), static middleware (`/public`), EJS view engine, request logger with timing, minimal home route (`GET /`), and clean 404 handler. | Verified: Started on port 3000 (PID 47355), returned HTTP 200 on `/`, HTTP 404 on invalid routes. |
+| `app/public/css/nc-tokens.css` | Design System | Bundled copy of Task 1 generated CSS tokens (192 primitives, 57 Light roles, 57 Dark roles, 15 typography styles, 3 shadows). | Verified: Served statically at `/css/nc-tokens.css` with HTTP 200. |
+| `app/public/css/nc-layout-tokens.css` | Design System | Bundled copy of Task 2 hand-authored layout tokens (spacing scale, component padding, radii, content max-widths). | Verified: Served statically at `/css/nc-layout-tokens.css` with HTTP 200. |
+| `app/public/css/fonts.css` | Typography | Self-hosted `@font-face` definitions pointing to local relative font files in `../fonts/`. | Verified: Served statically at `/css/fonts.css` with HTTP 200. |
+| `app/public/fonts/cormorant-garamond-600-latin.woff2` | Web Font Asset | Cormorant Garamond Semibold (600) Latin subset font file. | Verified: Served statically with HTTP 200. |
+| `app/public/fonts/cormorant-garamond-600-latin-ext.woff2` | Web Font Asset | Cormorant Garamond Semibold (600) Latin-ext subset font file. | Verified: Local asset bundle confirmed. |
+| `app/public/fonts/manrope-400-600-latin.woff2` | Web Font Asset | Manrope Regular & Semibold Latin subset font file. | Verified: Local asset bundle confirmed. |
+| `app/public/fonts/manrope-400-600-latin-ext.woff2` | Web Font Asset | Manrope Regular & Semibold Latin-ext subset font file. | Verified: Local asset bundle confirmed. |
+| `app/public/css/app.css` | Stylesheet | Component and layout stylesheet strictly consuming semantic design tokens (`var(--nc-color-*)`, `var(--nc-space-*)`, `var(--nc-radius-*)`). Zero raw hexes, zero hardcoded pixel spacing. | Verified: grep check confirmed 0 hex codes and 0 raw pixel values. Served statically with HTTP 200. |
+| `app/views/partials/head.ejs` | View Partial | Reusable HTML head partial establishing viewport meta, dynamic page title, and link tags for fonts and token stylesheets. | Verified: Correctly rendered in root HTML output. |
+| `app/views/partials/header.ejs` | View Partial | Reusable brand header featuring Nit's Cut "NC" badge, brand name, bespoke tailoring subtitle, and portal status badge. | Verified: Correctly rendered in root HTML output. |
+| `app/views/partials/footer.ejs` | View Partial | Reusable footer noting workshop services, server-rendered Node.js/Express architecture, and closing body/html tags. | Verified: Correctly rendered in root HTML output. |
+| `app/views/home.ejs` | View Template | Minimal server-rendered home view introducing Nit's Cut client portal foundation, architecture notes, and conditional 404 alert card. | Verified: Correctly evaluated by EJS and served at `/` and `/unrecognized-test-route`. |
+
+---
+
+## 2. Stated Assumptions & Verifications
+
+1. **Architecture & Scope Assumption:**
+   - *Assumption:* Building strictly the minimal scaffold (Express, EJS, tokens, home view) without database tables, authentication, or product booking workflows at this stage adheres to assessment requirement 6.
+   - *Verification:* Verified against `assessment-requirements.txt` Step 1 point 6 ("Build only the project setup and a minimal home screen. Not the product.") and Step 6 where database persistence is formally introduced.
+2. **Local Font Hosting Assumption:**
+   - *Assumption:* Bundling font files directly into `app/public/fonts/` ensures zero reliance on external Google Fonts CDNs, protecting client privacy and resilience on slower Nigerian mobile network connections.
+   - *Verification:* Verified HTTP 200 responses directly from `http://127.0.0.1:3000/fonts/cormorant-garamond-600-latin.woff2`.
+3. **Token Usage Rigor:**
+   - *Assumption:* No raw CSS colors or pixel dimensions should exist in component code; all values must map to `nc-tokens.css` or `nc-layout-tokens.css`.
+   - *Verification:* Automated scan with `grep -E "#[0-9a-fA-F]{3,8}" app/public/css/app.css` yielded zero occurrences. Automated scan for un-tokenized px dimensions yielded zero occurrences.
+
+---
+
+## 3. Actual Diagnostics & Checks Performed
+
+1. **Dependency Installation:**
+   - Executed `npm install` inside `app/`. Installed `express@4.21.2` and `ejs@3.1.10` (77 total audited packages).
+2. **Endpoint Smoke Tests:**
+   - `GET /` -> HTTP 200 OK (3,592 bytes rendered HTML; contains "Nit's Cut", links to `/css/nc-tokens.css`).
+   - `GET /unrecognized-test-route` -> HTTP 404 Not Found (renders 404 alert card with message).
+   - `GET /css/nc-tokens.css` -> HTTP 200 OK.
+   - `GET /css/nc-layout-tokens.css` -> HTTP 200 OK.
+   - `GET /css/app.css` -> HTTP 200 OK.
+   - `GET /fonts/cormorant-garamond-600-latin.woff2` -> HTTP 200 OK.
+

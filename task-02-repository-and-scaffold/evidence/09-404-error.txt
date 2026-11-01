@@ -1,0 +1,36 @@
+HTTP 404 Error Capture
+Request Timestamp: 2026-10-31T17:41:01.032Z
+Method & Target URL: GET http://127.0.0.1:3000/orders/NC-204/download-receipt
+
+Response Diagnostic:
+- HTTP Status: 404 Not Found
+- Client Response Time: 26.41 ms
+- Content-Type: text/html; charset=utf-8
+- Content-Length: 1841 bytes
+
+Server Console Log:
+[Nit's Cut Server] Process 48516 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000
+[2026-10-31T17:41:01.057Z] GET /orders/NC-204/download-receipt 404 (6ms)
+
+Rendered Response Snippet (First 20 lines):
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Nit&#39;s Cut</title>
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/nc-tokens.css">
+  <link rel="stylesheet" href="/css/nc-layout-tokens.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="page">
+
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-badge nc-type-title-medium" aria-hidden="true">NC</span>
+        <div class="brand-info">
+          <p class="brand-name nc-type-title-medium">Nit's Cut</p>

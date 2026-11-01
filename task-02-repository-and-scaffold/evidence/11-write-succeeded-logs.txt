@@ -1,0 +1,46 @@
+Database Form Submission Diagnostic (Write 1)
+Timestamp: 2026-10-31T17:48:44.092Z
+Target: POST http://127.0.0.1:3000/inquiries
+HTTP Status Code: 201 Created
+Client Round-Trip Duration: 378.12 ms
+
+Form Payload:
+clientName: "Chinedu Okafor"
+phone: "+234 802 345 6789"
+garmentType: "Two-Piece Senator Native Wear"
+fabricChoice: "Navy Cashmere-Blend"
+fittingDate: "2026-11-06"
+
+Status Code Analysis:
+- Status Code: 201 Created
+- Meaning: HTTP 201 Created indicates that the request succeeded and a new database resource was created. Unlike an ambiguous 200 OK (which might simply acknowledge receiving input without saving it) or an unverified 302/303 redirect, 201 explicitly signifies that the database INSERT transaction committed successfully.
+
+Terminal Log Output (Server Console):
+[Nit's Cut Server] Process 48936 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000
+[Database] Connecting to SQLite database at: /Users/blk/Developer/Five5 assessment task/app/data/nits_cut.db
+[SQL] PRAGMA journal_mode = WAL
+[Database] Running migration: 001-initial-schema.sql
+[SQL] -- Migration 001: Initial schema for Nit's Cut Client Inquiries
+-- Author: Learner (Nit's Cut Order Portal)
+-- Database: SQLite
+
+CREATE TABLE IF NOT EXISTS inquiries (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  client_name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  garment_type TEXT NOT NULL,
+  fabric_choice TEXT NOT NULL,
+  fitting_date TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Inquiry Received',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+[SQL] CREATE INDEX IF NOT EXISTS idx_inquiries_created_at ON inquiries(created_at);
+[SQL] 
+    INSERT INTO inquiries (client_name, phone, garment_type, fabric_choice, fitting_date)
+    VALUES ('Chinedu Okafor', '+234 802 345 6789', 'Two-Piece Senator Native Wear', 'Navy Cashmere-Blend', '2026-11-06')
+  
+[SQL] SELECT * FROM inquiries WHERE id = 1.0
+[Database Write] 201 Created: Inquiry #1 for "Chinedu Okafor" (Two-Piece Senator Native Wear) registered at 2026-10-31 17:48:43
+[SQL] SELECT * FROM inquiries ORDER BY id DESC
+[2026-10-31T17:48:43.886Z] POST /inquiries 201 (351ms)

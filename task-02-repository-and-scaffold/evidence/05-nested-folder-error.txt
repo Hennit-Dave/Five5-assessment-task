@@ -1,0 +1,55 @@
+# Deliberate Failure 1: The Nested Folder / Working Directory Mismatch
+Evidence File: evidence/05-nested-folder-error.txt
+Date: 2026-10-31 (Verified & Documented: 2026-11-01)
+
+## Context & Cause
+AI coding agents frequently scaffold into a redundant nested subfolder (e.g. creating `app/app/` or placing code in a nested subdirectory rather than directly in the target directory). When startup commands (`node src/server.js` or `npm start`) are executed from the intended project directory, Node cannot find the entry point, and npm cannot locate `package.json`.
+
+---
+
+## 1. Terminal Output: Running `node src/server.js` from Intended Project Directory
+
+```text
+$ pwd
+/tmp/nested-folder-experiment/app
+
+$ node src/server.js
+node:internal/modules/cjs/loader:1503
+  throw err;
+  ^
+
+Error: Cannot find module '/private/tmp/nested-folder-experiment/app/src/server.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1500:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1116:12)
+    at Module._load (node:internal/modules/cjs/loader:1285:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.16.0
+```
+
+---
+
+## 2. Terminal Output: Running `npm start` from Intended Project Directory
+
+```text
+$ pwd
+/tmp/nested-folder-experiment/app
+
+$ npm start
+npm error code ENOENT
+npm error syscall open
+npm error path /private/tmp/nested-folder-experiment/app/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/private/tmp/nested-folder-experiment/app/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent 
+
+Node.js v24.16.0
+```

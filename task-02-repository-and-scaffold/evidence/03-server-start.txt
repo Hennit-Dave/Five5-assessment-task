@@ -1,0 +1,3 @@
+$ cd app && node src/server.js
+[Nit's Cut Server] Process 48216 listening on port 3000
+[Nit's Cut Server] Local URL: http://localhost:3000

@@ -1,0 +1,4 @@
+* 8cba6ef (HEAD -> main, origin/main) docs(task-01): record learner review and viva preparation sign-off in checklist
+* 8e3be56 fix(task-01): correct fitting weekday to Fri 30 Oct 2026, refine Q11, and add study guide
+* 3576087 feat(task-01): complete Nit's Cut design system, Light/Dark CSS tokens, screen proof, and documentation
+* 7880a04 docs: add assessment structure and design documentation
