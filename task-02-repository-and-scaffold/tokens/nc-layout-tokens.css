@@ -48,7 +48,7 @@
   --nc-focus-ring-width: 2px;
   --nc-focus-ring-offset: 2px;
 
-  /* Documented fluid responsive display typography tokens */
+  /* Documented fluid responsive display typography tokens (using approved 1.4 multiplier from type-scale.md) */
   --nc-type-display-fluid-size: clamp(2rem, 3.5vw + 1rem, var(--nc-type-display-large-size));
-  --nc-type-display-fluid-line-height: 1.15;
+  --nc-type-display-fluid-line-height: 1.4;
 }

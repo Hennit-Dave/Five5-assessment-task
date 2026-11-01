@@ -7,7 +7,7 @@
         </div>
       </a>
       <nav class="topbar-nav" style="display: flex; gap: var(--nc-space-2); align-items: center;" aria-label="Main Navigation">
-        <a href="/" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Portal Home</a>
-        <a href="/services" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Services</a>
+        <a href="/" class="btn <%= locals.activePath === '/' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);" <%= locals.activePath === '/' ? 'aria-current="page"' : '' %>>Portal Home</a>
+        <a href="/services" class="btn <%= locals.activePath === '/services' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);" <%= locals.activePath === '/services' ? 'aria-current="page"' : '' %>>Services</a>
       </nav>
     </header>

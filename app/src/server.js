@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
       pageTitle: "Nit's Cut — Bespoke Men's Tailoring",
       metaDescription: "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.",
       isMarketingPage: true,
+      activePath: '/',
       theme: 'dark',
       inquiries: inquiries,
       successMessage: null,
@@ -50,6 +51,7 @@ app.get('/', (req, res) => {
       pageTitle: "Error — Nit's Cut",
       metaDescription: "Error loading Nit's Cut client portal.",
       isMarketingPage: false,
+      activePath: '/',
       theme: 'dark',
       inquiries: [],
       successMessage: null,
@@ -65,6 +67,7 @@ app.get('/services', (req, res) => {
     pageTitle: "Bespoke Tailoring Services — Nit's Cut",
     metaDescription: "Explore our handcrafted Senator native wear, traditional Agbada, and bespoke trousers.",
     isMarketingPage: true,
+    activePath: '/services',
     theme: 'dark'
   });
 });

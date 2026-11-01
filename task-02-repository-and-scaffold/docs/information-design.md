@@ -105,7 +105,7 @@ Information design is what transforms raw application functionality into clear, 
   ```css
   /* Defined in nc-layout-tokens.css */
   --nc-type-display-fluid-size: clamp(2rem, 3.5vw + 1rem, var(--nc-type-display-large-size));
-  --nc-type-display-fluid-line-height: 1.15;
+  --nc-type-display-fluid-line-height: 1.4; /* Compliant with Task 1 type-scale.md multiplier 1.4 */
 
   /* Consumed in app.css */
   .hero-title {
