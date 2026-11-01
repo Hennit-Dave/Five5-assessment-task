@@ -6,10 +6,12 @@
 
 ## 1. First Draft (Written by Learner)
 
-*(Awaiting learner paste of actual original prompt beginning "Read the context file before doing anything…" to preserve authentic raw wording and spelling without agent reconstruction.)*
+*Verbatim first draft written personally by the learner, preserving original wording, punctuation, and spelling:*
 
 ```markdown
-[Pending learner paste: Raw first draft beginning "Read the context file before doing anything..."]
+Read the context file before doing anything- read the business brief, the task 1 tokens, task 2 layout tokens and the rules files before doing anything, summarize all what youve read twice to understand what this task is all about and wait for my aproval before cre4ating any files, make sure to follow the the single source of truth which are the context files and the design tokens, if you dont understand intead of assuming stop and ask, make sure you use the system token.css and nc-layout-token.css without inventing raw styling values.
+Build a minimalistic homescreen for now using the project setup :package.json, express server, layout, static. asseets do not build the full tailkoring database or bookinf flow yet. Report and list every file you propose to create and every assumption that was made on the file, this is a must.
+Before you give me a response make sure to always check your plan against  excact instructions before responding.
 ```
 
 ---
@@ -47,11 +49,18 @@ Before each response, check your plan or completed work against these instructio
 
 ## 3. Comparison and Rationale (What Changed and Why)
 
-*Learner Review & Agent Assistance Note:*
+*Learner Review & Rationale Analysis:*
 
-The initial draft written by the learner incorporated all core assessment requirements, setting strict scope boundaries and demanding that the plan be saved to `evidence/01-agent-plan.txt` before any code is scaffolded.
+The learner's original first draft successfully captured all eight required assessment constraints in raw, direct instructions:
+1. **Mandatory Context Consumption:** Required reading the business brief, Task 1 tokens, Task 2 layout tokens, and rules before doing anything.
+2. **Double Understanding & Approval Gate:** Instructed the agent to summarize understanding and wait for explicit approval before creating any files.
+3. **Single Source of Truth:** Enforced context files and design tokens as the sole authority, explicitly commanding: *"if you dont understand intead of assuming stop and ask"*.
+4. **Token Integrity:** Barred invented raw styling values in favor of `token.css` and `nc-layout-token.css`.
+5. **Strict Scope Discipline (Point 6):** Explicitly commanded: *"Build a minimalistic homescreen for now using the project setup :package.json, express server, layout, static. asseets do not build the full tailkoring database or bookinf flow yet."* This was critical to prevent the agent from over-scaffolding mock data or unvetted auth.
+6. **Accountability:** Mandated a complete proposed file manifest and stated assumptions list (*"this is a must"*).
+7. **Self-Audit:** Required checking the plan against exact instructions before responding.
 
-Between the learner's first draft and the agent-assisted final version, the scope was kept strictly minimal with three practical clarifications:
-1. **Explicit Paths to Context Files:** Added exact file paths for `business-brief.md`, `nc-tokens.css`, `nc-layout-tokens.css`, and `docs/layout-tokens.md` so the agent cannot look in the wrong directory or assume paths.
-2. **Deterministic Script and Port Structure:** Explicitly specified that `app/package.json` should provide standard `"start"` and `"dev"` scripts with a configurable port (defaulting to `3000`), which ensures the upcoming server diagnostics, first-load measurements, and deliberate port-conflict experiments in Steps 4 and 5 run reliably.
-3. **Static Asset and Layout Pipeline:** Clarified the static asset mounting under `app/public/` and confirmed that local font assets (`fonts/`) should be served directly rather than introducing remote network calls.
+Between the learner's first draft and the agent-assisted refinement, the core intent and scope were preserved 100%, with three practical technical enhancements:
+1. **Deterministic File Paths:** Replaced generic file mentions with exact repository relative paths (`task-01-design-system/docs/business-brief.md`, `task-01-design-system/tokens/generated/nc-tokens.css`, `task-02-repository-and-scaffold/tokens/nc-layout-tokens.css`, `docs/layout-tokens.md`) so the agent would not search the wrong directory.
+2. **Explicit Evidence Capture Targets:** Added explicit destination paths (`task-02-repository-and-scaffold/evidence/01-agent-plan.txt` and `02-files-created.txt`) to satisfy assessment proof requirements before file creation.
+3. **Standardized Script and Port Contract:** Clarified standard npm script names (`"start"`, `"dev"`) and configurable port defaulting to `3000`, ensuring future server diagnostics and port-collision tests in Steps 4 and 5 would execute deterministically.

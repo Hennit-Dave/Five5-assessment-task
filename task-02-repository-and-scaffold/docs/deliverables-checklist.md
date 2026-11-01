@@ -3,7 +3,7 @@
 Copied filenames from the original assessment. Unchecked means not verified for submission, even if a file exists. Consult assessment-requirements.txt for mandatory behaviour, alternatives, optional recordings, interview questions and marking. File presence alone is not completion.
 
 - [x] README.md (Root-level repository overview: 7 assessment sections)
-- [ ] scaffold-prompt.md (Refined version documented; awaiting learner paste of raw first draft)
+- [x] scaffold-prompt.md (Verbatim raw learner first draft and agent-assisted refinement documented with comparison)
 - [ ] model-choices.md (Criteria drafted; awaiting learner confirmation of secondary tool used)
 - [x] performance-note.md (Verified against server logs: cold 25.25 ms vs warm 2.47 ms)
 - [x] false-success.md (Verified against deliberate connection failure and error card)
