@@ -1,0 +1,159 @@
+import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createInquiry, getAllInquiries } from './db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+// Set EJS as view engine and configure views directory
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views'));
+
+// Body parsing middleware for forms and JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Serve static assets from public/ directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Request logger middleware with timing and status code
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} (${duration}ms)`);
+  });
+  next();
+});
+
+// Home Route with dynamic inquiries list
+app.get('/', (req, res) => {
+  try {
+    const inquiries = getAllInquiries();
+    res.render('home', {
+      pageTitle: "Nit's Cut — Bespoke Men's Tailoring",
+      metaDescription: "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.",
+      isMarketingPage: true,
+      theme: 'dark',
+      inquiries: inquiries,
+      successMessage: null,
+      errorMessage: null,
+      wrapMode: req.query.wrap || 'good'
+    });
+  } catch (err) {
+    console.error('[Error] Failed to fetch inquiries for home view:', err.message);
+    res.status(500).render('home', {
+      pageTitle: "Error — Nit's Cut",
+      metaDescription: "Error loading Nit's Cut client portal.",
+      isMarketingPage: false,
+      theme: 'dark',
+      inquiries: [],
+      successMessage: null,
+      errorMessage: `Database query failed: ${err.message}`,
+      wrapMode: 'good'
+    });
+  }
+});
+
+// Services & Tailoring Process Route (Route 2 for dynamic navigation)
+app.get('/services', (req, res) => {
+  res.render('services', {
+    pageTitle: "Bespoke Tailoring Services — Nit's Cut",
+    metaDescription: "Explore our handcrafted Senator native wear, traditional Agbada, and bespoke trousers.",
+    isMarketingPage: true,
+    theme: 'dark'
+  });
+});
+
+// Inquiry Submission Route (Step 6 Database Form)
+app.post('/inquiries', (req, res) => {
+  const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body;
+
+  // Validation
+  if (!clientName || !phone || !garmentType || !fabricChoice || !fittingDate) {
+    console.warn('[Validation Error] Missing required fields in inquiry submission');
+    const inquiries = [];
+    try { inquiries.push(...getAllInquiries()); } catch (_) {}
+    return res.status(400).render('home', {
+      pageTitle: "Inquiry Error — Nit's Cut",
+      theme: 'dark',
+      inquiries: inquiries,
+      successMessage: null,
+      errorMessage: "All fields are required to register a bespoke inquiry."
+    });
+  }
+
+  try {
+    const record = createInquiry({
+      clientName: clientName.trim(),
+      phone: phone.trim(),
+      garmentType: garmentType.trim(),
+      fabricChoice: fabricChoice.trim(),
+      fittingDate: fittingDate.trim()
+    });
+
+    console.log(`[Database Write] 201 Created: Inquiry #${record.id} for "${record.client_name}" (${record.garment_type}) registered at ${record.created_at}`);
+
+    const inquiries = getAllInquiries();
+
+    // Respond with explicit 201 Created status code
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(201).json({ success: true, record });
+    }
+
+    res.status(201).render('home', {
+      pageTitle: "Inquiry Confirmed — Nit's Cut",
+      theme: 'dark',
+      inquiries: inquiries,
+      successMessage: `Bespoke tailoring inquiry #${record.id} successfully recorded for ${record.client_name}! Agreed fitting date: ${record.fitting_date}.`,
+      errorMessage: null
+    });
+  } catch (err) {
+    console.error(`[Database Failure] 500 Internal Server Error: Failed to write to inquiries table: ${err.message}`);
+    
+    // Explicit 500 error reporting — does not disguise failure as false success
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+
+    res.status(500).render('home', {
+      pageTitle: "Database Error — Nit's Cut",
+      theme: 'dark',
+      inquiries: [],
+      successMessage: null,
+      errorMessage: `Database write operation failed: ${err.message}. Your record was NOT stored.`
+    });
+  }
+});
+
+// 404 Not Found Handler
+app.use((req, res) => {
+  res.status(404).render('home', {
+    pageTitle: "Page Not Found — Nit's Cut",
+    metaDescription: "The requested page was not found on Nit's Cut portal.",
+    isMarketingPage: false,
+    theme: 'dark',
+    inquiries: [],
+    successMessage: null,
+    errorMessage: `Route ${req.originalUrl} was not found on this server.`,
+    wrapMode: 'good'
+  });
+});
+
+// General Error Handler
+app.use((err, req, res, next) => {
+  console.error(`[Error] Unhandled server error:`, err);
+  res.status(500).send('Internal Server Error');
+});
+
+// Start server
+const server = app.listen(PORT, () => {
+  console.log(`[Nit's Cut Server] Process ${process.pid} listening on port ${PORT}`);
+  console.log(`[Nit's Cut Server] Local URL: http://localhost:${PORT}`);
+});
+
+export default app;

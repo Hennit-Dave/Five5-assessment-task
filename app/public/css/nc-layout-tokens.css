@@ -1,0 +1,54 @@
+/* Nit's Cut layout foundations for Task 2.
+ * Hand-authored extension: not a Figma export. Load after nc-tokens.css.
+ * Values derived from the Task 1 screen unless identified as new in the docs.
+ */
+:root {
+  /* Spacing scale in rem; suffixes express quarter-rem units. */
+  --nc-space-0: 0rem;
+  --nc-space-0-5: 0.125rem;
+  --nc-space-0-75: 0.1875rem;
+  --nc-space-1: 0.25rem;
+  --nc-space-1-5: 0.375rem;
+  --nc-space-2: 0.5rem;
+  --nc-space-2-5: 0.625rem;
+  --nc-space-3: 0.75rem;
+  --nc-space-3-5: 0.875rem;
+  --nc-space-4: 1rem;
+  --nc-space-5: 1.25rem;
+  --nc-space-6: 1.5rem;
+  --nc-space-8: 2rem;
+
+  /* Named spacing jobs for application styles. */
+  --nc-page-padding-inline: var(--nc-space-6);
+  --nc-page-padding-block: var(--nc-space-8);
+  --nc-page-padding-inline-compact: var(--nc-space-4);
+  --nc-page-padding-block-compact: var(--nc-space-5);
+  --nc-card-padding: var(--nc-space-5);
+  --nc-layout-gap: var(--nc-space-5);
+  --nc-control-gap: var(--nc-space-2-5);
+  --nc-button-padding-block: var(--nc-space-2-5);
+  --nc-button-padding-inline: var(--nc-space-4);
+  --nc-badge-padding-block: var(--nc-space-1);
+  --nc-badge-padding-inline: var(--nc-space-2-5);
+
+  /* Radii retained from the Task 1 screen. */
+  --nc-radius-button: 0.5rem;
+  --nc-radius-stage: 0.625rem;
+  --nc-radius-panel: 0.75rem;
+  --nc-radius-card: 0.875rem;
+  --nc-radius-pill: 999px;
+
+  /* Content widths; heading limit is a new starting choice to test. */
+  --nc-layout-content-max: 68rem;
+  --nc-layout-copy-max: 46rem;
+  --nc-layout-heading-max: 22ch;
+
+  /* Existing thin border and new focus treatment dimensions. */
+  --nc-border-width: 1px;
+  --nc-focus-ring-width: 2px;
+  --nc-focus-ring-offset: 2px;
+
+  /* Documented fluid responsive display typography tokens */
+  --nc-type-display-fluid-size: clamp(2rem, 3.5vw + 1rem, var(--nc-type-display-large-size));
+  --nc-type-display-fluid-line-height: 1.15;
+}

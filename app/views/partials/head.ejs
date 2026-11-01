@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= locals.theme || 'dark' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= locals.pageTitle || "Nit's Cut — Bespoke Men's Tailoring" %></title>
+  
+  <!-- 2. Tagline & 3. SEO Meta Description (under 10 words: 9 words) -->
+  <meta name="description" content="<%= locals.metaDescription || "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts." %>">
+  <% if (locals.isMarketingPage) { %>
+    <meta name="keywords" content="Nit's Cut, bespoke tailoring, Nigerian native wear, senator suit, fitted trousers, Lagos tailor">
+    <meta name="robots" content="index, follow">
+  <% } else { %>
+    <!-- Non-marketing or error routes explicitly set noindex; omitting the tag defaults to index/follow -->
+    <meta name="robots" content="noindex, nofollow">
+  <% } %>
+
+  <!-- 4. Self-Crafted Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- 5. Open Graph Meta Tags for Rich Social Sharing -->
+  <meta property="og:site_name" content="Nit's Cut">
+  <meta property="og:title" content="<%= locals.pageTitle || "Nit's Cut — Bespoke Men's Tailoring" %>">
+  <meta property="og:description" content="<%= locals.metaDescription || "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts." %>">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/images/nc-og-preview.png">
+
+  <!-- Self-Hosted Stylesheets & Design Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/nc-tokens.css">
+  <link rel="stylesheet" href="/css/nc-layout-tokens.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="page">

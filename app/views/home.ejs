@@ -1,0 +1,148 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <% if (locals.errorMessage) { %>
+    <section class="card" role="alert">
+      <div class="card-header">
+        <h1 class="card-title nc-type-headline-medium">Status Notification</h1>
+        <span class="badge badge-error nc-type-label-medium">Error Occurred</span>
+      </div>
+      <p class="card-desc nc-type-body-large"><%= errorMessage %></p>
+      <p class="card-desc nc-type-body-medium">Return to the <a href="/" style="color: var(--nc-color-primary); text-decoration: underline;">portal home</a>.</p>
+    </section>
+  <% } %>
+
+  <% if (locals.successMessage) { %>
+    <section class="card" role="status">
+      <div class="card-header">
+        <h2 class="card-title nc-type-headline-medium">Inquiry Confirmed</h2>
+        <span class="badge badge-info nc-type-label-medium">Consultation Booked</span>
+      </div>
+      <p class="card-desc nc-type-body-large"><%= successMessage %></p>
+    </section>
+  <% } %>
+
+  <section class="hero">
+    <p class="eyebrow nc-type-label-large">Bespoke Tailoring Portal</p>
+    <h1 class="hero-title nc-type-display-large <%= locals.wrapMode === 'bad' ? 'heading-wrap-bad' : 'heading-wrap-good' %>">Nit's Cut Workshop &amp; Order Platform</h1>
+    <p class="hero-copy nc-type-body-large">Handcrafted bespoke menswear, custom native attire, and personal garment tracking tailored to your exact measurements.</p>
+  </section>
+
+  <!-- Bespoke Client Inquiry Registration -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title nc-type-title-large">Register Bespoke Garment Inquiry</h2>
+        <p class="card-desc nc-type-body-medium">Schedule an initial consultation and measurement session with our master tailor.</p>
+      </div>
+      <span class="badge badge-info nc-type-label-medium">New Commission</span>
+    </div>
+
+    <form method="POST" action="/inquiries" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="clientName">Client Full Name</label>
+          <input class="form-control" type="text" id="clientName" name="clientName" placeholder="e.g. Chinedu Okafor" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone / WhatsApp Number</label>
+          <input class="form-control" type="tel" id="phone" name="phone" placeholder="e.g. +234 803 123 4567" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="garmentType">Garment Type</label>
+          <select class="form-control" id="garmentType" name="garmentType" required>
+            <option value="Two-Piece Senator Native Wear">Two-Piece Senator Native Wear</option>
+            <option value="Bespoke Fitted Trousers">Bespoke Fitted Trousers</option>
+            <option value="Traditional Three-Piece Agbada">Traditional Three-Piece Agbada</option>
+            <option value="Bespoke Long-Sleeve Shirt">Bespoke Long-Sleeve Shirt</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fabricChoice">Fabric Choice &amp; Color</label>
+          <input class="form-control" type="text" id="fabricChoice" name="fabricChoice" placeholder="e.g. Navy Cashmere-Blend" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fittingDate">Agreed Fitting Date</label>
+          <input class="form-control" type="date" id="fittingDate" name="fittingDate" value="2026-11-06" required>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn btn-primary" type="submit">Submit Tailoring Inquiry</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Active Commissions Ledger -->
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h2 class="card-title nc-type-title-large">Workshop Commissions Ledger</h2>
+        <p class="card-desc nc-type-body-medium">Current bespoke tailoring orders on file with agreed fitting schedules and fabric specifications.</p>
+      </div>
+      <span class="badge badge-info nc-type-label-medium">Active Commissions</span>
+    </div>
+
+    <% if (locals.inquiries && inquiries.length > 0) { %>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Client Name</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Garment Type</th>
+              <th scope="col">Fabric</th>
+              <th scope="col">Fitting Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Created At (UTC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% inquiries.forEach(function(item) { %>
+              <tr>
+                <td><strong>#<%= item.id %></strong></td>
+                <td><%= item.client_name %></td>
+                <td><%= item.phone %></td>
+                <td><%= item.garment_type %></td>
+                <td><%= item.fabric_choice %></td>
+                <td><%= item.fitting_date %></td>
+                <td><span class="badge badge-info nc-type-label-small"><%= item.status %></span></td>
+                <td><code><%= item.created_at %></code></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="card-desc nc-type-body-medium" style="font-style: italic;">No inquiries currently on file. Submit the form above to register your first bespoke commission.</p>
+    <% } %>
+  </section>
+
+  <div class="feature-grid">
+    <article class="feature-item">
+      <p class="feature-label nc-type-label-medium">Craftsmanship</p>
+      <h3 class="feature-title nc-type-title-large">Bespoke Fit &amp; Finishing</h3>
+      <p class="feature-text nc-type-body-medium">Individual pattern cutting shaped to your unique anatomical posture, ensuring seamless draping and uncompromised comfort.</p>
+    </article>
+
+    <article class="feature-item">
+      <p class="feature-label nc-type-label-medium">Textiles</p>
+      <h3 class="feature-title nc-type-title-large">Curated Premium Fabrics</h3>
+      <p class="feature-text nc-type-body-medium">Finest Nigerian traditional brocades, hand-selected Senator wools, and breathable European cashmeres chosen for durability and elegance.</p>
+    </article>
+
+    <article class="feature-item">
+      <p class="feature-label nc-type-label-medium">Transparency</p>
+      <h3 class="feature-title nc-type-title-large">Fitting Milestone Tracking</h3>
+      <p class="feature-text nc-type-body-medium">Clear scheduling from first consultation to final workshop delivery, keeping every client informed at each stage of production.</p>
+    </article>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
