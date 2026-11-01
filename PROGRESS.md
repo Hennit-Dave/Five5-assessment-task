@@ -1,19 +1,42 @@
 # Five5 progress
 
-Updated 2026-10-31. Active task: Task 1 — all mandatory technical work, Light/Dark token generation, `D8` specificity fix, desktop/mobile rendering verification, codebase-wide raw-colour audit, documentation reconciliation, learner interview review, and local Git commits completed. Optional learner action: bonus walkthrough (`13-walkthrough.mp4`, unrecorded). Tasks 2–5: not started.
+Updated 2026-11-01. Active task: Task 2 — All technical deliverables, evidence captures, documentation, and interview defence answers completed. Task 1: completed and committed locally. Tasks 3–5: not started.
 
 ## Confirmed work
 - Fictional men's tailoring business Nit's Cut; observed missed deadlines during training (power outages and single-tailor overload), not a verified interview.
-- Completed `task-01-design-system/docs/business-brief.md` retrospectively (`360` words total including note and headings, comfortably below the 400-word limit) with learner's confirmed business context, user assumptions, three repeated questions, and typography/colour rationale.
-- Reviewed and updated `docs/colour-roles.md`, `docs/type-scale.md`, `docs/shadows.md`, and `docs/divergences.md` with the learner's confirmed reasoning, trade-offs, and historical provenance.
-- Completed Step 5 Figma JSON export exercise: saved `05-tokens-incomplete.json` (`tokens-incomplete.json`, `28,989` bytes, missing colour variable collections) and `06-tokens-complete.json` (`tokens-complete.json`, `177,990` bytes, with Figma Variables enabled), plus `06b-tokens-colour-roles-modes-from-figma-state.json` (`16,580` bytes, extracted from `work/figma-m3-state.json` with both `Light` `19:1` and `Dark` `19:2` modes of `NC · M3 Colour roles`), and recorded the one-line diff in `docs/evidence-index.md`.
-- Completed Step 6 JSON-to-CSS conversion: `tokens/build-css.mjs` generates `tokens/generated/nc-tokens.css` (`192` primitives, `57` Light roles on `:root, [data-theme="light"]`, `57` Dark roles on `[data-theme="dark"]`, `15` typography styles, `3` shadows), validated by `tokens/validate-css.mjs` (`15/15` checks passing in `evidence/step6b-light-and-dark-css-validation.txt`; original `step6-css-build-and-validation.txt` preserved). Verbatim prompts and failed/fixed attempts recorded in `docs/prompts.md`.
-- Completed Step 7 (proving the agent consumed the system): built the Order Progress & Payment Summary screen without the system (`outputs/screen-without-system/`, `evidence/09-screen-without-system.png`) and with `nc-tokens.css` (`task-01-design-system/screen/`, preserved earlier captures `10a-screen-with-system-before-fixes.png` and `10b-screen-with-system-before-d8-specificity-fix.png`, refreshed final Dark capture `10-screen-with-system.png`, Light capture `10c-screen-with-system-light.png`, and narrow mobile capture `10d-screen-with-system-mobile-dark.png`). Updated `evidence/07-raw-value-search.txt` across the entire first-party codebase (`task-01-design-system/`, `outputs/`, `work/`), preserved `08-agent-typography-answer.txt` unchanged, bundled `Cormorant Garamond` `600` and `Manrope` `400`/`600` `.woff2` files with SIL OFL 1.1 licences in `screen/fonts/`, fixed `₦35,000` to `.nc-type-title-large`, fixed the `D8` `.record-row dd` specificity bug, and verified rendered fonts, Dark/Light contrast ratios (`5.54:1`–`9.66:1`), and zero desktop/mobile overflow in `evidence/08b-typography-and-font-fixes-verification.txt` and `evidence/step7-font-loading-verification.txt`.
-- Completed Step 8 (the deliberate regression): created branch `regression/broken-token-reference`, broke `--nc-color-primary-container` to raw hex `#213DA0` instead of `var(--nc-ref-primary-30)`, shifted `--nc-ref-primary-*` to emerald green (`#006D3B` at tone 40), captured `evidence/11-broken-referencing.png` and archived `evidence/11b-broken-referencing-nc-tokens.css`, committed `017694d` on the branch, switched back to `main`, deleted `regression/broken-token-reference` without merging (`evidence/12-git-log-branch-unmerged.txt`), and restored/validated the clean `nc-tokens.css` on `main`.
-- Completed `task-01-design-system/docs/interview-answers.md` (all 12 interview defence questions answered using Nit's Cut's actual figures and defects, verified at `134`–`182` words each, under the 200-word limit) and `task-01-design-system/README.md` (4-minute technical interviewer summary).
+- Task 1: completed and committed locally on `main` (commit `3576087` feature, commit `8e3be56` fixes/study guide, commit `8cba6ef` checklist sign-off).
+- Task 2 Step 1: preserved learner's first draft of the scaffolding prompt, produced tightened version and comparison analysis in `task-02-repository-and-scaffold/docs/scaffold-prompt.md`.
+- Task 2 Step 2: produced `task-02-repository-and-scaffold/evidence/01-agent-plan.txt` detailing understanding, proposed files, assumptions, and verification plan. Obtained explicit learner approval before scaffolding.
+- Task 2 Scaffold Execution: created root-level `app/` folder with `package.json`, installed dependencies (`express@4.21.2`, `ejs@3.1.10`), created `src/server.js`, integrated tokens and self-hosted fonts in `public/`, created tokenized `app.css` (0 hexes, 0 raw px), created semantic EJS partials and `home.ejs`, performed endpoint checks (HTTP 200 on `/`, static assets, and HTTP 404), and recorded complete inventory in `task-02-repository-and-scaffold/evidence/02-files-created.txt`.
+- Task 2 Step 3: authored strategic model selection and failure-mode analysis in `docs/model-choices.md`.
+- Task 2 Step 4: captured development server startup logs with port and PID in `evidence/03-server-start.txt`, measured cold first-load (25.25 ms) and warm reload (2.47 ms) in `evidence/04-first-load.txt`, and documented architectural performance analysis in `docs/performance-note.md`.
+- Task 2 Step 5 (Three Deliberate Failures & Recoveries):
+  1. Nested folder / wrong directory error (`MODULE_NOT_FOUND` & `ENOENT`) in `evidence/05-nested-folder-error.txt`, and fixed both ways (directory navigation `cd app` and in-place `--prefix` / rescaffolding prompt) in `evidence/06-nested-folder-fixed.txt`.
+  2. Port conflict (`EADDRINUSE: address already in use :::3000`) in `evidence/07-port-conflict.txt`, and resolved via `lsof -i :3000`, process termination (`kill 48446`), and clean restart (PID 48457) in `evidence/08-port-conflict-resolved.txt`.
+  3. 404 route error (`GET /orders/NC-204/download-receipt` in 26.41 ms) in `evidence/09-404-error.txt`, and systematic 5-step diagnostic sequence before asking for help in `evidence/10-404-resolved.txt`.
+- Task 2 Step 6 (Database Persistence & Broken Connection):
+  1. Installed `better-sqlite3`, added versioned migration `app/migrations/001-initial-schema.sql`, and connected via parameterized prepared statements in `app/src/db.js`.
+  2. Submitted Write 1 (Chinedu Okafor) returning HTTP `201 Created` with full terminal trace in `evidence/11-write-succeeded-logs.txt`.
+  3. Submitted Write 2 (Babatunde Adeleke) at `17:51:01 UTC` (2m 18s after Write 1 at `17:48:43 UTC`), and captured headless Chrome snapshot in `evidence/12-database-rows.png` (239 KB).
+  4. Deliberately broke database path, captured HTTP 500 error logs in `evidence/13-write-failed-logs.txt`, and documented comprehensive false success analysis in `docs/false-success.md`.
+- Task 2 Step 7: authored professional 4-minute technical interviewer summary in `task-02-repository-and-scaffold/README.md` and recorded verbatim user setup testing in `docs/readme-test.md`.
+- Task 2 Step 8: analyzed Git pipeline, single-branch risks, and deployment thresholds in `docs/working-tree.md`.
+- Task 2 Step 9: captured text-format Git branch graph in `evidence/15-git-log-graph.txt`.
+- Task 2 Step 10 (Information Design):
+  1. Dynamic route titles and SEO in `evidence/16-head-route-one.png` and `evidence/17-head-route-two.png`.
+  2. Removed redundant topbar badge and collapsed booking choices into one unified inquiry flow.
+  3. Heading line-wrapping with `22ch` constraint in `evidence/18-heading-wrap-bad.png` vs `evidence/19-heading-wrap-good.png`.
+  4. Fluid typography with `clamp()` verified across 3 widths in `evidence/20-responsive-three-widths.png`.
+  5. Documented in `docs/information-design.md`.
+- Task 2 Interview Defence & Defects: answered all 15 interview defence questions in `docs/interview-answers.md` (all 160–199 words, strictly under 200 words), and documented defects D9–D13 in `docs/defects.md`.
+
+## Outstanding Task 2 learner actions
+- Hand-draw the working tree diagram on physical paper, write today's date in handwriting, and save photograph as `evidence/14-working-tree-drawing.jpg`.
+- Review the 15 interview answers in `docs/interview-answers.md` for viva defence.
+- Optional bonus video/voice walkthrough (`evidence/21-walkthrough.mp4`, up to 5 bonus marks).
 
 ## Next action
-Optional recording of `13-walkthrough.mp4` if desired, or proceed to Task 2.
+Review working tree status with learner and prepare local commit per `.agents/rules/commit-quality.md`.
 
 ## Outstanding Task 1 work
 - Optional bonus video walkthrough (`evidence/13-walkthrough.mp4`, not recorded).

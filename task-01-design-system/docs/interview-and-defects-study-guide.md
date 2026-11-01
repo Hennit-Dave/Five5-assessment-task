@@ -1,6 +1,11 @@
-# Nits Cut Task 1 interview study guide
+# Nits Cut combined interview and defects study guide
+This single guide contains Task 1 and Task 2, with space to add Tasks 3–5 later. The formal assessment answer files remain separate. Use the task headings to find the section you want to practise.
 
 Prepared on 31 October 2026. This is a learning companion to your formal interview answers and defect log. Read it to understand the ideas, then practise explaining them in your own words. The sample answers describe project work; they do not mean you must claim you personally wrote every script.
+
+## Task 1 Interview Questions Answers and Defects
+
+The following Task 1 material is retained from the earlier guide. Its review findings describe the state at that review date.
 
 ## Your project in everyday words
 
@@ -265,3 +270,201 @@ Paths below are relative to task-01-design-system.
 | Deleted branch record | evidence/12-git-log-branch-unmerged.txt |
 
 Accessibility references for further reading: [W3C Reflow](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html), [W3C Text Spacing](https://www.w3.org/WAI/WCAG22/Understanding/text-spacing.html), and [W3C Focus Appearance](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html).
+
+## Task 2 Interview Questions and Answers
+
+Added on 1 November 2026. Task 2 moves from design rules to a running application, database evidence and Git practices. These explanations simplify the supplied answers and correct misleading claims. They do not certify that every Task 2 deliverable is finished. The performance figures and database experiment below come from the saved project records, not a new test in this review.
+
+### Words to understand first
+
+| Word | Simple meaning |
+|---|---|
+| Branch | A named line of work in Git |
+| Commit | A saved snapshot with a message and identifier |
+| Remote | Another repository, such as the one on GitHub |
+| Push | Send local commits and branch updates to a remote |
+| Pull request | A request to review and combine a branch's changes |
+| Merge | Combine lines of work |
+| Rebase | Replay changes on another starting point |
+| CI | Automated checks run when code changes |
+| Production | The live environment used by real users |
+| Database persistence | Data stays saved beyond the immediate request |
+| Migration | A recorded change to the database structure |
+| Prepared statement | A database query whose values are supplied separately from its SQL instructions |
+| HTTP status | The server's reported result for a request, such as 200, 201 or 500 |
+| Cold request | An initial request that may incur setup work |
+| Round trip | The time the client waits for the request and response |
+
+### 1 What is the difference between Git Flow and trunk based development
+
+**What they are asking:** How do teams organise branches, and why might they favour frequent small changes?
+
+**A simple answer:** Git Flow separates work into branches such as main, develop and release branches. It can suit a planned release schedule. Trunk-based development keeps integration centred on one main branch, with small changes added frequently, often through short-lived branches. Frequent integration can reduce how far people's work drifts apart and reveal problems sooner. It needs reliable checks and discipline.
+
+**Example:** Two tailors comparing their work frequently can spot mismatched measurements earlier than if they work separately for weeks.
+
+**Remember:** Long-lived branches can make merging harder, but conflicts are not inevitable. Git Flow does not require every feature to last weeks, and trunk-based development does not automatically deploy every change to customers.
+
+### 2 What does git push force do and why is force with lease safer
+
+**What they are asking:** What could happen if you replace shared branch history?
+
+**A simple answer:** A force push can replace the remote branch's current history with my version, even if that removes other commits from the branch. Force-with-lease adds a check that the remote branch still points to the commit I expect. If it changed unexpectedly, Git refuses the update.
+
+**Example:** It is like replacing a shared document only if nobody has changed it since the version you checked.
+
+**Important limit:** It is safer, not risk-free. Background fetching can weaken the protection of the usual tracking-reference form. Lost branch history is not necessarily permanently erased immediately; copies or reflogs may still allow recovery. Neither command bypasses the server's permissions or branch rules.
+
+**Reference:** [Official Git push documentation](https://git-scm.com/docs/git-push).
+
+### 3 Why is rewriting shared history dangerous
+
+**What they are asking:** Why does changing earlier commits affect other people?
+
+**A simple answer:** Other people may already be working from those commits. Rebase and amend can create replacement commits with different identifiers. If I publish that rewritten history, their work and the shared branch can disagree about what happened. That creates extra recovery work and can lose changes from the branch.
+
+**What I would do:** On a shared branch, I normally make a new correction commit or revert the unwanted change. Any necessary rewrite needs coordination. Rewriting unshared personal work is usually easier to manage.
+
+**Remember:** Revert adds a new commit that undoes a change. It does not erase the old commit. It is not enough to remove a leaked secret from history; the secret must also be revoked or rotated.
+
+### 4 What is the difference between merge and rebase
+
+**What they are asking:** How can two lines of work be brought together?
+
+**A simple answer:** Merge combines histories while keeping existing commit identities. When histories have diverged, it usually creates a merge commit. If one branch is simply ahead, Git may fast-forward without creating one. Rebase replays changes onto a new base and normally gives those replayed commits new identities.
+
+**When I would choose each:** I would use merge to combine shared work without rewriting it. I might rebase my own unshared branch to place it on the latest main branch before review. Either approach still needs checking and testing.
+
+**Do not confuse:** Squash merging combines the changes into one new commit. It does not preserve the original individual commit identities or signatures as that new commit's identity or signature.
+
+**Reference:** [Official Git merge documentation](https://git-scm.com/docs/git-merge).
+
+### 5 What causes a merge conflict and what do the markers mean
+
+**What they are asking:** What should you do when Git cannot safely combine changes?
+
+**A simple answer:** A conflict happens when Git cannot automatically reconcile changes, such as two edits to the same area or an edit on one branch and deletion on another. The markers show the competing versions. I read both, decide what the final file should contain, remove the markers, test the result and stage the resolution before continuing.
+
+- `<<<<<<< HEAD` starts the first version.
+- `=======` separates the two versions.
+- `>>>>>>> other-branch` ends the second version.
+
+**Remember:** These common markers use seven characters. Keep the correct result, which may combine parts of both versions. Do not blindly accept one side. During rebase, the meaning of the sides can be surprising, so inspect the operation and actual changes.
+
+### 6 What are the working directory staging area and repository
+
+**What they are asking:** Do you understand where changes are before and after a commit?
+
+**A simple answer:** The working directory contains the files I edit. The staging area holds the version I have selected for the next commit. The local repository stores committed history. I edit, use git add to select changes, then git commit to record that selected snapshot. Git push shares it with the remote.
+
+**Example:** Editing a garment specification is working-directory activity. Choosing which changes to record is staging. Saving the agreed version with a note is committing.
+
+**Important limit:** If I edit a file again after staging it, the newer edit is not automatically included in that staged version. A local commit is also not a backup against losing the computer. Git history can become unreachable or be removed; do not describe it as impossible to lose.
+
+### 7 What is branch protection
+
+**What they are asking:** How can a team prevent risky changes reaching an important branch?
+
+**A simple answer:** Branch protection sets rules for updating a branch such as main. Depending on the configuration, it can require a pull request, reviews and passing checks, or restrict force pushes and deletion. Some setups also require signed commits or an up-to-date branch.
+
+**Example:** Before a change reaches main, a reviewer checks it and automated tests must pass.
+
+**Remember:** Those are possible rules, not guarantees about our repository. I must inspect the actual configuration before claiming they are enabled. Passing checks or having a signature does not prove the code is correct or safe.
+
+### 8 Walk me through a project you built end to end
+
+**What they are asking:** Can you connect the business need to implementation and evidence?
+
+**A simple answer to adapt:** Nit's Cut is my assessment project for a men's tailoring business. I started with the need for clear order progress, dates and payment information. With agent assistance, I developed a design system and then an Express application using EJS. The project uses SQLite and better-sqlite3 for enquiry records. The saved evidence records two submissions and database rows with different IDs and timestamps. We also deliberately broke the database path and recorded an error response instead of success.
+
+**Evidence:** The recorded successful writes are at 17:48:43 and 17:51:01 UTC on 31 October 2026. Refer to the actual logs and database-row capture when discussing them.
+
+**Be honest:** Describe your choices, instructions and checks, and acknowledge the agent's implementation work. Do not describe this as a fully deployed customer platform unless that has actually happened.
+
+### 9 Tell me about something you built breaking in production
+
+**What they are asking:** Have you handled a failure affecting real users, and what did you learn?
+
+**Important correction:** The supplied answer describes a previous customer portal, a failed email worker and thousands of queued jobs. No supporting experience was provided here. Do not present that story as your own.
+
+**A truthful answer if you have no production incident:** I have not yet handled a real production outage. My closest relevant experience is a controlled failure in my local Nit's Cut project. We used an invalid database path, submitted an enquiry and checked the response and logs. The application returned a 500 error and told the user the record was not stored. This taught me to inspect the database and failure behaviour rather than trust a screen alone. I would distinguish this exercise from a real production incident.
+
+**If you do have a real incident:** Replace this with what actually happened, your role, the impact, your fix and what changed afterwards.
+
+### 10 How do you learn an unfamiliar codebase
+
+**What they are asking:** How do you get useful understanding without reading everything randomly?
+
+**A simple answer:** I start with the README, setup instructions, dependencies and configuration. I run the project in a safe local environment. Then I follow one user action through the code, such as an enquiry moving from a form to a route and into the database. I read the related tests and recent changes, and ask about anything unclear.
+
+**Your example:** Follow the enquiry form, its POST route, validation, prepared SQL statement and response. Then check the saved row.
+
+**Remember:** Deliberate breakages belong in an isolated test environment with permission, not an unfamiliar production service.
+
+### 11 What is the difference between correct and complete code
+
+**What they are asking:** Can a working piece still be insufficient for delivery?
+
+**A simple answer:** Correct code behaves according to its specification. That includes error handling when the specification requires it; correctness is not limited to the happy path. Complete work covers the full agreed scope, including integration, tests, setup instructions, relevant security and accessibility requirements, and operation or maintenance needs.
+
+**Your example:** An insert function may correctly save a valid enquiry, but the feature is not complete if its form, validation, useful error response or migration instructions are missing.
+
+**Remember:** Completion is judged against an agreed scope. It does not mean the software can never fail or that every possible future feature exists.
+
+### 12 How do you build software someone else can maintain
+
+**What they are asking:** Could another person run, understand and change the project without depending on you?
+
+**A simple answer:** I use understandable structure, clear names and documented setup steps. I record database changes as migrations, keep secrets out of Git, explain required environment settings and provide useful error logs. I add relevant tests and explain how to regenerate design assets. I ask someone unfamiliar with the project to try the README and fix the difficulties they report.
+
+**Your example:** The Express, EJS and SQLite choices give this project a relatively small set of parts to explain. Prepared statements keep submitted values separate from SQL instructions.
+
+**Be honest:** A tested README is something to demonstrate with real feedback, not assume. A simple stack does not automatically make a project maintainable, and another framework or ORM is not inherently unreliable.
+
+### 13 Where did your first load time go
+
+**What they are asking:** Which performance numbers did you measure and which explanations are guesses?
+
+**A simple answer:** Our saved local test records 25.25 milliseconds for the first HTML request and 2.47 milliseconds for the next. The server log records 6 milliseconds and 1 millisecond respectively. The HTML response was 3,596 bytes. These measurements cover different parts of the request, so I cannot assign the difference to particular causes without more measurements.
+
+**Important distinction:** This was an HTML-response timing, not a full browser page load including CSS, fonts, layout and painting. The approximate difference for the first request is 19.25 milliseconds, but server timing is rounded and the measurement boundaries differ.
+
+**Possible causes to investigate:** Connection setup, client overhead, scheduling and server work. Template reading and compilation may already be inside the server's measured duration, so do not automatically count them again as outside it. A profiler or more detailed timing can narrow this down.
+
+### 14 Why could an app report success without saving anything
+
+**What they are asking:** How can the interface hide a failed database write, and how would you catch it?
+
+**A simple answer:** That was not the result of our recorded failure test: Nit's Cut returned 500 and displayed an error. In a faulty application, a route might catch a database error but still show success, or respond before an asynchronous write finishes. The user sees confirmation even though nothing was saved.
+
+**The strongest quick check:** Submit a test entry with a unique value, then query the intended database independently for that exact entry. Check its ID, saved values and timestamp. Correlate it with the request logs.
+
+**Remember:** A 201 is the server saying a resource was created; it is not independent proof of a committed database row. Successful form flows may also use redirects. The absence of 201 alone does not prove a write failed. better-sqlite3's ordinary query calls are synchronous, so missing await is a general example rather than a diagnosis of our driver.
+
+### 15 Why does reaching a dashboard not prove the backend works
+
+**What they are asking:** What evidence is missing from a successful-looking screen?
+
+**A simple answer:** The dashboard might contain sample data or appear even after a failed write. Seeing it only proves that the user reached that screen. It does not prove the intended account or enquiry was stored, or that other required backend actions happened.
+
+**What I would do:** Submit a uniquely identifiable test record. Check the request result and independently inspect the intended database for the committed record. Read it through a fresh request or connection. Then deliberately cause a safe database failure and confirm the interface reports an error. Add an integration test checking both the response and database state.
+
+**Your example:** For Task 2, check the enquiries table. Do not claim that a signup system with password storage was tested when the evidence concerns a tailoring-enquiry form.
+
+## Task 2 practice and evidence reminders
+
+Practise questions 6, 8, 13 and 14 first: explain the three Git areas, tell the project story, separate measured timing from guesses, and explain how to prove a database write. Then practise the remaining questions without reading full paragraphs.
+
+Task 2 evidence paths are relative to `task-02-repository-and-scaffold/`, unlike the earlier Task 1 evidence table:
+
+- `evidence/04-first-load.txt`: recorded HTML-response timing.
+- `evidence/11-write-succeeded-logs.txt`: successful submission records.
+- `evidence/12-database-rows.png`: saved row inspection capture.
+- `evidence/13-write-failed-logs.txt`: deliberate database failure.
+- `docs/false-success.md`: experiment account; some explanatory claims need the qualifications given above.
+
+These are study explanations, not a claim that you have mastered the material or personally experienced an unverified production incident. Formal Task 2 answers remain unchanged in this edit. Before submission, correct their unverified production story and misleading claims about permanent commit loss, merges, correctness, timing and HTTP status as database proof.
+
+## Future task sections
+
+Task 3, Task 4 and Task 5 questions and simple answers will be added to this same guide when supplied. No answers or completion claims have been invented for them.

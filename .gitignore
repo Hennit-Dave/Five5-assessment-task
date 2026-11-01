@@ -19,6 +19,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# SQLite temporary runtime files
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+
 # Original assessment and verbatim task extracts: local reference only
 /assessment/original-assessment.txt
 /task-*/docs/assessment-requirements.txt
