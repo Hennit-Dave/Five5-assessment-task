@@ -360,6 +360,29 @@ body {
   line-height: 1.4;
 }
 
+/* Accessible Form Validation Error States (Category 4) */
+.form-control[aria-invalid="true"] {
+  border-color: var(--nc-color-error);
+}
+
+.form-control[aria-invalid="true"]:focus-visible {
+  outline-color: var(--nc-color-error);
+}
+
+.form-error {
+  display: none;
+  font-size: var(--nc-type-body-small-font-size, 0.875rem);
+  color: var(--nc-color-error);
+  margin-top: var(--nc-space-1);
+  line-height: 1.4;
+}
+
+.form-error:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-1);
+}
+
 .nc-visually-hidden {
   position: absolute;
   width: 1px;

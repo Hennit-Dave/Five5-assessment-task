@@ -5,7 +5,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [ ] README.md
 - [x] spa-rationale.md
 - [x] field-justification.md
-- [ ] validation-rules.md
+- [x] validation-rules.md
 - [x] terms-note.md (adapted from Automattic Terms of Service Section 2 under CC BY-SA 4.0)
 - [ ] enumeration.md
 - [ ] accessibility-audit.md
@@ -17,10 +17,10 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 02-page-count-after.txt
 - [x] 03-url-states.png
 - [x] 04-form-switch-logs.txt
-- [ ] 05-empty-field-error.png
-- [ ] 06-length-rule-blocking.png
-- [ ] 07-email-realtime-signup.png
-- [ ] 08-email-on-submit-login.png
+- [x] 05-empty-field-error.png
+- [x] 06-length-rule-blocking.png
+- [x] 07-email-realtime-signup.png
+- [x] 08-email-on-submit-login.png
 - [ ] 09-number-input-annoying.mp4
 - [ ] 10-text-input-working.mp4
 - [ ] 11-screenreader-before.mp3
