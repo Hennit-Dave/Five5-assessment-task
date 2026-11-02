@@ -28,6 +28,12 @@
           <% if (locals.email) { %><li><strong>Email submitted:</strong> <%= email %></li><% } %>
           <% if (locals.termsAccepted !== undefined) { %><li><strong>Terms accepted:</strong> <%= termsAccepted ? 'Yes' : 'No' %></li><% } %>
         </ul>
+        <% if (action === 'reset') { %>
+          <div style="margin-top: var(--nc-space-3); padding-top: var(--nc-space-2); border-top: 1px solid var(--nc-color-outline-variant);">
+            <p style="margin-bottom: var(--nc-space-2);">Next step in recovery workflow demonstration:</p>
+            <a href="/auth/recovery" class="btn btn-secondary nc-type-label-large">Proceed to Prototype Code Entry &rarr;</a>
+          </div>
+        <% } %>
       </div>
 
       <p style="margin-top: var(--nc-space-4);">

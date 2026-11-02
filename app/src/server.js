@@ -148,6 +148,33 @@ app.post('/auth/reset', (req, res) => {
   });
 });
 
+// Password Reset Recovery Code Demonstration Route (Task 3 Step 5)
+// Demonstrates sensitive data shape protection and enumeration prevention
+app.get('/auth/recovery', (req, res) => {
+  const version = req.query.version === 'revealing' ? 'revealing' : 'generic';
+  res.render('recovery', {
+    pageTitle: "Enter Recovery Code (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/recovery',
+    theme: 'dark',
+    version
+  });
+});
+
+app.post('/auth/recovery', (req, res) => {
+  const { recovery_code, version } = req.body || {};
+  const codeStr = typeof recovery_code === 'string' ? recovery_code.trim() : String(recovery_code ?? '');
+  res.status(200).render('recovery-result', {
+    pageTitle: "Recovery Code Submitted (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/recovery',
+    theme: 'dark',
+    version: version === 'revealing' ? 'revealing' : 'generic',
+    submittedCode: codeStr,
+    submittedLength: codeStr.length
+  });
+});
+
 // Order Reference Lookup Demonstration Route (Task 3 Step 4)
 // Demonstrates input type selection for numerical identifiers (e.g. NC-0042 digits)
 app.get('/orders/lookup', (req, res) => {
