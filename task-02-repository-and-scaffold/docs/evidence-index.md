@@ -125,3 +125,12 @@ Record requirement, decision and reason, actual action/command, observed result,
   - **Requirement:** Task 2 Step 10 — Fluid responsive layout verification across three standard screen widths.
   - **Action:** Captured application layout at Desktop (1280px), Tablet (768px), and Mobile (375px), composited into a side-by-side comparison proving fluid `clamp()` text scaling, single-column reflow, and zero horizontal scroll.
   - **Result:** Visual capture saved in `evidence/20-responsive-three-widths.png`.
+
+---
+
+## Step 3 & 6: Model Comparison Trial — Incomplete Enquiry Form Preservation
+
+- `21-incomplete-enquiry-form-preservation.txt`:
+  - **Requirement:** Task 2 Step 3 & Step 6 — Preserve submitted form values when server-side validation fails on `POST /inquiries` (HTTP 400), keep the omitted field empty, escape output via EJS, and verify against a temporary SQLite database.
+  - **Action:** Started server on port `3099` with `DATABASE_PATH=/tmp/nits_cut_form_test.db`. Sent incomplete `POST /inquiries` with 4 fields (`clientName`, `phone`, `garmentType`, `fittingDate`) and omitted `fabricChoice`. Verified HTTP 400 response, preserved form control values, empty `fabricChoice` input, and `0` rows in SQLite. Resubmitted with `fabricChoice=Burgundy Aso-Oke Silk` and verified HTTP 201 and `1` persisted row in SQLite.
+  - **Result:** Commands, HTTP responses, rendered form HTML, SQLite row counts, and server logs recorded in `evidence/21-incomplete-enquiry-form-preservation.txt` (not yet committed; left local for review).

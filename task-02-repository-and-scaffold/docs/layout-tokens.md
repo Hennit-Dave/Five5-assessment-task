@@ -52,7 +52,7 @@ When scaling the main display headline smoothly across mobile, tablet, and deskt
 | Purpose | Token | Value | Reason |
 |---|---|---|---|
 | Fluid display size | `--nc-type-display-fluid-size` | `clamp(2rem, 3.5vw + 1rem, var(--nc-type-display-large-size))` | Scales between mobile (2rem) and Task 1 `--nc-type-display-large-size` (3.5625rem) |
-| Fluid display line-height | `--nc-type-display-fluid-line-height` | `1.15` | Proportional line-height for multi-line wrapped headings |
+| Fluid display line-height | `--nc-type-display-fluid-line-height` | `1.4` | Compliant with approved Task 1 `type-scale.md` Display/Headline multiplier (font size × 1.4) |
 
 These tokens are defined in `nc-layout-tokens.css` and consumed by `.hero-title` in `app.css`.
 

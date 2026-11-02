@@ -43,32 +43,33 @@
       <div class="form-grid">
         <div class="form-group">
           <label class="form-label" for="clientName">Client Full Name</label>
-          <input class="form-control" type="text" id="clientName" name="clientName" placeholder="e.g. Chinedu Okafor" required>
+          <input class="form-control" type="text" id="clientName" name="clientName" placeholder="e.g. Chinedu Okafor" value="<%= locals.formData ? formData.clientName : '' %>" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="phone">Phone / WhatsApp Number</label>
-          <input class="form-control" type="tel" id="phone" name="phone" placeholder="e.g. +234 803 123 4567" required>
+          <input class="form-control" type="tel" id="phone" name="phone" placeholder="e.g. +234 803 123 4567" value="<%= locals.formData ? formData.phone : '' %>" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="garmentType">Garment Type</label>
           <select class="form-control" id="garmentType" name="garmentType" required>
-            <option value="Two-Piece Senator Native Wear">Two-Piece Senator Native Wear</option>
-            <option value="Bespoke Fitted Trousers">Bespoke Fitted Trousers</option>
-            <option value="Traditional Three-Piece Agbada">Traditional Three-Piece Agbada</option>
-            <option value="Bespoke Long-Sleeve Shirt">Bespoke Long-Sleeve Shirt</option>
+            <option value="" <%= !locals.formData || !formData.garmentType ? 'selected' : '' %>>Choose a garment type</option>
+            <option value="Two-Piece Senator Native Wear" <%= locals.formData && formData.garmentType === 'Two-Piece Senator Native Wear' ? 'selected' : '' %>>Two-Piece Senator Native Wear</option>
+            <option value="Bespoke Fitted Trousers" <%= locals.formData && formData.garmentType === 'Bespoke Fitted Trousers' ? 'selected' : '' %>>Bespoke Fitted Trousers</option>
+            <option value="Traditional Three-Piece Agbada" <%= locals.formData && formData.garmentType === 'Traditional Three-Piece Agbada' ? 'selected' : '' %>>Traditional Three-Piece Agbada</option>
+            <option value="Bespoke Long-Sleeve Shirt" <%= locals.formData && formData.garmentType === 'Bespoke Long-Sleeve Shirt' ? 'selected' : '' %>>Bespoke Long-Sleeve Shirt</option>
           </select>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="fabricChoice">Fabric Choice &amp; Color</label>
-          <input class="form-control" type="text" id="fabricChoice" name="fabricChoice" placeholder="e.g. Navy Cashmere-Blend" required>
+          <input class="form-control" type="text" id="fabricChoice" name="fabricChoice" placeholder="e.g. Navy Cashmere-Blend" value="<%= locals.formData ? formData.fabricChoice : '' %>" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="fittingDate">Agreed Fitting Date</label>
-          <input class="form-control" type="date" id="fittingDate" name="fittingDate" value="2026-11-06" required>
+          <input class="form-control" type="date" id="fittingDate" name="fittingDate" value="<%= locals.formData ? formData.fittingDate : '2026-11-06' %>" required>
         </div>
       </div>
 
@@ -91,6 +92,7 @@
     <% if (locals.inquiries && inquiries.length > 0) { %>
       <div class="table-container">
         <table class="data-table">
+          <caption class="nc-visually-hidden">Registered bespoke tailoring commissions and scheduled fitting consultations</caption>
           <thead>
             <tr>
               <th scope="col">ID</th>

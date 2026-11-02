@@ -4,7 +4,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 
 - [x] README.md (Root-level repository overview: 7 assessment sections)
 - [x] scaffold-prompt.md (Verbatim raw learner first draft and agent-assisted refinement documented with comparison)
-- [ ] model-choices.md (Criteria drafted; awaiting learner confirmation of secondary tool used)
+- [x] model-choices.md (Empirical trial of Gemini 4 Argon (Low) vs Gemini 3.8 Flash (Medium) and learner comparison recorded)
 - [x] performance-note.md (Verified against server logs: cold 25.25 ms vs warm 2.47 ms)
 - [x] false-success.md (Verified against deliberate connection failure and error card)
 - [ ] readme-test.md (Setup verified by agent in clean shell; awaiting independent human test feedback)
@@ -40,7 +40,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [ ] All numbered steps and evidence alternatives checked against the original task.
 - [ ] Required interview answers and wrong-answer analysis reviewed by learner.
 - [ ] Genuine defects, reasons, commits and viva preparation complete.
-- [ ] Secondary model comparison verified with learner's actual experience.
+- [x] Secondary model comparison verified with learner's actual experience.
 - [ ] Independent human test conducted and recorded in `docs/readme-test.md`.
 - [x] Working tree drawing updated with required labels and re-photographed.
 - [ ] Step 9 branching workflow (feature branch, PR, discarded branch) executed upon learner authorization.

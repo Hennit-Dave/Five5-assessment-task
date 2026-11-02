@@ -310,6 +310,25 @@ body {
   transform: translateY(0);
 }
 
+.btn-active {
+  background-color: var(--nc-color-primary-container);
+  color: var(--nc-color-on-primary-container);
+  border: var(--nc-border-width) solid var(--nc-color-primary);
+  font-weight: 700;
+}
+
+.nc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Database Table */
 .table-container {
   overflow-x: auto;

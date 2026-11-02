@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
       pageTitle: "Nit's Cut — Bespoke Men's Tailoring",
       metaDescription: "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.",
       isMarketingPage: true,
+      activePath: '/',
       theme: 'dark',
       inquiries: inquiries,
       successMessage: null,
@@ -50,6 +51,7 @@ app.get('/', (req, res) => {
       pageTitle: "Error — Nit's Cut",
       metaDescription: "Error loading Nit's Cut client portal.",
       isMarketingPage: false,
+      activePath: '/',
       theme: 'dark',
       inquiries: [],
       successMessage: null,
@@ -65,36 +67,40 @@ app.get('/services', (req, res) => {
     pageTitle: "Bespoke Tailoring Services — Nit's Cut",
     metaDescription: "Explore our handcrafted Senator native wear, traditional Agbada, and bespoke trousers.",
     isMarketingPage: true,
+    activePath: '/services',
     theme: 'dark'
   });
 });
 
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {
-  const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body;
+  const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body || {};
+  const formData = {
+    clientName: typeof clientName === 'string' ? clientName.trim() : '',
+    phone: typeof phone === 'string' ? phone.trim() : '',
+    garmentType: typeof garmentType === 'string' ? garmentType.trim() : '',
+    fabricChoice: typeof fabricChoice === 'string' ? fabricChoice.trim() : '',
+    fittingDate: typeof fittingDate === 'string' ? fittingDate.trim() : ''
+  };
 
   // Validation
-  if (!clientName || !phone || !garmentType || !fabricChoice || !fittingDate) {
+  if (!formData.clientName || !formData.phone || !formData.garmentType || !formData.fabricChoice || !formData.fittingDate) {
     console.warn('[Validation Error] Missing required fields in inquiry submission');
     const inquiries = [];
     try { inquiries.push(...getAllInquiries()); } catch (_) {}
     return res.status(400).render('home', {
       pageTitle: "Inquiry Error — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: inquiries,
       successMessage: null,
-      errorMessage: "All fields are required to register a bespoke inquiry."
+      errorMessage: "All fields are required to register a bespoke inquiry.",
+      formData
     });
   }
 
   try {
-    const record = createInquiry({
-      clientName: clientName.trim(),
-      phone: phone.trim(),
-      garmentType: garmentType.trim(),
-      fabricChoice: fabricChoice.trim(),
-      fittingDate: fittingDate.trim()
-    });
+    const record = createInquiry(formData);
 
     console.log(`[Database Write] 201 Created: Inquiry #${record.id} for "${record.client_name}" (${record.garment_type}) registered at ${record.created_at}`);
 
@@ -108,6 +114,7 @@ app.post('/inquiries', (req, res) => {
     res.status(201).render('home', {
       pageTitle: "Inquiry Confirmed — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: inquiries,
       successMessage: `Bespoke tailoring inquiry #${record.id} successfully recorded for ${record.client_name}! Agreed fitting date: ${record.fitting_date}.`,
       errorMessage: null
@@ -123,6 +130,7 @@ app.post('/inquiries', (req, res) => {
     res.status(500).render('home', {
       pageTitle: "Database Error — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: [],
       successMessage: null,
       errorMessage: `Database write operation failed: ${err.message}. Your record was NOT stored.`
