@@ -54,6 +54,7 @@
         <div class="form-group">
           <label class="form-label" for="garmentType">Garment Type</label>
           <select class="form-control" id="garmentType" name="garmentType" required>
+            <option value="" <%= !locals.formData || !formData.garmentType ? 'selected' : '' %>>Choose a garment type</option>
             <option value="Two-Piece Senator Native Wear" <%= locals.formData && formData.garmentType === 'Two-Piece Senator Native Wear' ? 'selected' : '' %>>Two-Piece Senator Native Wear</option>
             <option value="Bespoke Fitted Trousers" <%= locals.formData && formData.garmentType === 'Bespoke Fitted Trousers' ? 'selected' : '' %>>Bespoke Fitted Trousers</option>
             <option value="Traditional Three-Piece Agbada" <%= locals.formData && formData.garmentType === 'Traditional Three-Piece Agbada' ? 'selected' : '' %>>Traditional Three-Piece Agbada</option>

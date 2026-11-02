@@ -187,3 +187,50 @@ id client_n   phone    garment_type   fabric_choi fitting_da  status  created_at
 [2026-11-02T08:49:46.010Z] POST /inquiries 201 (4ms)
 ```
 
+---
+
+## 5. Review Findings Test — Omitted Garment Type & `aria-current="page"` Verification (2026-11-02)
+
+### Check 1: Unescaped `aria-current="page"` Navigation Verification
+- **Route 1 (`GET /`):** Active link (Portal Home) renders literal `aria-current="page"` (unescaped quotes). Inactive link (Services) has no `aria-current` attribute.
+  ```html
+  <a href="/" class="btn btn-active nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);" aria-current="page">Portal Home</a>
+  <a href="/services" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Services</a>
+  ```
+- **Route 2 (`GET /services`):** Active link (Services) renders literal `aria-current="page"`. Inactive link (Portal Home) has no `aria-current` attribute.
+  ```html
+  <a href="/" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Portal Home</a>
+  <a href="/services" class="btn btn-active nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);" aria-current="page">Services</a>
+  ```
+
+### Check 2: Omitted Garment Type from Dropdown (`garmentType=""`)
+- **Action:** POST to `/inquiries` with 4 fields filled (`clientName=Emeka Nwosu`, `phone=+234 802 111 2233`, `fabricChoice=Italian Super 140s Wool`, `fittingDate=2026-11-25`) and `garmentType` omitted.
+- **Observed HTTP Status:** `HTTP/1.1 400 Bad Request`
+- **Rendered Dropdown in Response:**
+  ```html
+  <select class="form-control" id="garmentType" name="garmentType" required>
+    <option value="" selected>Choose a garment type</option>
+    <option value="Two-Piece Senator Native Wear" >Two-Piece Senator Native Wear</option>
+    <option value="Bespoke Fitted Trousers" >Bespoke Fitted Trousers</option>
+    <option value="Traditional Three-Piece Agbada" >Traditional Three-Piece Agbada</option>
+    <option value="Bespoke Long-Sleeve Shirt" >Bespoke Long-Sleeve Shirt</option>
+  </select>
+  ```
+- **Preserved Field Values:** `clientName="Emeka Nwosu"`, `phone="+234 802 111 2233"`, `fabricChoice="Italian Super 140s Wool"`, `fittingDate="2026-11-25"`.
+- **Database Row Count:** `0` rows.
+
+### Check 3: Resubmission with Valid Garment Type
+- **Action:** Selected `garmentType=Bespoke Fitted Trousers` and resubmitted.
+- **Observed HTTP Status:** `HTTP/1.1 201 Created`
+- **Database Row Count & Row:** Exactly `1` matching row persisted:
+  ```text
+  id: 1
+  client_name: Emeka Nwosu
+  phone: +234 802 111 2233
+  garment_type: Bespoke Fitted Trousers
+  fabric_choice: Italian Super 140s Wool
+  fitting_date: 2026-11-25
+  status: Inquiry Received
+  ```
+
+

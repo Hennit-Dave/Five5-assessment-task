@@ -91,6 +91,7 @@ app.post('/inquiries', (req, res) => {
     return res.status(400).render('home', {
       pageTitle: "Inquiry Error — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: inquiries,
       successMessage: null,
       errorMessage: "All fields are required to register a bespoke inquiry.",
@@ -113,6 +114,7 @@ app.post('/inquiries', (req, res) => {
     res.status(201).render('home', {
       pageTitle: "Inquiry Confirmed — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: inquiries,
       successMessage: `Bespoke tailoring inquiry #${record.id} successfully recorded for ${record.client_name}! Agreed fitting date: ${record.fitting_date}.`,
       errorMessage: null
@@ -128,6 +130,7 @@ app.post('/inquiries', (req, res) => {
     res.status(500).render('home', {
       pageTitle: "Database Error — Nit's Cut",
       theme: 'dark',
+      activePath: '/',
       inquiries: [],
       successMessage: null,
       errorMessage: `Database write operation failed: ${err.message}. Your record was NOT stored.`
