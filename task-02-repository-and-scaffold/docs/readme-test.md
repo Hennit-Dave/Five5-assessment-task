@@ -9,29 +9,13 @@ Date: 2026-11-01
 
 > [!IMPORTANT]
 > **Honest Evidence Note:**
-> Per assessment requirements, the README must be tested by someone who has never seen the project, and their verbatim feedback recorded. An automated or agent-run setup test does not replace the human test. This document outlines the tested setup instructions prepared for a real tester and reserves Section 2 for their actual verbatim feedback.
+> Per assessment requirements, the README must be tested by someone who has never seen the project, and their verbatim feedback recorded. An automated or agent-run setup test does not replace the human test. This document outlines the tested setup instructions prepared for a real tester and reserves Section 3 for their actual verbatim feedback.
 
 ---
 
-## 1. Automated Clean-Environment Baseline Test
+## 1. Agent setup check (2 November 2026)
 
-Before handing the repository to an external tester, we verified the exact sequence of commands in a clean shell environment on macOS:
-
-```bash
-# 1. Clone repository (or start from a fresh directory copy)
-git clone <repo-url>
-cd "Five5 assessment task/app"
-
-# 2. Install dependencies
-npm install
-
-# 3. Boot development server
-npm start
-```
-
-### Verified Baseline Observations:
-- Dependencies (`express`, `ejs`, `better-sqlite3`) install cleanly in under 5 seconds.
-- The server boots on port 3000, connects to `data/nits_cut.db`, runs the initial schema migration, and begins listening on `http://localhost:3000`.
+The root README now uses `cd Five5-assessment-task`, the directory created by its GitHub clone command. For this local check, the committed application was extracted to a fresh temporary directory without an existing node_modules. With Node v24.16.0 and npm 12.0.2, npm install installed 78 packages. npm reported that the better-sqlite3 install script was blocked, but opening an in-memory SQLite database succeeded on this Mac. Running npm start on a free local port returned HTTP 200 for both / and /services. This verified the committed app locally. The GitHub clone path and independent tester experience still need a real tester once the matching revision is available to them.
 
 ---
 

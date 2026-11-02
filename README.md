@@ -51,7 +51,7 @@ Follow these exact commands from a terminal to set up and run the application fr
 ```bash
 # 1. Clone the repository
 git clone https://github.com/Hennit-Dave/Five5-assessment-task.git
-cd "Five5 assessment task"
+cd Five5-assessment-task
 
 # 2. Navigate to the application root directory
 cd app
