@@ -16,16 +16,14 @@ A server-rendered client portal and workshop management system for Nit's Cut, a 
   - **Task 1 Design System Tokens:** Light and Dark semantic color palettes, typography scales, and shadows exported to [`task-01-design-system/tokens/generated/nc-tokens.css`](task-01-design-system/tokens/generated/nc-tokens.css), verified with 0 raw hex values in application styles.
   - **Server Scaffold (`app/`):** Lightweight, server-rendered Node.js and Express architecture utilizing semantic EJS views, self-hosted local fonts (`Cormorant Garamond` and `Manrope`), and zero client bundle overhead.
   - **Persistent Relational Database:** Direct SQLite integration with `better-sqlite3`, WAL journaling, and automated idempotent startup schema execution ([`app/migrations/001-initial-schema.sql`](app/migrations/001-initial-schema.sql)).
-  - **Form Persistence & Live Table:** Functional inquiry submission (`POST /inquiries`) with verified persistent SQLite storage on disk (Rows #1 and #2 confirmed with autoincrement IDs and independent timestamps).
+  - **Form Persistence & Validation Preservation:** Functional inquiry submission (`POST /inquiries`) preserving client form inputs on validation failure (HTTP 400), verified against temporary and persistent SQLite storage.
   - **Deliberate Failure & Recovery Suite:** Recreated and triaged three real failure modes: nested project directory (recovering via `cd` and in-place restructuring), port 3000 collision (`EADDRINUSE`), and 404 route handling, alongside deliberate database disconnection handling.
   - **Information Design:** Dynamic route-driven titles across two navigable endpoints (`GET /` and `GET /services`), SEO and explicit `robots` directives, custom SVG favicon, 1200×630 Open Graph preview card, and fluid responsive typography using `--nc-layout-heading-max: 22ch` and `clamp()`.
+  - **Git Feature Branching & Pull Request:** Feature branch `feature/step-10-information-design` reviewed and merged into `main` via merge commit `c84bfbe` ([Pull Request #1: https://github.com/Hennit-Dave/Five5-assessment-task/pull/1](https://github.com/Hennit-Dave/Five5-assessment-task/pull/1)).
+  - **Discarded Branch Exercise:** Experimental branch `experiment/discarded-change` (`3b8a965`) created, committed, deleted without merging, and verified unreachable from `main` in [`task-02-repository-and-scaffold/evidence/15-git-log-graph.txt`](task-02-repository-and-scaffold/evidence/15-git-log-graph.txt).
 
 - **In Progress / Awaiting Learner Actions:**
-  - Pasting learner's raw first-draft scaffolding prompt into [`task-02-repository-and-scaffold/docs/scaffold-prompt.md`](task-02-repository-and-scaffold/docs/scaffold-prompt.md).
   - Handing this README to an independent peer tester unfamiliar with the project and capturing their verbatim feedback in [`task-02-repository-and-scaffold/docs/readme-test.md`](task-02-repository-and-scaffold/docs/readme-test.md).
-  - Learner confirmation of actual secondary model/tool usage for [`task-02-repository-and-scaffold/docs/model-choices.md`](task-02-repository-and-scaffold/docs/model-choices.md).
-  - Adding required A/B threshold and `git add`/`git commit` labels to the hand-drawn working tree diagram and taking an updated photograph.
-  - Executing the Step 9 feature branch, PR, and discarded-branch exercise upon learner authorization.
 
 - **Not Started:**
   - Task 3: Client-side validation and progressive enhancement.

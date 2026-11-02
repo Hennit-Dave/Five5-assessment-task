@@ -26,7 +26,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 12-database-rows.png (Captured SQLite table with two rows separated by 2m 18s)
 - [x] 13-write-failed-logs.txt (Captured severed connection HTTP 500 failure logs)
 - [x] 14-working-tree-drawing.jpg (Hand-drawn working tree diagram with A/B boundaries and git add/commit labels)
-- [ ] 15-git-log-graph.txt (Awaiting feature branch, PR, and discarded branch exercise)
+- [x] 15-git-log-graph.txt (PR #1 merge commit c84bfbe, feature branch topology, and discarded branch 3b8a965 non-merge verified)
 - [x] 16-head-route-one.png (Rendered <head> and title for Route 1: Home)
 - [x] 17-head-route-two.png (Rendered <head> and title for Route 2: Services)
 - [x] 18-heading-wrap-bad.png (Unconstrained heading single-word widow at tablet width)
@@ -43,4 +43,4 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] Secondary model comparison verified with learner's actual experience.
 - [ ] Independent human test conducted and recorded in `docs/readme-test.md`.
 - [x] Working tree drawing updated with required labels and re-photographed.
-- [ ] Step 9 branching workflow (feature branch, PR, discarded branch) executed upon learner authorization.
+- [x] Step 9 branching workflow (feature branch, PR #1 merge commit, discarded branch exercise) executed upon learner authorization.

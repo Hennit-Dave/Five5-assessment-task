@@ -24,7 +24,7 @@ Updated 2026-11-02. Active task: Task 2 — All technical deliverables, evidence
   5. Implemented form field preservation on validation failure (`POST /inquiries`): returns HTTP 400, preserves 4 entered fields with EJS escaping, leaves missing field empty, and verified 0 rows in temporary SQLite DB. Upon supplying missing field, verified HTTP 201 and 1 persisted row in `evidence/21-incomplete-enquiry-form-preservation.txt`.
 - Task 2 Step 7: authored professional 7-section repository overview in root `README.md`, 4-minute technical summary in `task-02-repository-and-scaffold/README.md`, verified clone directory (`cd Five5-assessment-task`), and recorded agent baseline setup test in `docs/readme-test.md` (reserving Section 3 for independent human test).
 - Task 2 Step 8: analyzed Git pipeline, single-branch risks, and deployment thresholds in `docs/working-tree.md`. Hand-drawn working tree diagram updated with A/B boundaries and git add/commit labels and verified in `evidence/14-working-tree-drawing.jpg`.
-- Task 2 Step 9: text-format Git branch graph in `evidence/15-git-log-graph.txt` (to be updated with PR merge and discarded branch exercise upon publication approval).
+- Task 2 Step 9: PR #1 (`https://github.com/Hennit-Dave/Five5-assessment-task/pull/1`) merged into `main` via merge commit `c84bfbe`. Discarded branch exercise executed with `experiment/discarded-change` (`3b8a965`), deleted without merging, and verified unreachable from `main`. Complete Git graph recorded in `evidence/15-git-log-graph.txt`.
 - Task 2 Step 10 (Information Design):
   1. Dynamic route titles and SEO in `evidence/16-head-route-one.png` and `evidence/17-head-route-two.png`.
   2. Active navigation state (`.btn-active`, `aria-current="page"`) and accessible table caption (`caption.nc-visually-hidden`).
@@ -35,13 +35,12 @@ Updated 2026-11-02. Active task: Task 2 — All technical deliverables, evidence
 - Task 2 Interview Defence & Defects: answered all 15 interview defence questions in `docs/interview-answers.md` (all 160–199 words, strictly under 200 words), and documented defects D9–D13 in `docs/defects.md`.
 
 ## Outstanding Task 2 learner actions
-- Review the GitHub publication plan and confirm whether customer details in `7fcca4c` are fictional before push authorization.
-- Provide invitation and repository link to an independent tester to test the README instructions and provide verbatim feedback for `docs/readme-test.md`.
+- Hand repository link to an independent peer tester unfamiliar with the project, collect their verbatim setup experience, and record in `docs/readme-test.md`.
 - Review the 15 interview answers in `docs/interview-answers.md` for viva defence.
 - Optional bonus video/voice walkthrough (`evidence/21-walkthrough.mp4`, up to 5 bonus marks).
 
 ## Next action
-Review publication plan with learner (branches, PR title/description, checks, and remote visibility) and obtain explicit approval before pushing to GitHub.
+Await real peer tester feedback for `docs/readme-test.md` before finalizing Task 2 deliverables.
 
 ## Outstanding Task 1 work
 - Optional bonus video walkthrough (`evidence/13-walkthrough.mp4`, not recorded).

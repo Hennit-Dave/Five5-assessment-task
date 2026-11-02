@@ -1,4 +1,86 @@
-* 8cba6ef (HEAD -> main, origin/main) docs(task-01): record learner review and viva preparation sign-off in checklist
+# Task 2 Step 9 — Git Branching, Pull Request, and Discarded Branch Evidence
+Repository: https://github.com/Hennit-Dave/Five5-assessment-task.git
+Pull Request #1: https://github.com/Hennit-Dave/Five5-assessment-task/pull/1
+Merge Commit: c84bfbe (feat(task-02): merge feature/step-10-information-design into main (#1))
+Date: 2026-11-02
+
+---
+
+## 1. Full Git Commit & Branch Graph (Post-PR Merge on main)
+
+Command: `git log --graph --all --oneline --decorate -n 20`
+
+*   c84bfbe (HEAD -> main, origin/main) feat(task-02): merge feature/step-10-information-design into main (#1)
+|\  
+| * c7c00d3 (origin/feature/step-10-information-design, feature/step-10-information-design) fix(app): unescape aria-current attribute and add empty dropdown option with validation
+| * 995814e docs: update Task 2 progress with form preservation and model trial
+| * d0394a4 docs(task-02): correct clone directory in root README and record agent setup check
+| * 194feb3 fix(task-02): preserve enquiry form fields on validation failure and record model comparison
+| * f354757 feat(task-02): implement active navigation state, accessible table caption, and compliant 1.4 line-height
+| * 52302cf feat(task-02): implement information design, dynamic titles, and fluid typography
+|/  
+* e10952a fix(app): untrack local SQLite database file and ignore *.db in .gitignore
+* 6b362c7 docs(task-02): update hand-drawn working tree diagram with A/B boundaries and git labels
+* 81e8c22 docs(task-02): restore learner raw first-draft scaffold prompt and update comparison
+* cc67c79 docs(task-02): record failure diagnostics, persistence proof, and interview answers
+* 7fcca4c feat(task-02): scaffold Express server, SQLite persistence, and tailoring portal views
+* f94facb feat(task-02): establish layout token system and task planning documentation
+* 8cba6ef docs(task-01): record learner review and viva preparation sign-off in checklist
 * 8e3be56 fix(task-01): correct fitting weekday to Fri 30 Oct 2026, refine Q11, and add study guide
 * 3576087 feat(task-01): complete Nit's Cut design system, Light/Dark CSS tokens, screen proof, and documentation
 * 7880a04 docs: add assessment structure and design documentation
+
+---
+
+## 2. Discarded Branch Exercise — Proof of Non-Merge
+
+### A. Experimental Branch Creation & Commit
+- **Branch Created:** `experiment/discarded-change`
+- **Experimental Change:** Tested adding an all-caps text transform (`text-transform: uppercase`) to `.heading-wrap-good` in `app/public/css/app.css`.
+- **Review Decision:** Genuinely decided against the change because it violated approved typography rules and reduced legibility of the bespoke brand title.
+- **Commit on Experiment Branch:** `3b8a965` (`experiment: test all-caps hero heading transform (discarded per design system review)`)
+
+### B. Graph While Experiment Branch Still Existed
+Command: `git branch -v && git log --graph --all --oneline --decorate -n 10`
+
+```text
+* experiment/discarded-change        3b8a965 experiment: test all-caps hero heading transform (discarded per design system review)
+  feature/step-10-information-design c7c00d3 fix(app): unescape aria-current attribute and add empty dropdown option with validation
+  main                               c84bfbe feat(task-02): merge feature/step-10-information-design into main (#1)
+
+* 3b8a965 (HEAD -> experiment/discarded-change) experiment: test all-caps hero heading transform (discarded per design system review)
+*   c84bfbe (origin/main, main) feat(task-02): merge feature/step-10-information-design into main (#1)
+|\  
+| * c7c00d3 (origin/feature/step-10-information-design, feature/step-10-information-design) fix(app): unescape aria-current attribute and add empty dropdown option with validation
+| * 995814e docs: update Task 2 progress with form preservation and model trial
+| * d0394a4 docs(task-02): correct clone directory in root README and record agent setup check
+| * 194feb3 fix(task-02): preserve enquiry form fields on validation failure and record model comparison
+| * f354757 feat(task-02): implement active navigation state, accessible table caption, and compliant 1.4 line-height
+| * 52302cf feat(task-02): implement information design, dynamic titles, and fluid typography
+|/  
+* e10952a fix(app): untrack local SQLite database file and ignore *.db in .gitignore
+```
+
+### C. Deletion Without Merge
+Command:
+```bash
+git checkout main
+git branch -D experiment/discarded-change
+```
+Output:
+```text
+Deleted branch experiment/discarded-change (was 3b8a965).
+```
+
+### D. Verification That Commit Was Never Merged into Main
+1. **Ancestor Check:**
+   Command: `git merge-base --is-ancestor 3b8a965 main`
+   Result: Non-zero exit code (exit status 1), proving `3b8a965` is NOT an ancestor of `main`.
+
+2. **Branch Membership Check:**
+   Command: `git branch --contains 3b8a965`
+   Result: Empty output (commit `3b8a965` is not reachable from any active branch).
+
+3. **Main Commit Log Check:**
+   Command: `git log main --oneline | grep 3b8a965`
+   Result: Empty output (commit `3b8a965` does not exist in `main` history).
