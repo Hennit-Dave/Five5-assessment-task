@@ -74,10 +74,17 @@ app.get('/services', (req, res) => {
 
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {
-  const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body;
+  const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body || {};
+  const formData = {
+    clientName: typeof clientName === 'string' ? clientName.trim() : '',
+    phone: typeof phone === 'string' ? phone.trim() : '',
+    garmentType: typeof garmentType === 'string' ? garmentType.trim() : '',
+    fabricChoice: typeof fabricChoice === 'string' ? fabricChoice.trim() : '',
+    fittingDate: typeof fittingDate === 'string' ? fittingDate.trim() : ''
+  };
 
   // Validation
-  if (!clientName || !phone || !garmentType || !fabricChoice || !fittingDate) {
+  if (!formData.clientName || !formData.phone || !formData.garmentType || !formData.fabricChoice || !formData.fittingDate) {
     console.warn('[Validation Error] Missing required fields in inquiry submission');
     const inquiries = [];
     try { inquiries.push(...getAllInquiries()); } catch (_) {}
@@ -86,18 +93,13 @@ app.post('/inquiries', (req, res) => {
       theme: 'dark',
       inquiries: inquiries,
       successMessage: null,
-      errorMessage: "All fields are required to register a bespoke inquiry."
+      errorMessage: "All fields are required to register a bespoke inquiry.",
+      formData
     });
   }
 
   try {
-    const record = createInquiry({
-      clientName: clientName.trim(),
-      phone: phone.trim(),
-      garmentType: garmentType.trim(),
-      fabricChoice: fabricChoice.trim(),
-      fittingDate: fittingDate.trim()
-    });
+    const record = createInquiry(formData);
 
     console.log(`[Database Write] 201 Created: Inquiry #${record.id} for "${record.client_name}" (${record.garment_type}) registered at ${record.created_at}`);
 

@@ -1,0 +1,189 @@
+# Task 2 — Incomplete Enquiry Form Preservation & Validation Test Evidence
+Date: 2026-11-02
+Temporary SQLite Database: `/tmp/nits_cut_form_test.db`
+Test Server Port: `3099`
+
+---
+
+## 1. Start Server with Isolated Temporary SQLite Database
+
+### Command
+```bash
+rm -f /tmp/nits_cut_form_test.db /tmp/nits_cut_form_test.db-shm /tmp/nits_cut_form_test.db-wal && PORT=3099 DATABASE_PATH=/tmp/nits_cut_form_test.db node app/src/server.js
+```
+
+### Actual Server Startup Output
+```text
+[Nit's Cut Server] Process 7958 listening on port 3099
+[Nit's Cut Server] Local URL: http://localhost:3099
+```
+
+---
+
+## 2. Step A — Submit Incomplete Enquiry (4 Fields Filled, 1 Omitted: `fabricChoice`)
+
+### Command
+```bash
+curl -s -i -X POST http://localhost:3099/inquiries \
+  -d "clientName=Tunde+Adebayo&phone=%2B234+809+555+0142&garmentType=Traditional+Three-Piece+Agbada&fittingDate=2026-11-20"
+```
+
+### Actual HTTP Response Headers & Status
+```http
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 7903
+ETag: W/"1edf-sNY0hXnhcfX3Vt++Hl/RM3jMxJI"
+Date: Mon, 02 Nov 2026 08:48:58 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+```
+
+### Actual Rendered Alert & Form Controls in HTTP 400 Body
+```html
+    <section class="card" role="alert">
+      <div class="card-header">
+        <h1 class="card-title nc-type-headline-medium">Status Notification</h1>
+        <span class="badge badge-error nc-type-label-medium">Error Occurred</span>
+      </div>
+      <p class="card-desc nc-type-body-large">All fields are required to register a bespoke inquiry.</p>
+      <p class="card-desc nc-type-body-medium">Return to the <a href="/" style="color: var(--nc-color-primary); text-decoration: underline;">portal home</a>.</p>
+    </section>
+...
+    <form method="POST" action="/inquiries" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="clientName">Client Full Name</label>
+          <input class="form-control" type="text" id="clientName" name="clientName" placeholder="e.g. Chinedu Okafor" value="Tunde Adebayo" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone / WhatsApp Number</label>
+          <input class="form-control" type="tel" id="phone" name="phone" placeholder="e.g. +234 803 123 4567" value="+234 809 555 0142" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="garmentType">Garment Type</label>
+          <select class="form-control" id="garmentType" name="garmentType" required>
+            <option value="Two-Piece Senator Native Wear" >Two-Piece Senator Native Wear</option>
+            <option value="Bespoke Fitted Trousers" >Bespoke Fitted Trousers</option>
+            <option value="Traditional Three-Piece Agbada" selected>Traditional Three-Piece Agbada</option>
+            <option value="Bespoke Long-Sleeve Shirt" >Bespoke Long-Sleeve Shirt</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fabricChoice">Fabric Choice &amp; Color</label>
+          <input class="form-control" type="text" id="fabricChoice" name="fabricChoice" placeholder="e.g. Navy Cashmere-Blend" value="" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fittingDate">Agreed Fitting Date</label>
+          <input class="form-control" type="date" id="fittingDate" name="fittingDate" value="2026-11-20" required>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn btn-primary" type="submit">Submit Tailoring Inquiry</button>
+      </div>
+    </form>
+```
+
+### Database Row Count Check After HTTP 400
+```bash
+sqlite3 -header -column /tmp/nits_cut_form_test.db "SELECT COUNT(*) AS row_count FROM inquiries;"
+```
+```text
+row_count
+---------
+        0
+```
+
+---
+
+## 3. Step B — Supply Missing Field (`fabricChoice=Burgundy Aso-Oke Silk`) & Resubmit
+
+### Command
+```bash
+curl -s -i -X POST http://localhost:3099/inquiries \
+  -d "clientName=Tunde+Adebayo&phone=%2B234+809+555+0142&garmentType=Traditional+Three-Piece+Agbada&fabricChoice=Burgundy+Aso-Oke+Silk&fittingDate=2026-11-20"
+```
+
+### Actual HTTP Response Headers & Status
+```http
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 8776
+ETag: W/"2248-w6iOInOlsEGlu0SkeDA5a150dmA"
+Date: Mon, 02 Nov 2026 08:49:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+```
+
+### Actual Rendered Confirmation & Ledger Row in HTTP 201 Body
+```html
+    <section class="card" role="status">
+      <div class="card-header">
+        <h2 class="card-title nc-type-headline-medium">Inquiry Confirmed</h2>
+        <span class="badge badge-info nc-type-label-medium">Consultation Booked</span>
+      </div>
+      <p class="card-desc nc-type-body-large">Bespoke tailoring inquiry #1 successfully recorded for Tunde Adebayo! Agreed fitting date: 2026-11-20.</p>
+    </section>
+...
+          <tbody>
+              <tr>
+                <td><strong>#1</strong></td>
+                <td>Tunde Adebayo</td>
+                <td>+234 809 555 0142</td>
+                <td>Traditional Three-Piece Agbada</td>
+                <td>Burgundy Aso-Oke Silk</td>
+                <td>2026-11-20</td>
+                <td><span class="badge badge-info nc-type-label-small">Inquiry Received</span></td>
+                <td><code>2026-11-02 08:49:46</code></td>
+              </tr>
+          </tbody>
+```
+
+### Independent SQLite Database Verification After HTTP 201
+```bash
+sqlite3 -header -column /tmp/nits_cut_form_test.db "SELECT COUNT(*) AS row_count FROM inquiries;"
+sqlite3 -header -column /tmp/nits_cut_form_test.db "SELECT id, client_name, phone, garment_type, fabric_choice, fitting_date, status, created_at FROM inquiries;"
+```
+```text
+row_count
+---------
+        1
+id client_n   phone    garment_type   fabric_choi fitting_da  status  created_at
+     ame                                  ce          te
+-- -------- --------- --------------- ----------- ---------- -------- ----------
+ 1 Tunde    +234 809  Traditional     Burgundy    2026-11-20 Inquiry  2026-11-02
+   Adebayo  555 0142  Three-Piece     Aso-Oke                Received 08:49:46
+                      Agbada          Silk
+```
+
+---
+
+## 4. Actual Server Console Log Output
+```text
+[Nit's Cut Server] Process 7958 listening on port 3099
+[Nit's Cut Server] Local URL: http://localhost:3099
+[Validation Error] Missing required fields in inquiry submission
+[Database] Connecting to SQLite database at: /tmp/nits_cut_form_test.db
+[SQL] PRAGMA journal_mode = WAL
+[Database] Running migration: 001-initial-schema.sql
+[SQL] CREATE TABLE IF NOT EXISTS inquiries ( ... );
+[SQL] CREATE INDEX IF NOT EXISTS idx_inquiries_created_at ON inquiries(created_at);
+[SQL] SELECT * FROM inquiries ORDER BY id DESC
+[2026-11-02T08:48:58.879Z] POST /inquiries 400 (23ms)
+[SQL] 
+    INSERT INTO inquiries (client_name, phone, garment_type, fabric_choice, fitting_date)
+    VALUES ('Tunde Adebayo', '+234 809 555 0142', 'Traditional Three-Piece Agbada', 'Burgundy Aso-Oke Silk', '2026-11-20')
+  
+[SQL] SELECT * FROM inquiries WHERE id = 1.0
+[Database Write] 201 Created: Inquiry #1 for "Tunde Adebayo" (Traditional Three-Piece Agbada) registered at 2026-11-02 08:49:46
+[SQL] SELECT * FROM inquiries ORDER BY id DESC
+[2026-11-02T08:49:46.010Z] POST /inquiries 201 (4ms)
+```
+
