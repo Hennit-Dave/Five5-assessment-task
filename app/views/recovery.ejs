@@ -2,19 +2,12 @@
 <%- include('partials/header') %>
 
 <main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
-  <nav class="auth-switch" aria-label="Recovery demonstration options">
-    <a href="/auth/recovery?version=revealing" class="btn <%= version === 'revealing' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large"<%- version === 'revealing' ? ' aria-current="page"' : '' %>>Before: Revealing Code Shape</a>
-    <a href="/auth/recovery?version=generic" class="btn <%= version !== 'revealing' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large"<%- version !== 'revealing' ? ' aria-current="page"' : '' %>>After: Generic Guidance (Protected)</a>
-  </nav>
-
   <section class="card">
     <div class="card-header">
       <div>
-        <h1 class="card-title nc-type-headline-medium" tabindex="-1">
-          <%= version === 'revealing' ? 'Enter Recovery Code (Before: Leaking Shape)' : 'Enter Recovery Code (After: Shape Protected)' %>
-        </h1>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Enter Recovery Code</h1>
         <p class="card-desc nc-type-body-medium">
-          Step 2 Prototype: Entering the proposed password-reset code. Demonstrates enumeration mitigation by removing hints that reveal the sensitive code's format.
+          Step 2 Prototype: Entering the proposed password-reset code. Generic guidance protects the sensitive code format against enumeration attacks.
         </p>
       </div>
     </div>
@@ -27,39 +20,19 @@
         </p>
       </div>
 
-      <% if (version === 'revealing') { %>
-        <!-- BEFORE VERSION: Leaks length and character set -->
-        <form method="POST" action="/auth/recovery" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);" novalidate>
-          <input type="hidden" name="version" value="revealing">
-          <div class="form-group">
-            <label class="form-label" for="recovery-code-rev">Password Reset Code</label>
-            <input class="form-control" type="text" id="recovery-code-rev" name="recovery_code" placeholder="e.g. 6-digit PIN: 492018" pattern="[0-9]{6}" maxlength="6" aria-describedby="recovery-code-rev-hint" autocomplete="off">
-            <p id="recovery-code-rev-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
-              Enter the 6-digit numeric verification code sent to your email.
-            </p>
-            <div id="recovery-code-rev-error" class="field-error nc-type-body-small" role="alert" style="display: none; color: var(--nc-color-error); margin-top: var(--nc-space-1);"></div>
-          </div>
-          <div>
-            <button class="btn btn-primary" type="submit">Verify Code</button>
-          </div>
-        </form>
-      <% } else { %>
-        <!-- AFTER VERSION: Non-revealing guidance, no leaked shape -->
-        <form method="POST" action="/auth/recovery" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);" novalidate>
-          <input type="hidden" name="version" value="generic">
-          <div class="form-group">
-            <label class="form-label" for="recovery-code-gen">Recovery Code</label>
-            <input class="form-control" type="text" id="recovery-code-gen" name="recovery_code" aria-describedby="recovery-code-gen-hint" autocomplete="off">
-            <p id="recovery-code-gen-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
-              Enter the code from your recovery message.
-            </p>
-            <div id="recovery-code-gen-error" class="field-error nc-type-body-small" role="alert" style="display: none; color: var(--nc-color-error); margin-top: var(--nc-space-1);"></div>
-          </div>
-          <div>
-            <button class="btn btn-primary" type="submit">Verify Code</button>
-          </div>
-        </form>
-      <% } %>
+      <form method="POST" action="/auth/recovery" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="recovery-code">Recovery Code</label>
+          <input class="form-control" type="text" id="recovery-code" name="recovery_code" aria-describedby="recovery-code-hint" autocomplete="off">
+          <p id="recovery-code-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
+            Enter the code from your recovery message.
+          </p>
+          <div id="recovery-code-error" class="field-error nc-type-body-small" role="alert" style="display: none; color: var(--nc-color-error); margin-top: var(--nc-space-1);"></div>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="submit">Verify Code</button>
+        </div>
+      </form>
 
       <p style="margin-top: var(--nc-space-4);">
         <a href="/auth?mode=reset" class="auth-link">&larr; Back to reset request (email-only)</a>
@@ -69,34 +42,11 @@
 </main>
 
 <script>
-  // Validation script for demonstration
-  var revForm = document.querySelector('form[action="/auth/recovery"] input[name="version"][value="revealing"]')?.closest('form');
-  if (revForm) {
-    revForm.addEventListener('submit', function (e) {
-      var input = document.getElementById('recovery-code-rev');
-      var err = document.getElementById('recovery-code-rev-error');
-      var val = (input.value || '').trim();
-      if (!val) {
-        e.preventDefault();
-        err.textContent = 'Please enter your 6-digit recovery code.';
-        err.style.display = 'block';
-        input.setAttribute('aria-invalid', 'true');
-        input.focus();
-      } else if (!/^\d{6}$/.test(val)) {
-        e.preventDefault();
-        err.textContent = 'Code must be exactly 6 digits (numbers only).';
-        err.style.display = 'block';
-        input.setAttribute('aria-invalid', 'true');
-        input.focus();
-      }
-    });
-  }
-
-  var genForm = document.querySelector('form[action="/auth/recovery"] input[name="version"][value="generic"]')?.closest('form');
-  if (genForm) {
-    genForm.addEventListener('submit', function (e) {
-      var input = document.getElementById('recovery-code-gen');
-      var err = document.getElementById('recovery-code-gen-error');
+  var recoveryForm = document.querySelector('form[action="/auth/recovery"]');
+  if (recoveryForm) {
+    recoveryForm.addEventListener('submit', function (e) {
+      var input = document.getElementById('recovery-code');
+      var err = document.getElementById('recovery-code-error');
       var val = (input.value || '').trim();
       if (!val) {
         e.preventDefault();

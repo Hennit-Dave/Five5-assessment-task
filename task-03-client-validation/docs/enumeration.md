@@ -31,10 +31,10 @@ When the form contained revealing placeholder text and error messages, an attack
 
 ## 3. Why Removing the Hint Does Not Change the Number of Possible Codes
 
-Removing the hint from the HTML is a **defensive measure**, not a source of cryptographic entropy.
+Removing the hint from the HTML is a **defensive measure against information disclosure**, not a change to cryptographic entropy.
 
-- **The Math Does Not Change:** If the backend generates a 6-digit numeric PIN, there are still only 1,000,000 possible codes in reality. Removing the placeholder from the web browser does not create more combinations on the server.
-- **The Attacker's Uncertainty:** What changes is the attacker's **knowledge**. Without the hint, an attacker cannot be sure whether the code is 6 digits, 8 alphanumeric characters, or a 12-character token. They must search a much larger theoretical space or spend time probing boundary conditions.
+- **The Math Remains Identical:** The hint disclosed the format without changing the number of possible codes. If the backend generates a 6-digit numeric PIN, there are still exactly 1,000,000 possible codes in reality ($10^6$). Removing the placeholder from the web browser does not create more combinations on the server.
+- **The Attacker's Uncertainty:** What changes is the attacker's **knowledge**. Without the hint, an attacker cannot be sure whether the code is 6 digits, 8 alphanumeric characters, or a 12-character token. They must search a much larger theoretical space ($62^n$) or spend time probing boundary conditions.
 - **True Security Requires Backend Controls:** Obscuring the shape in client HTML does not make a weak code strong. Real protection requires server-side controls: cryptographically secure random generation (e.g. 128-bit tokens), short expiration windows (e.g. 15 minutes), single-use invalidation upon attempt, and strict IP and account rate limiting (e.g. 5 failed attempts locks the token).
 
 ---
@@ -100,7 +100,18 @@ To ensure technical honesty during assessment review and viva defence:
      - Body Text: *"Prototype submission received. In this prototype, requesting a reset does not generate a token or send an email."*
    - Neither response leaked whether the address exists.
 
-2. **Accurate Prototype Scope:**
-   - In this prototype, the recovery form ([`/auth/recovery`](file:///Users/blk/Developer/Five5%20assessment%20task/app/views/recovery.ejs)) is an isolated demonstration interface.
-   - It does **not** look up database records, dispatch live emails, generate cryptographic tokens, track token expiry windows, or enforce server rate limits.
-   - Those mechanisms are future backend controls required for production deployment.
+2. **Distinguishing the Prototype from a Production Service:**
+   - In a production service, the backend performs an internal database lookup to locate the account, generates a cryptographically secure token, and dispatches an actual email if found.
+   - In this prototype, the recovery form ([`/auth/recovery`](file:///Users/blk/Developer/Five5%20assessment%20task/app/views/recovery.ejs)) is an isolated educational demonstration.
+   - It does **not** query SQLite for existing accounts, dispatch live emails, generate cryptographic tokens, track token expiry windows, or enforce server rate limits.
+   - Stronger token generation, expiry, attempt limits, and server-side verification belong to future server controls (Task 4/5).
+
+---
+
+## 8. Preserved Historical Evidence Captures
+
+To maintain traceability across iterations:
+- **`step5-before-revealing-code-shape.png` & `step5-before-revealing-error-state.png`:** Preserved historical captures of the superseded demonstration version that displayed the revealing placeholder (`e.g. 6-digit PIN: 492018`) and length-disclosing error message (`Code must be exactly 6 digits (numbers only)`).
+- **`step5-after-generic-code-shape.png` & `step5-after-generic-error-state.png`:** Current captures of the clean recovery form with generic guidance (`Enter the code from your recovery message.`) and no leaked parameters.
+- **`step5-after-submission-result.png`:** Result view showing submission confirmation without credential echo or parameter length disclosure.
+

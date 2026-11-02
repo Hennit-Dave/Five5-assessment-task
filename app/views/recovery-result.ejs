@@ -5,7 +5,7 @@
   <section class="card">
     <div class="card-header">
       <div>
-        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Recovery Code Submitted (Prototype)</h1>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Recovery Submission Received (Prototype)</h1>
         <p class="card-desc nc-type-body-medium">
           Demonstration for Task 3 Step 5: Password reset recovery code verification prototype.
         </p>
@@ -15,16 +15,14 @@
     <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
       <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
         <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype Status</p>
-        <p>In this prototype, submitting a code does not check a database, verify single-use tokens, or unlock accounts. Stronger token generation, expiry windows, rate limits, and server-side verification are treated as future controls.</p>
-        <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
-          <li><strong>Demonstration Version:</strong> <%= version === 'revealing' ? 'Revealing Code Shape (Before)' : 'Non-revealing Guidance (After)' %></li>
-          <li><strong>Submitted Code Value:</strong> "<%= submittedCode %>"</li>
-          <li><strong>Submitted Code Length:</strong> <%= submittedLength %> character(s)</li>
-        </ul>
+        <p>In this prototype, submitting a code does not check a database, verify single-use tokens, or unlock accounts. The submitted value is handled safely without echoing secret credentials or exposing parameter lengths in the response view.</p>
+        <p style="margin-top: var(--nc-space-2); color: var(--nc-color-on-surface);">
+          Stronger token generation, expiry windows, attempt limits, and server-side cryptographic verification are treated as future controls.
+        </p>
       </div>
 
       <p style="margin-top: var(--nc-space-4);">
-        <a href="/auth/recovery?version=<%= version %>" class="auth-link">&larr; Return to code entry demonstration</a>
+        <a href="/auth/recovery" class="auth-link">&larr; Return to code entry demonstration</a>
       </p>
     </div>
   </section>
