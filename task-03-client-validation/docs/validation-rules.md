@@ -65,8 +65,10 @@ Every validation rule introduces friction and inevitably excludes or inconvenien
   - Strings of pure punctuation passing a naive length check.
 - **Customer Cost & Exclusion (Why the 2-Character Minimum Justifies Rejecting 1-Character Names):**
   - *Single-Name Support:* Nit's Cut intentionally avoids the class's flawed "at least two words separated by a space" rule, thereby welcoming customers with mononyms (e.g. Chinua, Dapo, Sade, Zendaya).
-  - *Exclusion of Genuine One-Character Names:* This rule excludes individuals whose legal or cultural name is a single letter (for example, individuals with single-letter family names such as "O" in certain Nigerian languages, or "U" in Myanmar).
-  - *Business Justification:* In a bespoke tailoring atelier, physical cutting tickets, pattern pieces, and chalked fabric rolls are labelled with the customer's name in a busy shared cutting room. Tailors and apprentice cutters frequently misread a single letter ("O" or "U") as an internal workshop symbol, a circle, or a pattern abbreviation (e.g. "O" for "Outer", "U" for "Under"). Furthermore, single characters represent the overwhelming pattern of bot-fills and accidental keystrokes. Nit's Cut makes the explicit **business decision** to prioritize unambiguous workshop identification and bot deterrence over automatic online registration for single-letter names. This is an intentional business exclusion; no unverified in-person workaround is claimed.
+  - *Exclusion of Genuine One-Character Names:* This rule unambiguously excludes individuals whose legal or cultural name is a single letter (for example, individuals with single-letter family names such as "O" in certain Nigerian languages, or "U" in Myanmar).
+  - *Design Decision and Trade-off:*
+    - **Engineering & Integrity Concern:** The two-character minimum is a deliberate design decision to block automated bot test tokens ("a", "1", "x") and accidental single punctuation keystrokes (`.`, `-`) from polluting customer profiles and order receipts with unidentifiable entries.
+    - **Explicit Customer Cost:** Nit's Cut acknowledges that this choice directly discriminates against and blocks legitimate customers who have genuine one-letter legal names. This is not mitigated by any claimed in-person exception or external procedure; it is a clear trade-off where the business accepts excluding genuine one-letter names online in exchange for filtering out single-character garbage and bot tokens.
 
 #### 2. Password Policy (Signup vs. Login)
 - **Policy Standard & Source:**

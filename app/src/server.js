@@ -148,6 +148,34 @@ app.post('/auth/reset', (req, res) => {
   });
 });
 
+// Order Reference Lookup Demonstration Route (Task 3 Step 4)
+// Demonstrates input type selection for numerical identifiers (e.g. NC-0042 digits)
+app.get('/orders/lookup', (req, res) => {
+  const version = req.query.version === 'text' ? 'text' : 'number';
+  res.render('order-lookup', {
+    pageTitle: "Find Your Order (Reference Demonstration) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/orders/lookup',
+    theme: 'dark',
+    version
+  });
+});
+
+app.post('/orders/lookup', (req, res) => {
+  const { order_ref, version } = req.body || {};
+  const submittedStr = typeof order_ref === 'string' ? order_ref : String(order_ref ?? '');
+  res.status(200).render('order-lookup-result', {
+    pageTitle: "Order Reference Submitted (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/orders/lookup',
+    theme: 'dark',
+    version: version || 'number',
+    submittedValue: submittedStr,
+    submittedLength: submittedStr.length,
+    numericCoercion: Number(submittedStr)
+  });
+});
+
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {
   const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body || {};

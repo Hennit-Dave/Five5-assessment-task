@@ -1,0 +1,42 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Order Reference Result (Prototype)</h1>
+        <p class="card-desc nc-type-body-medium">
+          Demonstrating value submission for <%= version === 'number' ? 'type="number"' : 'type="text" inputmode="numeric"' %>.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Submitted Form Data</p>
+        <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
+          <li><strong>Input Version Used:</strong> <%= version === 'number' ? '<input type="number">' : '<input type="text" inputmode="numeric">' %></li>
+          <li><strong>Raw Submitted String:</strong> "<%= submittedValue %>"</li>
+          <li><strong>Submitted String Length:</strong> <%= submittedLength %> character(s)</li>
+          <li><strong>Numeric Coercion (Number(val)):</strong> <%= numericCoercion %></li>
+        </ul>
+      </div>
+
+      <div class="nc-type-body-medium">
+        <% if (version === 'number') { %>
+          <p><strong>Behavior Note for Number Input:</strong> The browser's native number control treats the input as a mathematical number. If a user entered <code>0042</code>, numeric coercion on client or server collapses it to <code>42</code>, stripping the leading zeros needed to locate bespoke tailoring ticket <code>NC-0042</code>.</p>
+        <% } else { %>
+          <p><strong>Behavior Note for Text Input:</strong> The text input preserved leading zeros as an immutable string (<code>"<%= submittedValue %>"</code>). It reached the backend with length <%= submittedLength %> intact, enabling exact matching against order reference <code>NC-0042</code>.</p>
+        <% } %>
+      </div>
+
+      <p style="margin-top: var(--nc-space-4);">
+        <a href="/orders/lookup?version=<%= version %>" class="auth-link">&larr; Try another lookup</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+

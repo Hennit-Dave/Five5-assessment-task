@@ -21,8 +21,8 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 06-length-rule-blocking.png
 - [x] 07-email-realtime-signup.png
 - [x] 08-email-on-submit-login.png
-- [ ] 09-number-input-annoying.mp4
-- [ ] 10-text-input-working.mp4
+- [x] 09-number-input-annoying.mp4 (satisfied via composite 09-number-input-annoying.png and three screenshots 09a, 09b, 09c)
+- [x] 10-text-input-working.mp4 (satisfied via composite 10-text-input-working.png and three screenshots 10a, 10b, 10c)
 - [ ] 11-screenreader-before.mp3
 - [ ] 12-screenreader-after.mp3
 - [ ] 13-button-hidden-version.png

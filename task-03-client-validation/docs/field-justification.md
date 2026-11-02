@@ -120,3 +120,35 @@ To maintain absolute technical honesty in assessment review and viva defence:
 1. **Submit Button Semantic Correction:** Submit buttons on all three forms previously had `type="button"`, which does not submit an HTML form. Updated to semantic `type="submit"`.
 2. **Decorative Punctuation Removed:** Removed ornamental `&nbsp;·&nbsp;` dividers in login sublinks in favor of structured flexbox spacing (`.auth-sublinks` using token `var(--nc-space-3)`).
 3. **Excluded Misleading Badges:** Visual "256-bit SSL Encrypted" or "Bank-Grade Security" shield badges were deliberately excluded because they deceive users into thinking client-side HTML provides backend security.
+
+---
+
+## 5. Input Type Selection: Identifiers vs. Quantities (Task 3 Step 4)
+
+In Task 3 Step 4, we built an isolated demonstration to evaluate the user experience and data integrity impact of choosing `<input type="number">` versus `<input type="text" inputmode="numeric">` for numerical sequence data.
+
+### Proposed Example Field: Order Reference Digits
+- **Context:** Nit's Cut order references follow a workshop prefix and sequence format. The existing screen displays `NC-204`; for this exercise, we evaluated entering the digits of proposed order reference `NC-0042` via an isolated demonstration route (`/orders/lookup`).
+- **Demonstration Scope:** Kept strictly separate from the authentication flows (`/auth`); limited to entering and submitting a reference without requiring a database lookup.
+
+### Comparison Matrix: `type="number"` vs. `type="text" inputmode="numeric"`
+
+| Evaluation Aspect | Version A: `<input type="number">` (Defect) | Version B: `<input type="text" inputmode="numeric">` (Working) |
+|---|---|---|
+| **Starting Value** | Set explicitly to `0` (`value="0"`). Customer typing `400` results in `0400` unless the zero is actively selected and erased. | Empty with clear placeholder (`placeholder="e.g. 0042"`). Typing `400` displays `400` cleanly. |
+| **Leading Zeros in Browser UI** | Chrome displays `0042` during typing, but stepper arrows appear. If a user clicks steppers, the value collapses to `43` or `41`. | Leading zeros (`0042`) remain completely stable. No stepper arrows appear. |
+| **Data Integrity on Submit** | While Chrome submits raw string `"0042"`, client or server numeric parsing (`Number(val)` or `input.valueAsNumber`) collapses it to `42`, breaking exact lookup for `NC-0042`. | Transmitted and stored as an immutable string (`"0042"`, length 4). String equality matches ticket `NC-0042`. |
+| **Non-Digit Characters** | Allows scientific notation characters like `e`, `+`, `-`, or `.`. | Input event listener strips non-digits (`replace(/\D/g, '')`). |
+| **Mobile Keyboard** | Displays numeric keyboard often including decimal point and negative sign. | `inputmode="numeric"` brings up clean 0–9 virtual keypad. |
+
+### Why a Text Field Fits an Identifier
+1. **Identifiers are Discrete Symbolic Strings, Not Numbers:** You never calculate the sum of two order numbers, take the average of ticket references, or multiply an invoice code. Treating an identifier as a number is a category error.
+2. **Preservation of Leading Zeros:** Workshop ticketing systems rely on fixed-width numeric sequences (e.g. `0042` distinct from `42`). Mathematical numbers strip leading zeros; strings preserve them.
+3. **Prevention of Stepper Clobbering:** Spin buttons (steppers) on `<input type="number">` are dangerous on identifiers: an accidental brush of a trackpad or mouse wheel silently increments ticket `NC-0042` to `NC-0043`, causing the customer to query someone else's garment.
+
+### Where a Number Input Genuinely Makes Sense at Nit's Cut
+A `<input type="number">` is appropriate only for **quantitative measurements and counts** where arithmetic operations apply and stepper increments match customer intent. Real Nit's Cut examples:
+1. **Quantity of Shirts in an Order:** When ordering bespoke poplin or linen shirts (`name="shirt_quantity"`), `min="1"`, `max="12"`, and `step="1"` allow the customer to click `+` to order 3 shirts. Leading zeros have no semantic meaning (`3` is identical to `03`), and incrementing/decrementing is a desired ergonomic feature.
+2. **Replacement Blazer Buttons:** When ordering spare horn buttons (`name="button_count"`), `min="1"`, `max="8"`, `step="1"` provides a bounded count.
+3. **Trouser Cuff Turn-Up Depth:** Measured in centimeters (`name="cuff_depth_cm"`), `min="3.0"`, `max="6.0"`, `step="0.5"`, where decimal increments and mathematical bounds represent physical fabric dimensions.
+
