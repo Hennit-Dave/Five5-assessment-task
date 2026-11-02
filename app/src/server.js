@@ -96,6 +96,58 @@ app.get('/auth', (req, res) => {
   });
 });
 
+// Terms of Service Route (Step 2 Draft placeholder awaiting approved source)
+app.get('/terms', (req, res) => {
+  res.render('terms', {
+    pageTitle: "Terms of Service (Assessment Draft) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/terms',
+    theme: 'dark'
+  });
+});
+
+// Prototype Auth Form POST Handlers (Task 3 Step 2)
+// Uses explicit HTTP POST to keep credentials and personal details out of URLs and query logs.
+app.post('/auth/signup', (req, res) => {
+  const { name, email, terms } = req.body || {};
+  // Explicitly avoid logging password; pass status to prototype response view
+  res.status(200).render('auth-result', {
+    pageTitle: "Signup Received (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    theme: 'dark',
+    action: 'signup',
+    name: typeof name === 'string' ? name.trim() : '',
+    email: typeof email === 'string' ? email.trim() : '',
+    termsAccepted: terms === 'on' || terms === 'true'
+  });
+});
+
+app.post('/auth/login', (req, res) => {
+  const { email } = req.body || {};
+  // Explicitly avoid logging password
+  res.status(200).render('auth-result', {
+    pageTitle: "Login Received (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    theme: 'dark',
+    action: 'login',
+    email: typeof email === 'string' ? email.trim() : ''
+  });
+});
+
+app.post('/auth/reset', (req, res) => {
+  const { email } = req.body || {};
+  res.status(200).render('auth-result', {
+    pageTitle: "Reset Requested (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    theme: 'dark',
+    action: 'reset',
+    email: typeof email === 'string' ? email.trim() : ''
+  });
+});
+
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {
   const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body || {};

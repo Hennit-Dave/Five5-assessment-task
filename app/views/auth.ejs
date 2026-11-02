@@ -18,7 +18,11 @@
         <p class="card-desc nc-type-body-medium">Sign up to follow your tailoring orders.</p>
       </div>
     </div>
-    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+    <form method="POST" action="/auth/signup" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Full name</label>
+        <input class="form-control" type="text" id="signup-name" name="name" autocomplete="name">
+      </div>
       <div class="form-group">
         <label class="form-label" for="signup-email">Email</label>
         <input class="form-control" type="email" id="signup-email" name="email" autocomplete="email">
@@ -27,8 +31,14 @@
         <label class="form-label" for="signup-password">Password</label>
         <input class="form-control" type="password" id="signup-password" name="password" autocomplete="new-password">
       </div>
+      <div class="form-group form-checkbox">
+        <input type="checkbox" id="signup-terms" name="terms" required>
+        <label for="signup-terms" class="nc-type-body-medium">
+          I agree to the <a class="auth-link" href="/terms" target="_blank" rel="noopener">Terms of Service</a>
+        </label>
+      </div>
       <div>
-        <button class="btn btn-primary" type="button">Sign up</button>
+        <button class="btn btn-primary" type="submit">Sign up</button>
       </div>
     </form>
     <p class="card-desc nc-type-body-medium">
@@ -43,7 +53,7 @@
         <p class="card-desc nc-type-body-medium">Welcome back to Nit's Cut.</p>
       </div>
     </div>
-    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+    <form method="POST" action="/auth/login" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
       <div class="form-group">
         <label class="form-label" for="login-email">Email</label>
         <input class="form-control" type="email" id="login-email" name="email" autocomplete="email">
@@ -53,14 +63,13 @@
         <input class="form-control" type="password" id="login-password" name="password" autocomplete="current-password">
       </div>
       <div>
-        <button class="btn btn-primary" type="button">Log in</button>
+        <button class="btn btn-primary" type="submit">Log in</button>
       </div>
     </form>
-    <p class="card-desc nc-type-body-medium">
+    <div class="auth-sublinks card-desc nc-type-body-medium">
       <a class="auth-link" href="/auth?mode=signup" data-auth-mode="signup">Create an account</a>
-      &nbsp;·&nbsp;
       <a class="auth-link" href="/auth?mode=reset" data-auth-mode="reset">Forgot your password?</a>
-    </p>
+    </div>
   </section>
 
   <section class="card" data-auth-form="reset" data-title="<%= authModes.reset.title %>"<%- mode !== 'reset' ? ' hidden' : '' %>>
@@ -70,13 +79,13 @@
         <p class="card-desc nc-type-body-medium">Enter your email and we will help you get back in.</p>
       </div>
     </div>
-    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+    <form method="POST" action="/auth/reset" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
       <div class="form-group">
         <label class="form-label" for="reset-email">Email</label>
         <input class="form-control" type="email" id="reset-email" name="email" autocomplete="email">
       </div>
       <div>
-        <button class="btn btn-primary" type="button">Send reset link</button>
+        <button class="btn btn-primary" type="submit">Send reset link</button>
       </div>
     </form>
     <p class="card-desc nc-type-body-medium">

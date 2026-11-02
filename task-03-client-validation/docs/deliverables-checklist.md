@@ -4,9 +4,9 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 
 - [ ] README.md
 - [x] spa-rationale.md
-- [ ] field-justification.md
+- [x] field-justification.md
 - [ ] validation-rules.md
-- [ ] terms-note.md
+- [x] terms-note.md (adapted from Automattic Terms of Service Section 2 under CC BY-SA 4.0)
 - [ ] enumeration.md
 - [ ] accessibility-audit.md
 - [ ] client-side-is-not-security.md

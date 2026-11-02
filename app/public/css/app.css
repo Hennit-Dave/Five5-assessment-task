@@ -333,6 +333,33 @@ body {
   text-decoration: underline;
 }
 
+.auth-sublinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-3);
+  align-items: center;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nc-space-2);
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: var(--nc-space-0-5);
+  accent-color: var(--nc-color-primary);
+  cursor: pointer;
+}
+
+.form-checkbox label {
+  cursor: pointer;
+  color: var(--nc-color-on-surface);
+  line-height: 1.4;
+}
+
 .nc-visually-hidden {
   position: absolute;
   width: 1px;
