@@ -1,0 +1,113 @@
+TASK 3 STEP 1 - PAGE COUNT BEFORE
+Date: 2026-11-02
+Branch: feature/task-03-client-validation (created from main)
+Starting commit: 6bf57489a4d5ed4212e582ce962e2aa829ebd4ae (main, docs(task-02): record PR #1 merge ...)
+
+HOW PAGES ARE COUNTED (same rule is used in 02-page-count-after.txt)
+  A user-facing page is a distinct URL path that answers an HTTP GET with status 200 and a
+  text/html document meant for a person to read.
+  - Query-string variants of one path (e.g. /auth?mode=login and /auth?mode=reset) count as ONE page.
+  - Redirects, the 404 page, POST-only endpoints (POST /inquiries) and static assets are not counted.
+  Tool: task-03-client-validation/scripts/page-inventory.mjs (probes a fixed candidate list over HTTP).
+
+======================================================================
+PART A - ORIGINAL INVENTORY (the app exactly as committed at 6bf5748)
+Command: git archive 6bf5748 app | tar -x -C /tmp/t3-orig ; PORT=3101 node /tmp/t3-orig/app/src/server.js
+         node task-03-client-validation/scripts/page-inventory.mjs http://localhost:3101
+Source routes in that commit: GET /, GET /services, POST /inquiries, plus the 404 handler.
+There were NO authentication pages in the original application. That is recorded explicitly:
+authentication pages before this exercise = 0.
+
+Probe results (GET):
+  200  /                          text/html  Nit's Cut — Bespoke Men's Tailoring
+  200  /services                  text/html  Bespoke Tailoring Services — Nit's Cut
+  404  /inquiries                 text/html  Page Not Found — Nit's Cut
+  404  /signup                    text/html  Page Not Found — Nit's Cut
+  404  /register                  text/html  Page Not Found — Nit's Cut
+  404  /login                     text/html  Page Not Found — Nit's Cut
+  404  /reset                     text/html  Page Not Found — Nit's Cut
+  404  /forgot-password           text/html  Page Not Found — Nit's Cut
+  404  /reset-password            text/html  Page Not Found — Nit's Cut
+  404  /password-reset            text/html  Page Not Found — Nit's Cut
+  404  /auth                      text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=signup          text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=login           text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=reset           text/html  Page Not Found — Nit's Cut
+  404  /does-not-exist-control    text/html  Page Not Found — Nit's Cut
+
+Pages counted under the rule (distinct paths returning 200 text/html):
+  /            Nit's Cut — Bespoke Men's Tailoring
+  /services    Bespoke Tailoring Services — Nit's Cut
+
+TOTAL USER-FACING PAGES: 2
+  of which authentication pages: 0
+
+======================================================================
+PART B - SEPARATE-PAGE BASELINE (INTERMEDIATE VERSION)
+This is an intermediate version created only for the Task 3 Step 1 collapse exercise. It is not
+the product design. It adds three separate pages, each with its own route and its own EJS
+template (app/views/baseline/signup.ejs, login.ejs, reset.ejs). The forms are deliberately
+minimal (email and password fields, a button that does nothing) because they exist only to
+demonstrate navigation. The real field selection is Step 2.
+Command: PORT=3102 node app/src/server.js
+         node task-03-client-validation/scripts/page-inventory.mjs http://localhost:3102
+
+Probe results (GET):
+  200  /                          text/html  Nit's Cut — Bespoke Men's Tailoring
+  200  /services                  text/html  Bespoke Tailoring Services — Nit's Cut
+  404  /inquiries                 text/html  Page Not Found — Nit's Cut
+  200  /signup                    text/html  Sign up — Nit's Cut
+  404  /register                  text/html  Page Not Found — Nit's Cut
+  200  /login                     text/html  Log in — Nit's Cut
+  200  /reset                     text/html  Reset password — Nit's Cut
+  404  /forgot-password           text/html  Page Not Found — Nit's Cut
+  404  /reset-password            text/html  Page Not Found — Nit's Cut
+  404  /password-reset            text/html  Page Not Found — Nit's Cut
+  404  /auth                      text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=signup          text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=login           text/html  Page Not Found — Nit's Cut
+  404  /auth?mode=reset           text/html  Page Not Found — Nit's Cut
+  404  /does-not-exist-control    text/html  Page Not Found — Nit's Cut
+
+Pages counted under the rule (distinct paths returning 200 text/html):
+  /            Nit's Cut — Bespoke Men's Tailoring
+  /services    Bespoke Tailoring Services — Nit's Cut
+  /signup      Sign up — Nit's Cut
+  /login       Log in — Nit's Cut
+  /reset       Reset password — Nit's Cut
+
+TOTAL USER-FACING PAGES: 5
+  of which authentication pages: 3 (/signup, /login, /reset)
+
+======================================================================
+PART C - WHAT SWITCHING FELT LIKE IN THE BASELINE (measured in Chrome)
+Command: node task-03-client-validation/scripts/browser-nav-check.mjs baseline http://localhost:3102
+(Chrome 'headless=new', driven through the DevTools Protocol. A JavaScript marker is set on
+window after the first load; if the page reloads the marker is lost and performance.timeOrigin changes.)
+
+Scenario: baseline   Base: http://localhost:3102   Chrome: headless via DevTools Protocol
+Initial load: /login  heading: Log in  Document requests so far: 1
+Click "Create an account" -> /signup  heading: Create your account
+    new Document requests: 1 | marker survived: false | timeOrigin unchanged: false
+Click "I already have an account" -> /login  heading: Log in
+    new Document requests: 1
+Click "Forgot your password?" -> /reset  heading: Reset your password
+    new Document requests: 1
+All Document requests seen: 4
+    http://localhost:3102/login
+    http://localhost:3102/signup
+    http://localhost:3102/login
+    http://localhost:3102/reset
+
+Server log lines for the same browser run (full page requests; stylesheets and fonts are served by
+the static middleware, which is registered before the request logger, so they are not logged):
+[2026-11-02T13:45:13.737Z] GET /login 200 (2ms)
+[2026-11-02T13:45:14.007Z] GET /signup 200 (1ms)
+[2026-11-02T13:45:15.215Z] GET /login 304 (2ms)
+[2026-11-02T13:45:16.417Z] GET /reset 200 (1ms)
+
+SUMMARY
+  Original application:   2 user-facing pages, 0 authentication pages.
+  Separate-page baseline: 5 user-facing pages, 3 authentication pages (/signup, /login, /reset).
+  Every switch between forms in the baseline was a full page load (3 clicks = 3 new Document requests,
+  marker lost, timeOrigin changed).

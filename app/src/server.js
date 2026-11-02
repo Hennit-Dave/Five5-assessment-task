@@ -72,6 +72,26 @@ app.get('/services', (req, res) => {
   });
 });
 
+// ---- INTERMEDIATE VERSION (Task 3 Step 1 baseline) ----
+// Three separate authentication pages, created only to demonstrate the "before" state of the
+// collapse exercise. Replaced by the single /auth page in the next commit.
+const baselinePages = {
+  '/signup': { view: 'baseline/signup', title: "Sign up — Nit's Cut" },
+  '/login': { view: 'baseline/login', title: "Log in — Nit's Cut" },
+  '/reset': { view: 'baseline/reset', title: "Reset password — Nit's Cut" }
+};
+for (const [route, page] of Object.entries(baselinePages)) {
+  app.get(route, (req, res) => {
+    res.render(page.view, {
+      pageTitle: page.title,
+      isMarketingPage: false,
+      activePath: route,
+      theme: 'dark'
+    });
+  });
+}
+// ---- END INTERMEDIATE VERSION ----
+
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {
   const { clientName, phone, garmentType, fabricChoice, fittingDate } = req.body || {};
