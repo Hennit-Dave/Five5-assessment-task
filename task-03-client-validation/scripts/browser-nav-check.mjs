@@ -65,8 +65,8 @@ await send('Network.enable');
 const snapshot = () => evaluate(`JSON.stringify({
   url: location.pathname + location.search,
   title: document.title,
-  heading: (document.querySelector('h1')||{}).textContent,
-  visibleForms: [...document.querySelectorAll('form[data-auth-form]')].filter(f => !f.hidden).map(f => f.dataset.authForm),
+  heading: ([...document.querySelectorAll('h1')].find(h => !h.closest('[hidden]'))||{}).textContent,
+  visibleForms: [...document.querySelectorAll('[data-auth-form]')].filter(f => getComputedStyle(f).display !== 'none').map(f => f.dataset.authForm),
   marker: window.__marker || null,
   timeOrigin: performance.timeOrigin,
   historyLength: history.length
@@ -84,7 +84,7 @@ async function act(label, expression) {
   await sleep(500);
   const s = await snapshot();
   const newDocs = documentRequests.length - docsBefore;
-  console.log(`${label}`);
+  console.log(`[${new Date().toISOString()}] ${label}`);
   console.log(`    address bar: ${s.url}`);
   console.log(`    heading: ${s.heading} | visible auth forms: ${JSON.stringify(s.visibleForms)}`);
   console.log(`    new Document requests caused by this action: ${newDocs}`);
@@ -127,35 +127,35 @@ try {
     await evaluate(`window.__marker = ${JSON.stringify(markerValue)}`);
     let s = await snapshot();
     firstOrigin = s.timeOrigin;
-    console.log(`Initial load: ${s.url}  heading: ${s.heading}  visible: ${JSON.stringify(s.visibleForms)}  Document requests so far: ${documentRequests.length}`);
+    console.log(`[${new Date().toISOString()}] Initial load: ${s.url}  heading: ${s.heading}  visible: ${JSON.stringify(s.visibleForms)}  Document requests so far: ${documentRequests.length}`);
     const results = [];
-    results.push(await act('Click "Create an account" tab', `document.querySelector('[data-auth-mode="signup"]').click()`));
-    results.push(await act('Click "Forgot your password?" link', `document.querySelector('[data-auth-mode="reset"]').click()`));
-    results.push(await act('Click "Log in" tab', `document.querySelector('[data-auth-mode="login"]').click()`));
-    results.push(await act('Browser Back', `history.back()`));
-    results.push(await act('Browser Back again', `history.back()`));
-    results.push(await act('Browser Forward', `history.forward()`));
+    results.push(await act('Click the "Sign up" button in the switcher', `document.querySelector('.auth-switch [data-auth-mode="signup"]').click()`));
+    results.push(await act('Click the "Log in" button in the switcher', `document.querySelector('.auth-switch [data-auth-mode="login"]').click()`));
+    results.push(await act('Click the "Forgot your password?" link inside the login form', `document.querySelector('[data-auth-form="login"] [data-auth-mode="reset"]').click()`));
+    results.push(await act('Browser Back (expect login)', `history.back()`));
+    results.push(await act('Browser Back again (expect signup)', `history.back()`));
+    results.push(await act('Browser Forward (expect login)', `history.forward()`));
     const total = documentRequests.length;
-    console.log(`Total Document requests after initial load, across all six switches: ${total - 1}`);
+    console.log(`[${new Date().toISOString()}] Total Document requests after initial load, across all six switches: ${total - 1}`);
     console.log(`Page.loadEventFired count (includes the initial load): ${loadEvents}`);
     // Refresh and direct links are real loads on purpose: they prove the server renders the right form.
     await go(`${base}/auth?mode=reset`);
     s = await snapshot();
-    console.log(`Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
+    console.log(`[${new Date().toISOString()}] Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
     await evaluate('location.reload()');
     await sleep(1200);
     s = await snapshot();
-    console.log(`After refresh (F5) at ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
+    console.log(`[${new Date().toISOString()}] After refresh (F5) at ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
     await go(`${base}/auth?mode=signup`);
     s = await snapshot();
-    console.log(`Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
+    console.log(`[${new Date().toISOString()}] Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
     await evaluate('location.reload()');
     await sleep(1200);
     s = await snapshot();
-    console.log(`After refresh (F5) at ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
+    console.log(`[${new Date().toISOString()}] After refresh (F5) at ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
     await go(`${base}/auth?mode=login`);
     s = await snapshot();
-    console.log(`Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
+    console.log(`[${new Date().toISOString()}] Direct link ${s.url}: visible forms ${JSON.stringify(s.visibleForms)} | heading: ${s.heading}`);
   }
   console.log(`All Document requests seen: ${documentRequests.length}`);
   for (const u of documentRequests) console.log(`    ${u}`);

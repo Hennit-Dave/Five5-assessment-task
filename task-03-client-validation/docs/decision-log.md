@@ -1,3 +1,9 @@
-# Decision log
+# Decision log — Task 3: Client Validation
 
 Record requirement, decision and reason, actual action/command, observed result, evidence path, date and commit (or explicitly not committed). Never backdate or invent observations.
+
+| Decision ID | Date | Requirement | Decision & Reason | Alternatives Considered | Impact & Verification |
+|-------------|------|-------------|-------------------|-------------------------|------------------------|
+| D-T3-01 | 2026-11-02 | Step 1: Page inventory rule | Count distinct URL paths returning HTTP 200 with `text/html`. Exclude query string variations, redirects, 404s, and POST-only endpoints. | Counting every distinct URL with query parameters as separate pages; counting templates in views directory. Rejected because query strings are state variations of a single page route. | Consistent rule applied to both baseline (5 pages) and consolidated app (3 pages). Probed programmatically via `page-inventory.mjs`. |
+| D-T3-02 | 2026-11-02 | Step 1: Single-page collapse mechanism | Consolidate `/signup`, `/login`, `/reset` into `/auth?mode=login\|signup\|reset`. Serve all three sections server-side with `hidden` attribute on inactive forms. Enhance progressively with client-side JavaScript (`/js/auth.js`) intercepting clicks and updating history via `pushState`. | 1) Client-only fetch/AJAX loading of form fragments (rejected: introduces latency and breaks without JS). 2) Full server-side reload on every switch (rejected: violates SPA instant-switch requirement). | Instant tab switching with 0 server requests and 0 document reloads. Works seamlessly without JS via standard GET links. |
+| D-T3-03 | 2026-11-02 | Step 1: Accessibility & focus management | When switching forms client-side, set focus to the active section's `<h1>` (`tabindex="-1"`), update `aria-current="page"`, and update `document.title`. | Leaving focus on the clicked link (rejected: screen reader users are left at the bottom of the page without confirmation that the content changed). | Verified keyboard and screen reader accessibility on mode change. |

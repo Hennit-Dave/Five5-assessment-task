@@ -72,25 +72,29 @@ app.get('/services', (req, res) => {
   });
 });
 
-// ---- INTERMEDIATE VERSION (Task 3 Step 1 baseline) ----
-// Three separate authentication pages, created only to demonstrate the "before" state of the
-// collapse exercise. Replaced by the single /auth page in the next commit.
-const baselinePages = {
-  '/signup': { view: 'baseline/signup', title: "Sign up — Nit's Cut" },
-  '/login': { view: 'baseline/login', title: "Log in — Nit's Cut" },
-  '/reset': { view: 'baseline/reset', title: "Reset password — Nit's Cut" }
+// Single authentication page (Task 3 Step 1). One route; the ?mode= query parameter selects which
+// of the three forms is visible. This replaces the intermediate separate /signup, /login and /reset
+// pages, which are kept only in Git history (commit 7da3fce) and in evidence/01-page-count-before.txt.
+const AUTH_MODES = {
+  signup: { title: "Sign up — Nit's Cut" },
+  login: { title: "Log in — Nit's Cut" },
+  reset: { title: "Reset password — Nit's Cut" }
 };
-for (const [route, page] of Object.entries(baselinePages)) {
-  app.get(route, (req, res) => {
-    res.render(page.view, {
-      pageTitle: page.title,
-      isMarketingPage: false,
-      activePath: route,
-      theme: 'dark'
-    });
+app.get('/auth', (req, res) => {
+  const mode = req.query.mode;
+  if (typeof mode !== 'string' || !Object.hasOwn(AUTH_MODES, mode)) {
+    return res.redirect(302, '/auth?mode=login');
+  }
+  res.render('auth', {
+    pageTitle: AUTH_MODES[mode].title,
+    isMarketingPage: false,
+    activePath: '/auth',
+    theme: 'dark',
+    mode,
+    authModes: AUTH_MODES,
+    scripts: ['/js/auth.js']
   });
-}
-// ---- END INTERMEDIATE VERSION ----
+});
 
 // Inquiry Submission Route (Step 6 Database Form)
 app.post('/inquiries', (req, res) => {

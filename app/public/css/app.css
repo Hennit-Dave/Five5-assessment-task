@@ -317,6 +317,22 @@ body {
   font-weight: 700;
 }
 
+/* Authentication page (/auth): one page, three forms selected by ?mode= */
+[hidden] {
+  display: none !important;
+}
+
+.auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+}
+
+.auth-link {
+  color: var(--nc-color-primary);
+  text-decoration: underline;
+}
+
 .nc-visually-hidden {
   position: absolute;
   width: 1px;

@@ -1,0 +1,88 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <nav class="auth-switch" aria-label="Account options">
+    <% [['login', 'Log in'], ['signup', 'Sign up'], ['reset', 'Reset password']].forEach(function (item) { %>
+      <a href="/auth?mode=<%= item[0] %>" data-auth-mode="<%= item[0] %>" class="btn <%= mode === item[0] ? 'btn-active' : 'btn-secondary' %> nc-type-label-large"<%- mode === item[0] ? ' aria-current="page"' : '' %>><%= item[1] %></a>
+    <% }); %>
+  </nav>
+
+  <!-- All three forms are in the page. Only the one matching ?mode= is visible. Without JavaScript the
+       links above are ordinary links and the server picks the form; with JavaScript, /js/auth.js switches
+       the visible form without reloading the page. -->
+  <section class="card" data-auth-form="signup" data-title="<%= authModes.signup.title %>"<%- mode !== 'signup' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Create your account</h1>
+        <p class="card-desc nc-type-body-medium">Sign up to follow your tailoring orders.</p>
+      </div>
+    </div>
+    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Email</label>
+        <input class="form-control" type="email" id="signup-email" name="email" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-password">Password</label>
+        <input class="form-control" type="password" id="signup-password" name="password" autocomplete="new-password">
+      </div>
+      <div>
+        <button class="btn btn-primary" type="button">Sign up</button>
+      </div>
+    </form>
+    <p class="card-desc nc-type-body-medium">
+      <a class="auth-link" href="/auth?mode=login" data-auth-mode="login">I already have an account</a>
+    </p>
+  </section>
+
+  <section class="card" data-auth-form="login" data-title="<%= authModes.login.title %>"<%- mode !== 'login' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Log in</h1>
+        <p class="card-desc nc-type-body-medium">Welcome back to Nit's Cut.</p>
+      </div>
+    </div>
+    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input class="form-control" type="email" id="login-email" name="email" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-control" type="password" id="login-password" name="password" autocomplete="current-password">
+      </div>
+      <div>
+        <button class="btn btn-primary" type="button">Log in</button>
+      </div>
+    </form>
+    <p class="card-desc nc-type-body-medium">
+      <a class="auth-link" href="/auth?mode=signup" data-auth-mode="signup">Create an account</a>
+      &nbsp;·&nbsp;
+      <a class="auth-link" href="/auth?mode=reset" data-auth-mode="reset">Forgot your password?</a>
+    </p>
+  </section>
+
+  <section class="card" data-auth-form="reset" data-title="<%= authModes.reset.title %>"<%- mode !== 'reset' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Reset your password</h1>
+        <p class="card-desc nc-type-body-medium">Enter your email and we will help you get back in.</p>
+      </div>
+    </div>
+    <form style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="reset-email">Email</label>
+        <input class="form-control" type="email" id="reset-email" name="email" autocomplete="email">
+      </div>
+      <div>
+        <button class="btn btn-primary" type="button">Send reset link</button>
+      </div>
+    </form>
+    <p class="card-desc nc-type-body-medium">
+      <a class="auth-link" href="/auth?mode=login" data-auth-mode="login">Back to log in</a>
+    </p>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

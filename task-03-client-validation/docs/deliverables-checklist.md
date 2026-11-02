@@ -3,7 +3,7 @@
 Copied filenames from the original assessment. Unchecked means not verified for submission, even if a file exists. Consult assessment-requirements.txt for mandatory behaviour, alternatives, optional recordings, interview questions and marking. File presence alone is not completion.
 
 - [ ] README.md
-- [ ] spa-rationale.md
+- [x] spa-rationale.md
 - [ ] field-justification.md
 - [ ] validation-rules.md
 - [ ] terms-note.md
@@ -13,10 +13,10 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [ ] rollback.md
 - [ ] defects.md
 - [ ] interview-answers.md
-- [ ] 01-page-count-before.txt
-- [ ] 02-page-count-after.txt
-- [ ] 03-url-states.png
-- [ ] 04-form-switch-logs.txt
+- [x] 01-page-count-before.txt
+- [x] 02-page-count-after.txt
+- [x] 03-url-states.png
+- [x] 04-form-switch-logs.txt
 - [ ] 05-empty-field-error.png
 - [ ] 06-length-rule-blocking.png
 - [ ] 07-email-realtime-signup.png

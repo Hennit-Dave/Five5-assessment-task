@@ -1,0 +1,61 @@
+TASK 3 STEP 1 - PAGE COUNT AFTER
+Date: 2026-11-02
+Branch: feature/task-03-client-validation
+Starting commit: 6bf57489a4d5ed4212e582ce962e2aa829ebd4ae
+Baseline commit: 7da3fce (intermediate separate-page baseline)
+
+HOW PAGES ARE COUNTED (identical rule to 01-page-count-before.txt)
+  A user-facing page is a distinct URL path that answers an HTTP GET with status 200 and a
+  text/html document meant for a person to read.
+  - Query-string variants of one path (e.g. /auth?mode=login and /auth?mode=reset) count as ONE page.
+  - Redirects (such as /auth -> /auth?mode=login), the 404 page, POST-only endpoints (POST /inquiries)
+    and static assets are not counted.
+  Tool: task-03-client-validation/scripts/page-inventory.mjs (probes candidate list over HTTP).
+
+======================================================================
+FINAL CONSOLIDATED APPLICATION INVENTORY (commit feature/task-03-client-validation)
+All three authentication forms (login, signup, reset) are consolidated into a single
+user-facing route: GET /auth. The ?mode= query parameter selects which form is active.
+Command: PORT=3103 node app/src/server.js
+         node task-03-client-validation/scripts/page-inventory.mjs http://localhost:3103
+
+Probe results (GET):
+  200  /                          text/html  Nit's Cut — Bespoke Men's Tailoring
+  200  /services                  text/html  Bespoke Tailoring Services — Nit's Cut
+  404  /inquiries                 text/html  Page Not Found — Nit's Cut
+  404  /signup                    text/html  Page Not Found — Nit's Cut
+  404  /register                  text/html  Page Not Found — Nit's Cut
+  404  /login                     text/html  Page Not Found — Nit's Cut
+  404  /reset                     text/html  Page Not Found — Nit's Cut
+  404  /forgot-password           text/html  Page Not Found — Nit's Cut
+  404  /reset-password            text/html  Page Not Found — Nit's Cut
+  404  /password-reset            text/html  Page Not Found — Nit's Cut
+  302  /auth                      text/plain  -> redirects to /auth?mode=login
+  200  /auth?mode=signup          text/html  Sign up — Nit's Cut
+  200  /auth?mode=login           text/html  Log in — Nit's Cut
+  200  /auth?mode=reset           text/html  Reset password — Nit's Cut
+  404  /does-not-exist-control    text/html  Page Not Found — Nit's Cut
+
+Pages counted under the rule (distinct paths returning 200 text/html):
+  /            Nit's Cut — Bespoke Men's Tailoring
+  /services    Bespoke Tailoring Services — Nit's Cut
+  /auth        Sign up — Nit's Cut (and variants /auth?mode=login, /auth?mode=reset)
+
+TOTAL USER-FACING PAGES: 3
+  of which authentication pages: 1 (/auth)
+
+======================================================================
+COMPARISON SUMMARY (BEFORE vs AFTER)
+
+  State                              Total Pages  Auth Pages  Routes
+  ---------------------------------  -----------  ----------  ------------------------------------
+  1. Original app (commit 6bf5748)             2           0  /, /services
+  2. Intermediate separate baseline            5           3  /, /services, /signup, /login, /reset
+  3. Consolidated /auth (current)              3           1  /, /services, /auth (?mode=...)
+
+Change from intermediate baseline to consolidated application:
+  - User-facing page count reduced from 5 to 3 (-2 pages, 40% reduction in routes).
+  - Authentication page count reduced from 3 distinct URL routes (/signup, /login, /reset)
+    to 1 unified route (/auth).
+  - In addition, the 3 baseline endpoints (/signup, /login, /reset) return HTTP 404 in the
+    consolidated application, preventing dangling duplicate endpoints.
