@@ -1,0 +1,146 @@
+NIT'S CUT CLIENT VALIDATION SUITE — STEP 9
+EVIDENCE 17: COMMIT LIST AND ROLLBACK DEMONSTRATION
+================================================================================
+Generated: 2026-11-03
+Branch: demo/step-9-rollback (Git worktree: ../Five5-step-9-demo)
+Known-Good Starting Commit ID: 4888362
+Experimental Regretted Commit ID: 360930d
+Revert Commit ID: f6217b9
+================================================================================
+
+1. BEFORE EXPERIMENTAL CHANGE (Starting Commit: 4888362)
+--------------------------------------------------------------------------------
+Objective: Verify that the starting version accepts the legitimate single name
+"Dapo" (mononym) in accordance with Nit's Cut Category 2 validation rules.
+
+Test Parameters:
+  - URL: http://localhost:3000/auth?mode=signup
+  - Full Name: "Dapo" (length: 4, contains letters)
+  - Email: "dapo.test@example.com"
+  - Password: "correct-horse-battery-staple-15" (length: 30 code points)
+  - Terms: checked (true)
+
+Observed Client DOM State:
+  - nameValue: "Dapo"
+  - nameAriaInvalid: null (valid)
+  - nameErrorText: "" (no error displayed)
+  - nameErrorVisible: false
+  - submitAriaDisabled: null (button is active)
+  - submitDisabled: false
+  - buttonText: "Sign up"
+
+Submission Action & Network Wire Observation:
+  - Clicked: form.querySelector('button[type="submit"]')
+  - POST Requests Sent to /auth/signup: 1
+  - Wire Payload: name=Dapo&email=dapo.test%40example.com&password=correct-horse-battery-staple-15&terms=on
+  - Navigation URL: http://localhost:3000/auth/signup
+  - Page Heading: "Signup Received (Prototype)"
+  - HTTP Status: 200 OK
+Result: ACCEPTED. Single name "Dapo" is valid; form submits cleanly.
+
+
+2. DURING EXPERIMENTAL REGRETTED CHANGE (Commit: 360930d)
+--------------------------------------------------------------------------------
+Objective: Introduce a flawed, overly-restrictive validation rule requiring a
+multi-word name (/^\S+\s+\S+/), verify that it wrongly blocks "Dapo", and record
+the resulting accessibility defect and blocked submit button.
+
+Code Change Applied to app/public/js/auth.js:
+  - Added TWO_WORD_NAME_REGEX = /^\S+\s+\S+/;
+  - Added check: if (!TWO_WORD_NAME_REGEX.test(val)) return setError(input, 'Please enter both your first and last name.');
+  - Updated isNameValid: val.length >= 2 && LETTER_REGEX.test(val) && TWO_WORD_NAME_REGEX.test(val)
+
+Observed Client DOM State:
+  - nameValue: "Dapo"
+  - nameAriaInvalid: "true"
+  - nameErrorText: "⚠ Please enter both your first and last name."
+  - nameErrorVisible: true
+  - submitAriaDisabled: "true" (button is inactive)
+  - submitDisabled: false
+  - buttonText: "Sign up"
+
+Submission Action & Network Wire Observation:
+  - Clicked: form.querySelector('button[type="submit"]')
+  - Submit Guard: Fired; prevented submission due to invalid name field. Focus shifted to #signup-name.
+  - POST Requests Sent to /auth/signup: 0
+  - Navigation URL: http://localhost:3006/auth?mode=signup (did not navigate)
+  - Page Heading: "Create your account"
+Result: BLOCKED. Legitimate mononymic user is wrongly rejected by the experimental rule.
+
+Commit of Regretted Change:
+  Command: git commit -m "feat(auth): require multi-word full name on signup"
+  Commit ID: 360930d
+
+
+3. COMMIT LIST AND ROLLBACK EXECUTION
+--------------------------------------------------------------------------------
+Command Run to Inspect History:
+  git log --oneline -n 5
+
+Commit History Output:
+  360930d (HEAD -> demo/step-9-rollback) feat(auth): require multi-word full name on signup
+  4888362 (feature/task-03-client-validation) docs(task-03): document direct request attack and client validation limits (Step 8)
+  534d593 feat(task-03): implement inactive button states, password toggle, and back-navigation guards (Step 7)
+  57670c9 feat(task-03): unify account screens, automate system appearance, and enhance NC brand badge
+  59bb8bc fix(task-03): improve auth form accessibility and record VoiceOver retests
+
+Target Commit Identified for Reversal:
+  Commit ID: 360930d
+
+Exact Rollback Command Run:
+  git revert --no-edit 360930d
+
+Command Output:
+  [demo/step-9-rollback f6217b9] Revert "feat(auth): require multi-word full name on signup"
+   Date: Tue Nov 3 08:35:19 2026 -0600
+   1 file changed, 3 insertions(+), 6 deletions(-)
+
+Revert Commit ID Created: f6217b9
+
+
+4. POST-ROLLBACK VERIFICATION OF TRACKED CONTENT
+--------------------------------------------------------------------------------
+Command Run to Verify Diff Against Known-Good Starting Commit:
+  git diff --exit-code 4888362 HEAD
+
+Command Output:
+  (no diff output)
+
+Exit Status:
+  0
+
+Analysis: An exit status of 0 guarantees that the working tree and tracked files
+at HEAD (commit f6217b9) match the known-good commit (4888362) byte-for-byte,
+while preserving the full immutable history of the experiment and its rollback.
+
+
+5. AFTER ROLLBACK (Restored Commit: f6217b9)
+--------------------------------------------------------------------------------
+Objective: Re-run the single name "Dapo" test on the restored codebase to confirm
+that mononym support is fully recovered without side effects.
+
+Test Parameters:
+  - URL: http://localhost:3006/auth?mode=signup
+  - Full Name: "Dapo"
+  - Email: "dapo.test@example.com"
+  - Password: "correct-horse-battery-staple-15"
+  - Terms: checked (true)
+
+Observed Client DOM State:
+  - nameValue: "Dapo"
+  - nameAriaInvalid: null (valid)
+  - nameErrorText: "" (no error displayed)
+  - nameErrorVisible: false
+  - submitAriaDisabled: null (button is active)
+  - submitDisabled: false
+  - buttonText: "Sign up"
+
+Submission Action & Network Wire Observation:
+  - Clicked: form.querySelector('button[type="submit"]')
+  - POST Requests Sent to /auth/signup: 1
+  - Wire Payload: name=Dapo&email=dapo.test%40example.com&password=correct-horse-battery-staple-15&terms=on
+  - Navigation URL: http://localhost:3006/auth/signup
+  - Page Heading: "Signup Received (Prototype)"
+  - HTTP Status: 200 OK
+Result: RESTORED & ACCEPTED. Mononym support operational; exactly 1 POST dispatched.
+================================================================================

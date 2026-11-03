@@ -10,7 +10,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] enumeration.md
 - [ ] accessibility-audit.md
 - [x] client-side-is-not-security.md
-- [ ] rollback.md
+- [x] rollback.md
 - [ ] defects.md
 - [ ] interview-answers.md
 - [x] 01-page-count-before.txt
@@ -29,7 +29,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 14-button-disabled-version.png
 - [x] 15-form-attack-results.txt
 - [x] 16-direct-request-command-and-response.txt
-- [ ] 17-commit-list-and-rollback.txt
+- [x] 17-commit-list-and-rollback.txt
 - [ ] 18-walkthrough.mp4
 
 - [ ] All numbered steps and evidence alternatives checked against the original task.
