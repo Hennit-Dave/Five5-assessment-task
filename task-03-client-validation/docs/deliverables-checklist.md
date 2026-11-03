@@ -25,8 +25,8 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 10-text-input-working.mp4 (satisfied via composite 10-text-input-working.png and three screenshots 10a, 10b, 10c)
 - [ ] 11-screenreader-before.mp3
 - [ ] 12-screenreader-after.mp3
-- [ ] 13-button-hidden-version.png
-- [ ] 14-button-disabled-version.png
+- [x] 13-button-hidden-version.png
+- [x] 14-button-disabled-version.png
 - [ ] 15-form-attack-results.txt
 - [ ] 16-direct-request-command-and-response.txt
 - [ ] 17-commit-list-and-rollback.txt

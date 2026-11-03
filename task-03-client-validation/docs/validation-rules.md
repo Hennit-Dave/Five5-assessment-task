@@ -143,3 +143,70 @@ Automated execution via [`task-03-client-validation/scripts/test-validation-adju
 | **Login email Submit** | Submit form with `"chinedu@notanemail"` | `aria-invalid="true"`, focused | **Format error on submit:** Shows *"Please enter a valid email address..."* and moves focus to field. |
 | **Signup live email format** | Type `"babatunde@"` on registration | Live format error on `input` | Shows *"Please enter a valid email address..."* in real time while typing. |
 | **Login password short** | `"short"` (5 chars) on login | `aria-invalid=null`, no error | **Accepted:** Login only enforces not-empty; does not enforce 15 characters. |
+
+---
+
+## 4. Step 7: Submit Button Inactive States, Submission Guards, and Password Visibility Architecture
+
+### Rationale for Inactive Visible Buttons vs. Hidden Buttons (Two Sentences)
+Keeping an inactive submit button visible in its expected layout position gives users immediate spatial predictability and confirms the ultimate action available on the page, whereas hiding the button causes confusing layout shifts and leaves users uncertain whether the form can even be submitted. When an inactive button is clicked or activated via keyboard, client-side validation triggers focused inline error messages and moves keyboard focus directly to the first incomplete or invalid field, clearly communicating to the user exactly what requirements remain to be satisfied.
+
+### Dynamic Button State Activation Table
+
+All three submit buttons remain visible in their normal position from the moment their form opens. Calculation of button state runs silently without displaying error messages on untouched fields:
+
+| Form | Button Label | Active When | Inactive When | Inactive Styling & Contrast |
+|---|---|---|---|---|
+| **Signup** (`/auth?mode=signup`) | **Sign up** | Full Name passes name rule (≥2 chars with letter), Email passes format regex, Password passes 15-character rule (≥15 Unicode code points, not all spaces), and Terms checkbox is checked. | Any of the four requirements is unfulfilled or invalid. | `aria-disabled="true"`, background `--nc-color-surface-container-high`, text `--nc-color-on-surface-variant`, border `--nc-color-outline-variant`. Measured contrast: **7.65:1** (Light), **8.39:1** (Dark). |
+| **Login** (`/auth?mode=login`) | **Log in** | Email is non-empty and passes email format regex, and Password is non-empty (`length > 0`). | Email is empty/invalid or Password is empty. | `aria-disabled="true"`, focusable with visible 2px outline, `cursor: not-allowed`. |
+| **Reset password** (`/auth?mode=reset`) | **Send reset link** | Email is non-empty and passes email format regex. | Email is empty or invalid format. | `aria-disabled="true"`, focusable with visible 2px outline, `cursor: not-allowed`. |
+
+### Submission Guards and Terms-of-Service Validation
+- **ARIA does not block submission:** Setting `aria-disabled="true"` on a `<button type="submit">` visually dims the button and announces its inactive state to assistive technology, but native browsers will still fire form submission upon button click or Enter keypress.
+- **JavaScript Guard:** The form's `submit` event listener intercepts all submission attempts (mouse clicks, Enter/Space on the button, Enter from text inputs).
+- **Terms Checkbox Specific Handling:** When someone attempts to sign up without checking the Terms of Service (both when Terms is the only missing item and when other fields are also invalid), the submission is blocked, `#signup-terms-error` displays *"You must agree to the Terms of Service to create an account."*, the error is announced to screen readers via `role="alert"`, and keyboard focus moves immediately to the checkbox (`#signup-terms`) so the user can check it without tabbing across the form.
+- **Double-Submit Prevention:** Once all validation requirements pass, the submission handler sets a submission lock (`isSubmitting = true`) preventing duplicate POST requests.
+
+### Password Rule and Progressive Hint Architecture
+- **Signup Rule:** Minimum 15 Unicode code points (`Array.from(val).length >= 15`), spaces allowed anywhere to support memorable passphrases, all-whitespace rejected (`!val.trim()`).
+- **Progressive Hint Reveal:** On initial page render, `#signup-password-hint` is given the `.nc-visually-hidden` class. Because `#signup-password` specifies `aria-describedby="signup-password-hint signup-password-error"`, screen readers (such as VoiceOver) immediately read the 15-character guidance upon initial focus. As soon as the user starts typing (`input` event with `length > 0`), the hint is revealed visually below the field so sighted users do not have to guess the length requirement.
+
+### Password Visibility Toggle vs. Password Confirmation Field
+- **Why a visibility toggle is superior to a confirmation field:**
+  Requiring users to type a password twice doubles cognitive friction and input effort (especially on mobile virtual keyboards), yet fails to prevent errors because users frequently copy-paste between the fields or type the same typo twice. A password visibility toggle using clear Heroicons eye and eye-slash outline icons allows users to visually verify what they typed, catch and correct typos in real time, and complete registration with confidence without disrupting form flow.
+- **Implementation Specifications:**
+  - Placed inside `.password-input-wrap` on both Signup (`#signup-password`) and Login (`#login-password`).
+  - Uses official Heroicons v2 outline 24×24 SVG paths for `eye` (when hidden) and `eye-slash` (when visible).
+  - Accessible name toggles between `"Show password"` and `"Hide password"` via `aria-label`.
+  - Input field has `padding-inline-end: 2.75rem` (44px) so long passwords never collide with the toggle button, verified on 375px mobile viewports.
+  - Toggling visibility switches `type="password"` ↔ `type="text"`, preserves the input's current value, retains keyboard focus on the toggle button, never submits the form, and never affects submit button activation.
+
+### Empirical Evidence Summary (E13 vs E14)
+- **Evidence 13 (`evidence/13-button-hidden-version.png`):** Demonstrates the hidden-button experiment where the Sign up button was hidden from view and keyboard navigation when the form was incomplete (password empty). Hiding the button produced an unnatural void below the Terms checkbox and left the user uncertain how to complete registration.
+- **Evidence 14 (`evidence/14-button-disabled-version.png`):** Demonstrates the final accessible implementation reproducing the same validation state using fictional data (`"Folake Adeyemi"`, `"folake.test@example.com"`, empty password, Terms checked). The inactive "Sign up" button remains visible in its expected position, programmatically marked with `aria-disabled="true"`, styled using semantic tokens (`--nc-color-surface-container-high` / `--nc-color-on-surface-variant`), and fully keyboard focusable with a 2px outline.
+
+### Learner VoiceOver walkthrough for Step 7
+
+- Signup password: On focus, the learner reported “password must be 15 characters long”. After entering a valid passphrase, the error cleared and the length hint was visible. The learner heard both toggle labels and used Space to show the letters and mask them again.
+- Signup with only Terms unchecked: VoiceOver said “sign up dimmed button”. Pressing Enter returned focus to the unchecked Terms checkbox. The learner reported hearing that agreement was required before creating an account.
+- Login: Space revealed the password while the form stayed open. Pressing Space again without moving focus masked it.
+- Reset: With Email empty, the learner reported “send reset link dimmed button”. After entering a valid email, the learner reported “send rest link button”. The second transcription omits “dimmed”. This interaction tested the announced state without submitting the form.
+
+---
+
+### Browser Back-Navigation and In-Flight Submission Network Log Results
+
+Verified via headless Chrome CDP ([`test-step7-comprehensive-review.mjs`](file:///Users/blk/Developer/Five5%20assessment%20task/task-03-client-validation/scripts/test-step7-comprehensive-review.mjs)) tracking HTTP POST requests across rapid double-clicking, in-flight editing during delayed responses, and complete back-navigation/resubmission lifecycles for **Signup**, **Login**, and **Reset**:
+
+| Form | Endpoint Tested | Rapid Double-Click POSTs | In-Flight Edit During Delayed Response | Attempt 1 POSTs & Status | Screen Result (Attempt 1) | Back-Navigation (bfcache) | Attempt 2 POSTs & Status | Cumulative POSTs | Final Status |
+|---|---|---|---|---|---|---|---|---|---|
+| **Signup** | `/auth/signup` | Exactly 1 POST | Exactly 1 POST (2nd submit blocked during in-flight edit) | 1 POST (HTTP 200) | `Signup Received (Prototype)` | Restored to `/auth?mode=signup` (`bfcache: true`). All fields restored. Button active. | 1 new POST (HTTP 200) | **2 POSTs total** (0 dropped, 0 duplicate) | **PASSED** |
+| **Login** | `/auth/login` | Exactly 1 POST | Exactly 1 POST (2nd submit blocked during in-flight edit) | 1 POST (HTTP 200) | `Login Received (Prototype)` | Restored to `/auth?mode=login` (`bfcache: true`). All fields restored. Button active. | 1 new POST (HTTP 200) | **2 POSTs total** (0 dropped, 0 duplicate) | **PASSED** |
+| **Reset** | `/auth/reset` | Exactly 1 POST | Exactly 1 POST (2nd submit blocked during in-flight edit) | 1 POST (HTTP 200) | `Password Reset Requested (Prototype)` | Restored to `/auth?mode=reset` (`bfcache: true`). Email restored. Button active. | 1 new POST (HTTP 200) | **2 POSTs total** (0 dropped, 0 duplicate) | **PASSED** |
+
+#### Browser Behavior and In-Flight Lock Architecture
+- **Preserved `pageshow` Reset for Back-Navigation:** To allow users to submit again after pressing the browser Back button, `window.addEventListener('pageshow', ...)` resets the submission locks (`isSubmittingSignup = false`, `isSubmittingLogin = false`, `isSubmittingReset = false`) and re-evaluates button active states upon return.
+- **Strict In-Flight Lock Protection:** The submission-lock resets were intentionally excluded from field validation and button-state update functions (`updateSignupButtonState`, `updateLoginButtonState`, `updateResetButtonState`). If a user edits an input while a previous submission is still pending in-flight (tested with a 1200ms delayed server response), the active submission lock remains locked, ensuring that repeated button activations or Enter keypresses cannot send duplicate requests to the server.
+- **Rapid Double-Click Protection:** For all three forms, dispatching synchronous or near-instant duplicate click events sends exactly one HTTP POST request, preventing double-submission defects.
+- **bfcache Heap Preservation:** In Chrome, window variables set prior to submission (`window.__bfcacheCanary`) survived browser back navigation (`history.back()`), confirming that the document heap was restored from the browser's Back/Forward cache.
+- **Limitations:** Testing was executed via headless Google Chrome under CDP. OS-specific desktop browser UI behaviors (e.g. native browser dialog prompts like "Confirm Form Resubmission" which occur on POST refresh rather than back-navigation) were not observed during `history.back()` because the back navigation returned to the cached GET form page rather than refreshing a POST endpoint.

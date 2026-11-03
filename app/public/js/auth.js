@@ -1,9 +1,12 @@
 // Switches between the signup, login and reset forms on /auth without reloading the page,
-// and manages accessible client-side validation across the four assessment categories:
+// and manages accessible client-side validation across the assessment requirements:
 // 1. Empty-field errors on blur.
 // 2. Business length and structure rules (single names allowed; min 2 chars with letters; 15+ code-point password on signup).
 // 3. Real-time email format on signup vs. submit-time format on login.
 // 4. Accessible ARIA attributes (aria-invalid, aria-describedby, role="alert", focus recovery).
+// 5. Submit buttons visible at all times with dynamic active/inactive state (aria-disabled) and submit guards.
+// 6. Progressive reveal of password length hint upon typing.
+// 7. Heroicons password visibility toggles on Signup and Login.
 (function () {
   'use strict';
 
@@ -26,6 +29,7 @@
       forms[name].hidden = name !== mode;
     });
     document.title = forms[mode].getAttribute('data-title');
+    updateAllButtonStates();
     if (moveFocus) {
       // Announce mode switch to screen readers
       forms[mode].querySelector('h1').focus();
@@ -149,29 +153,181 @@
     return clearError(input);
   }
 
-  // ---- SIGNUP FORM BINDINGS ----
-  var signupForm = forms.signup ? forms.signup.querySelector('form') : null;
-  if (signupForm) {
-    var sName = document.getElementById('signup-name');
-    var sEmail = document.getElementById('signup-email');
-    var sPassword = document.getElementById('signup-password');
-    var sTerms = document.getElementById('signup-terms');
+  // =========================================================================
+  // SILENT VALIDATION PREDICATES (FOR BUTTON ACTIVE STATE CALCULATION)
+  // These evaluate field rules without triggering error UI on untouched fields.
+  // =========================================================================
 
+  function isNameValid(input) {
+    if (!input) return false;
+    var val = input.value.trim();
+    return val.length >= 2 && LETTER_REGEX.test(val);
+  }
+
+  function isEmailValid(input) {
+    if (!input) return false;
+    var val = input.value.trim();
+    return val.length > 0 && EMAIL_REGEX.test(val);
+  }
+
+  function isSignupPasswordValid(input) {
+    if (!input) return false;
+    var val = input.value;
+    return val.trim().length > 0 && Array.from(val).length >= 15;
+  }
+
+  function isLoginPasswordValid(input) {
+    if (!input) return false;
+    return input.value.length > 0;
+  }
+
+  function isTermsChecked(input) {
+    if (!input) return false;
+    return input.checked === true;
+  }
+
+  // Form references
+  var signupForm = forms.signup ? forms.signup.querySelector('form') : null;
+  var loginForm = forms.login ? forms.login.querySelector('form') : null;
+  var resetForm = forms.reset ? forms.reset.querySelector('form') : null;
+
+  var sBtn = signupForm ? signupForm.querySelector('button[type="submit"]') : null;
+  var lBtn = loginForm ? loginForm.querySelector('button[type="submit"]') : null;
+  var rBtn = resetForm ? resetForm.querySelector('button[type="submit"]') : null;
+
+  var sName = document.getElementById('signup-name');
+  var sEmail = document.getElementById('signup-email');
+  var sPassword = document.getElementById('signup-password');
+  var sTerms = document.getElementById('signup-terms');
+  var sPasswordHint = document.getElementById('signup-password-hint');
+
+  var lEmail = document.getElementById('login-email');
+  var lPassword = document.getElementById('login-password');
+
+  var rEmail = document.getElementById('reset-email');
+
+  var isSubmittingSignup = false;
+  var isSubmittingLogin = false;
+  var isSubmittingReset = false;
+
+  window.addEventListener('pageshow', function () {
+    isSubmittingSignup = false;
+    isSubmittingLogin = false;
+    isSubmittingReset = false;
+    updateAllButtonStates();
+  });
+
+  function updateSignupButtonState() {
+    if (!sBtn) return;
+    var active = isNameValid(sName) && isEmailValid(sEmail) && isSignupPasswordValid(sPassword) && isTermsChecked(sTerms);
+    if (active) {
+      sBtn.removeAttribute('aria-disabled');
+    } else {
+      sBtn.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  function updateLoginButtonState() {
+    if (!lBtn) return;
+    var active = isEmailValid(lEmail) && isLoginPasswordValid(lPassword);
+    if (active) {
+      lBtn.removeAttribute('aria-disabled');
+    } else {
+      lBtn.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  function updateResetButtonState() {
+    if (!rBtn) return;
+    var active = isEmailValid(rEmail);
+    if (active) {
+      rBtn.removeAttribute('aria-disabled');
+    } else {
+      rBtn.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  function updateAllButtonStates() {
+    updateSignupButtonState();
+    updateLoginButtonState();
+    updateResetButtonState();
+  }
+
+  // Password hint progressive reveal on Signup
+  function updateSignupPasswordHint() {
+    if (!sPasswordHint || !sPassword) return;
+    if (sPassword.value.length > 0) {
+      sPasswordHint.classList.remove('nc-visually-hidden');
+    }
+  }
+
+  // =========================================================================
+  // HEROICONS PASSWORD VISIBILITY TOGGLE (SIGNUP & LOGIN)
+  // =========================================================================
+  function setupPasswordToggles() {
+    var toggles = document.querySelectorAll('.password-toggle-btn');
+    toggles.forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var targetId = btn.getAttribute('aria-controls');
+        var input = targetId ? document.getElementById(targetId) : null;
+        if (!input) {
+          var wrap = btn.closest('.password-input-wrap');
+          input = wrap ? wrap.querySelector('input') : null;
+        }
+        if (!input) return;
+
+        var isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+
+        var iconShow = btn.querySelector('.password-icon-show');
+        var iconHide = btn.querySelector('.password-icon-hide');
+        if (iconShow && iconHide) {
+          if (isPassword) {
+            iconShow.setAttribute('hidden', '');
+            iconHide.removeAttribute('hidden');
+          } else {
+            iconHide.setAttribute('hidden', '');
+            iconShow.removeAttribute('hidden');
+          }
+        }
+      });
+    });
+  }
+
+  // ---- SIGNUP FORM BINDINGS ----
+  if (signupForm) {
     sName.addEventListener('blur', function () { validateName(sName, true); });
     sName.addEventListener('input', function () {
       if (sName.getAttribute('aria-invalid') === 'true') validateName(sName, false);
+      updateSignupButtonState();
     });
 
     // Real-time email validation on signup
-    sEmail.addEventListener('input', function () { validateEmail(sEmail, 'signup', true); });
-    sEmail.addEventListener('blur', function () { validateEmail(sEmail, 'signup', false); });
-
-    sPassword.addEventListener('blur', function () { validatePassword(sPassword, 'signup', true); });
-    sPassword.addEventListener('input', function () {
-      if (sPassword.getAttribute('aria-invalid') === 'true') validatePassword(sPassword, 'signup', false);
+    sEmail.addEventListener('input', function () {
+      validateEmail(sEmail, 'signup', true);
+      updateSignupButtonState();
+    });
+    sEmail.addEventListener('blur', function () {
+      validateEmail(sEmail, 'signup', false);
+      updateSignupButtonState();
     });
 
-    sTerms.addEventListener('change', function () { validateTerms(sTerms); });
+    sPassword.addEventListener('blur', function () {
+      validatePassword(sPassword, 'signup', true);
+      updateSignupButtonState();
+    });
+    sPassword.addEventListener('input', function () {
+      updateSignupPasswordHint();
+      if (sPassword.getAttribute('aria-invalid') === 'true') validatePassword(sPassword, 'signup', false);
+      updateSignupButtonState();
+    });
+
+    sTerms.addEventListener('change', function () {
+      if (sTerms.getAttribute('aria-invalid') === 'true') validateTerms(sTerms);
+      updateSignupButtonState();
+    });
 
     signupForm.addEventListener('submit', function (e) {
       var okName = validateName(sName, true);
@@ -181,19 +337,28 @@
 
       if (!okName || !okEmail || !okPass || !okTerms) {
         e.preventDefault();
-        // Focus recovery (Category 4): move focus to the first invalid field
-        var firstInvalid = signupForm.querySelector('[aria-invalid="true"]');
-        if (firstInvalid) firstInvalid.focus();
+        // If Terms is the only missing item:
+        if (okName && okEmail && okPass && !okTerms) {
+          sTerms.focus();
+        } else {
+          // Focus recovery: move focus to the first invalid field
+          var firstInvalid = signupForm.querySelector('[aria-invalid="true"]');
+          if (firstInvalid) firstInvalid.focus();
+        }
+        updateSignupButtonState();
+        return;
       }
+
+      if (isSubmittingSignup) {
+        e.preventDefault();
+        return;
+      }
+      isSubmittingSignup = true;
     });
   }
 
   // ---- LOGIN FORM BINDINGS ----
-  var loginForm = forms.login ? forms.login.querySelector('form') : null;
   if (loginForm) {
-    var lEmail = document.getElementById('login-email');
-    var lPassword = document.getElementById('login-password');
-
     // Submit-only email format validation on login:
     // On blur: only check empty. NEVER show format error on blur.
     lEmail.addEventListener('blur', function () {
@@ -202,17 +367,23 @@
       } else {
         clearError(lEmail);
       }
+      updateLoginButtonState();
     });
 
     lEmail.addEventListener('input', function () {
       if (lEmail.getAttribute('aria-invalid') === 'true' && lEmail.value.trim()) {
         clearError(lEmail);
       }
+      updateLoginButtonState();
     });
 
-    lPassword.addEventListener('blur', function () { validatePassword(lPassword, 'login', true); });
+    lPassword.addEventListener('blur', function () {
+      validatePassword(lPassword, 'login', true);
+      updateLoginButtonState();
+    });
     lPassword.addEventListener('input', function () {
       if (lPassword.getAttribute('aria-invalid') === 'true') validatePassword(lPassword, 'login', false);
+      updateLoginButtonState();
     });
 
     loginForm.addEventListener('submit', function (e) {
@@ -235,26 +406,48 @@
         e.preventDefault();
         var firstInvalid = loginForm.querySelector('[aria-invalid="true"]');
         if (firstInvalid) firstInvalid.focus();
+        updateLoginButtonState();
+        return;
       }
+
+      if (isSubmittingLogin) {
+        e.preventDefault();
+        return;
+      }
+      isSubmittingLogin = true;
     });
   }
 
   // ---- RESET FORM BINDINGS ----
-  var resetForm = forms.reset ? forms.reset.querySelector('form') : null;
   if (resetForm) {
-    var rEmail = document.getElementById('reset-email');
-    rEmail.addEventListener('blur', function () { validateEmail(rEmail, 'reset', false); });
+    rEmail.addEventListener('blur', function () {
+      validateEmail(rEmail, 'reset', false);
+      updateResetButtonState();
+    });
     rEmail.addEventListener('input', function () {
       if (rEmail.getAttribute('aria-invalid') === 'true' && EMAIL_REGEX.test(rEmail.value.trim())) {
         clearError(rEmail);
       }
+      updateResetButtonState();
     });
 
     resetForm.addEventListener('submit', function (e) {
       if (!validateEmail(rEmail, 'reset', false)) {
         e.preventDefault();
         rEmail.focus();
+        updateResetButtonState();
+        return;
       }
+
+      if (isSubmittingReset) {
+        e.preventDefault();
+        return;
+      }
+      isSubmittingReset = true;
     });
   }
+
+  // Initial setup
+  setupPasswordToggles();
+  updateAllButtonStates();
 })();

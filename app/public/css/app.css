@@ -258,6 +258,52 @@ body {
   outline-offset: var(--nc-focus-ring-offset);
 }
 
+/* Password visibility toggle (Task 3, Step 7) */
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+}
+
+.password-input-wrap .form-control {
+  inline-size: 100%;
+  padding-inline-end: 2.75rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  inset-inline-end: var(--nc-space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  padding: var(--nc-space-1);
+  border: none;
+  background: transparent;
+  color: var(--nc-color-on-surface-variant);
+  border-radius: var(--nc-radius-button);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.password-toggle-btn:hover {
+  color: var(--nc-color-on-surface);
+}
+
+.password-toggle-btn:focus,
+.password-toggle-btn:focus-visible {
+  outline: var(--nc-focus-ring-width) solid var(--nc-color-primary);
+  outline-offset: var(--nc-focus-ring-offset);
+}
+
+.password-toggle-btn svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  display: block;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -294,6 +340,27 @@ body {
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-primary[aria-disabled="true"] {
+  background-color: var(--nc-color-surface-container-high);
+  color: var(--nc-color-on-surface-variant);
+  border: var(--nc-border-width) solid var(--nc-color-outline-variant);
+  cursor: not-allowed;
+  opacity: 0.8;
+  transform: none;
+}
+
+.btn-primary[aria-disabled="true"]:hover {
+  background-color: var(--nc-color-surface-container-high);
+  color: var(--nc-color-on-surface-variant);
+  transform: none;
+}
+
+.btn-primary[aria-disabled="true"]:focus,
+.btn-primary[aria-disabled="true"]:focus-visible {
+  outline: var(--nc-focus-ring-width) solid var(--nc-color-primary);
+  outline-offset: var(--nc-focus-ring-offset);
 }
 
 .btn-secondary {

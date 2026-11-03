@@ -149,3 +149,7 @@ Learner retest. The spoken errors below were reported during validation. Announc
 |---|---|---|---|
 | Reset email | “Enter your email address to request a password reset.” | “Enter your email address to request a password reset.required invalid data email” | The recovery-specific wording was visible and spoken on this retest. VoiceOver also announced the required and invalid states. |
 | Signup password | “Must be at least 15 characters long. Spaces are allowed Please choose a password to protect your account” | “password must be at least 15 characters long. Spaces are allowed.Please choose a password to protect your account required invalid data” | The minimum-length and spaces guidance was visible and spoken alongside the empty-password error. VoiceOver also announced the required and invalid states. This observation covers the field with an error. |
+
+### Post-redesign VoiceOver walkthrough
+
+After the grouped Signup, Login and Reset walkthrough, the learner reported “for this all came through the same from the last audit”. This is one overall observation. No new field-by-field quotations or separate focus destinations were supplied for this run. The earlier transcripts and the before-fix Reset paraphrase retain their original context.
