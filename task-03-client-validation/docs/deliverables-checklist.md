@@ -9,7 +9,7 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] terms-note.md (adapted from Automattic Terms of Service Section 2 under CC BY-SA 4.0)
 - [x] enumeration.md
 - [ ] accessibility-audit.md
-- [ ] client-side-is-not-security.md
+- [x] client-side-is-not-security.md
 - [ ] rollback.md
 - [ ] defects.md
 - [ ] interview-answers.md
@@ -27,8 +27,8 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [ ] 12-screenreader-after.mp3
 - [x] 13-button-hidden-version.png
 - [x] 14-button-disabled-version.png
-- [ ] 15-form-attack-results.txt
-- [ ] 16-direct-request-command-and-response.txt
+- [x] 15-form-attack-results.txt
+- [x] 16-direct-request-command-and-response.txt
 - [ ] 17-commit-list-and-rollback.txt
 - [ ] 18-walkthrough.mp4
 
