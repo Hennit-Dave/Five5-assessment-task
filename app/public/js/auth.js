@@ -110,9 +110,14 @@
         // While typing, if they erase to empty, clear the format error until blur/submit
         return clearError(input);
       }
-      var emptyMsg = mode === 'signup'
-        ? 'An email address is required to send your fitting confirmations and receipts.'
-        : 'Please enter your email address to access your account.';
+      var emptyMsg;
+      if (mode === 'signup') {
+        emptyMsg = 'An email address is required to send your fitting confirmations and receipts.';
+      } else if (mode === 'reset') {
+        emptyMsg = 'Enter your email address to request a password reset.';
+      } else {
+        emptyMsg = 'Please enter your email address to access your account.';
+      }
       return setError(input, emptyMsg);
     }
     if (!EMAIL_REGEX.test(val)) {
@@ -249,7 +254,7 @@
   var resetForm = forms.reset ? forms.reset.querySelector('form') : null;
   if (resetForm) {
     var rEmail = document.getElementById('reset-email');
-    rEmail.addEventListener('blur', function () { validateEmail(rEmail, 'login', false); });
+    rEmail.addEventListener('blur', function () { validateEmail(rEmail, 'reset', false); });
     rEmail.addEventListener('input', function () {
       if (rEmail.getAttribute('aria-invalid') === 'true' && EMAIL_REGEX.test(rEmail.value.trim())) {
         clearError(rEmail);
@@ -257,7 +262,7 @@
     });
 
     resetForm.addEventListener('submit', function (e) {
-      if (!validateEmail(rEmail, 'login', false)) {
+      if (!validateEmail(rEmail, 'reset', false)) {
         e.preventDefault();
         rEmail.focus();
       }
