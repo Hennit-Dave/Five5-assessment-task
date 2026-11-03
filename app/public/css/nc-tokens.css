@@ -329,6 +329,70 @@
   --nc-color-on-warning-container: var(--nc-ref-warning-90);
 }
 
+/* Automatic system appearance support: when no explicit theme is set on html, follow prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --nc-color-background: var(--nc-ref-neutral-6);
+    --nc-color-on-background: var(--nc-ref-neutral-90);
+    --nc-color-surface: var(--nc-ref-neutral-6);
+    --nc-color-surface-dim: var(--nc-ref-neutral-6);
+    --nc-color-surface-bright: var(--nc-ref-neutral-24);
+    --nc-color-surface-container-lowest: var(--nc-ref-neutral-4);
+    --nc-color-surface-container-low: var(--nc-ref-neutral-10);
+    --nc-color-surface-container: var(--nc-ref-neutral-12);
+    --nc-color-surface-container-high: var(--nc-ref-neutral-17);
+    --nc-color-surface-container-highest: var(--nc-ref-neutral-22);
+    --nc-color-on-surface: var(--nc-ref-neutral-90);
+    --nc-color-surface-variant: var(--nc-ref-neutral-variant-30);
+    --nc-color-on-surface-variant: var(--nc-ref-neutral-variant-80);
+    --nc-color-inverse-surface: var(--nc-ref-neutral-90);
+    --nc-color-inverse-on-surface: var(--nc-ref-neutral-20);
+    --nc-color-outline: var(--nc-ref-neutral-variant-60);
+    --nc-color-outline-variant: var(--nc-ref-neutral-variant-30);
+    --nc-color-shadow: var(--nc-ref-neutral-0);
+    --nc-color-scrim: var(--nc-ref-neutral-0);
+    --nc-color-surface-tint: var(--nc-ref-primary-80);
+    --nc-color-primary: var(--nc-ref-primary-80);
+    --nc-color-on-primary: var(--nc-ref-primary-20);
+    --nc-color-primary-container: var(--nc-ref-primary-30);
+    --nc-color-on-primary-container: var(--nc-ref-primary-90);
+    --nc-color-inverse-primary: var(--nc-ref-primary-40);
+    --nc-color-secondary: var(--nc-ref-secondary-80);
+    --nc-color-on-secondary: var(--nc-ref-secondary-20);
+    --nc-color-secondary-container: var(--nc-ref-secondary-30);
+    --nc-color-on-secondary-container: var(--nc-ref-secondary-90);
+    --nc-color-tertiary: var(--nc-ref-tertiary-80);
+    --nc-color-on-tertiary: var(--nc-ref-tertiary-20);
+    --nc-color-tertiary-container: var(--nc-ref-tertiary-30);
+    --nc-color-on-tertiary-container: var(--nc-ref-tertiary-90);
+    --nc-color-error: var(--nc-ref-error-80);
+    --nc-color-on-error: var(--nc-ref-error-20);
+    --nc-color-error-container: var(--nc-ref-error-30);
+    --nc-color-on-error-container: var(--nc-ref-error-90);
+    --nc-color-primary-fixed: var(--nc-ref-primary-90);
+    --nc-color-primary-fixed-dim: var(--nc-ref-primary-80);
+    --nc-color-on-primary-fixed: var(--nc-ref-primary-10);
+    --nc-color-on-primary-fixed-variant: var(--nc-ref-primary-30);
+    --nc-color-secondary-fixed: var(--nc-ref-secondary-90);
+    --nc-color-secondary-fixed-dim: var(--nc-ref-secondary-80);
+    --nc-color-on-secondary-fixed: var(--nc-ref-secondary-10);
+    --nc-color-on-secondary-fixed-variant: var(--nc-ref-secondary-30);
+    --nc-color-tertiary-fixed: var(--nc-ref-tertiary-90);
+    --nc-color-tertiary-fixed-dim: var(--nc-ref-tertiary-80);
+    --nc-color-on-tertiary-fixed: var(--nc-ref-tertiary-10);
+    --nc-color-on-tertiary-fixed-variant: var(--nc-ref-tertiary-30);
+    --nc-color-success: var(--nc-ref-success-80);
+    --nc-color-on-success: var(--nc-ref-success-20);
+    --nc-color-success-container: var(--nc-ref-success-30);
+    --nc-color-on-success-container: var(--nc-ref-success-90);
+    --nc-color-warning: var(--nc-ref-warning-80);
+    --nc-color-on-warning: var(--nc-ref-warning-20);
+    --nc-color-warning-container: var(--nc-ref-warning-30);
+    --nc-color-on-warning-container: var(--nc-ref-warning-90);
+  }
+}
+
 /* Typography and shadows (theme-independent) */
 :root {
   --nc-type-display-large-family: "Cormorant Garamond", Georgia, serif;

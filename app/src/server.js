@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
       metaDescription: "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.",
       isMarketingPage: true,
       activePath: '/',
-      theme: 'dark',
       inquiries: inquiries,
       successMessage: null,
       errorMessage: null,
@@ -52,7 +51,6 @@ app.get('/', (req, res) => {
       metaDescription: "Error loading Nit's Cut client portal.",
       isMarketingPage: false,
       activePath: '/',
-      theme: 'dark',
       inquiries: [],
       successMessage: null,
       errorMessage: `Database query failed: ${err.message}`,
@@ -67,8 +65,7 @@ app.get('/services', (req, res) => {
     pageTitle: "Bespoke Tailoring Services — Nit's Cut",
     metaDescription: "Explore our handcrafted Senator native wear, traditional Agbada, and bespoke trousers.",
     isMarketingPage: true,
-    activePath: '/services',
-    theme: 'dark'
+    activePath: '/services'
   });
 });
 
@@ -89,7 +86,6 @@ app.get('/auth', (req, res) => {
     pageTitle: AUTH_MODES[mode].title,
     isMarketingPage: false,
     activePath: '/auth',
-    theme: 'dark',
     mode,
     authModes: AUTH_MODES,
     scripts: ['/js/auth.js']
@@ -101,8 +97,7 @@ app.get('/terms', (req, res) => {
   res.render('terms', {
     pageTitle: "Terms of Service (Assessment Draft) — Nit's Cut",
     isMarketingPage: false,
-    activePath: '/terms',
-    theme: 'dark'
+    activePath: '/terms'
   });
 });
 
@@ -115,7 +110,6 @@ app.post('/auth/signup', (req, res) => {
     pageTitle: "Signup Received (Prototype) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/auth',
-    theme: 'dark',
     action: 'signup',
     name: typeof name === 'string' ? name.trim() : '',
     email: typeof email === 'string' ? email.trim() : '',
@@ -130,7 +124,6 @@ app.post('/auth/login', (req, res) => {
     pageTitle: "Login Received (Prototype) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/auth',
-    theme: 'dark',
     action: 'login',
     email: typeof email === 'string' ? email.trim() : ''
   });
@@ -142,7 +135,6 @@ app.post('/auth/reset', (req, res) => {
     pageTitle: "Reset Requested (Prototype) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/auth',
-    theme: 'dark',
     action: 'reset',
     email: typeof email === 'string' ? email.trim() : ''
   });
@@ -154,8 +146,7 @@ app.get('/auth/recovery', (req, res) => {
   res.render('recovery', {
     pageTitle: "Enter Recovery Code (Prototype) — Nit's Cut",
     isMarketingPage: false,
-    activePath: '/auth/recovery',
-    theme: 'dark'
+    activePath: '/auth/recovery'
   });
 });
 
@@ -164,8 +155,7 @@ app.post('/auth/recovery', (req, res) => {
   res.status(200).render('recovery-result', {
     pageTitle: "Recovery Submission Received (Prototype) — Nit's Cut",
     isMarketingPage: false,
-    activePath: '/auth/recovery',
-    theme: 'dark'
+    activePath: '/auth/recovery'
   });
 });
 
@@ -177,7 +167,6 @@ app.get('/orders/lookup', (req, res) => {
     pageTitle: "Find Your Order (Reference Demonstration) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/orders/lookup',
-    theme: 'dark',
     version
   });
 });
@@ -189,7 +178,6 @@ app.post('/orders/lookup', (req, res) => {
     pageTitle: "Order Reference Submitted (Prototype) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/orders/lookup',
-    theme: 'dark',
     version: version || 'number',
     submittedValue: submittedStr,
     submittedLength: submittedStr.length,
@@ -215,7 +203,6 @@ app.post('/inquiries', (req, res) => {
     try { inquiries.push(...getAllInquiries()); } catch (_) {}
     return res.status(400).render('home', {
       pageTitle: "Inquiry Error — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: inquiries,
       successMessage: null,
@@ -238,7 +225,6 @@ app.post('/inquiries', (req, res) => {
 
     res.status(201).render('home', {
       pageTitle: "Inquiry Confirmed — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: inquiries,
       successMessage: `Bespoke tailoring inquiry #${record.id} successfully recorded for ${record.client_name}! Agreed fitting date: ${record.fitting_date}.`,
@@ -254,7 +240,6 @@ app.post('/inquiries', (req, res) => {
 
     res.status(500).render('home', {
       pageTitle: "Database Error — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: [],
       successMessage: null,
@@ -269,7 +254,6 @@ app.use((req, res) => {
     pageTitle: "Page Not Found — Nit's Cut",
     metaDescription: "The requested page was not found on Nit's Cut portal.",
     isMarketingPage: false,
-    theme: 'dark',
     inquiries: [],
     successMessage: null,
     errorMessage: `Route ${req.originalUrl} was not found on this server.`,

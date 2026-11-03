@@ -12,7 +12,6 @@
   MODES.forEach(function (mode) {
     forms[mode] = document.querySelector('[data-auth-form="' + mode + '"]');
   });
-  var switchLinks = document.querySelectorAll('.auth-switch [data-auth-mode]');
 
   function modeFromAddress() {
     var mode = new URLSearchParams(window.location.search).get('mode');
@@ -25,16 +24,6 @@
     currentMode = mode;
     MODES.forEach(function (name) {
       forms[name].hidden = name !== mode;
-    });
-    switchLinks.forEach(function (link) {
-      var active = link.getAttribute('data-auth-mode') === mode;
-      link.classList.toggle('btn-active', active);
-      link.classList.toggle('btn-secondary', !active);
-      if (active) {
-        link.setAttribute('aria-current', 'page');
-      } else {
-        link.removeAttribute('aria-current');
-      }
     });
     document.title = forms[mode].getAttribute('data-title');
     if (moveFocus) {

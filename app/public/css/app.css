@@ -10,7 +10,7 @@
 body {
   margin: var(--nc-space-0);
   padding: var(--nc-space-0);
-  background-color: var(--nc-color-background);
+  background: linear-gradient(to bottom, var(--nc-color-primary-container), var(--nc-color-background));
   color: var(--nc-color-on-background);
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
@@ -51,6 +51,7 @@ body {
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.15s ease;
+  border-radius: var(--nc-radius-button);
 }
 
 .brand:hover {
@@ -63,8 +64,9 @@ body {
   justify-content: center;
   width: var(--nc-space-8);
   height: var(--nc-space-8);
-  background-color: var(--nc-color-primary-container);
-  color: var(--nc-color-on-primary-container);
+  background-color: var(--nc-color-primary);
+  color: var(--nc-color-on-primary);
+  border: var(--nc-border-width) solid var(--nc-color-outline-variant);
   border-radius: var(--nc-radius-button);
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -323,10 +325,36 @@ body {
   display: none !important;
 }
 
-.auth-switch {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--nc-space-2);
+main:has([data-auth-form]) {
+  flex: 1;
+  justify-content: center;
+}
+
+[data-auth-form] {
+  inline-size: 100%;
+  max-inline-size: min(var(--nc-layout-copy-max), calc(var(--nc-layout-heading-max) * 2));
+  margin-inline: auto;
+  padding: clamp(var(--nc-card-padding), 5%, var(--nc-space-8));
+  border-radius: var(--nc-radius-card);
+  background: var(--nc-color-surface-container-low);
+  box-shadow: var(--nc-shadow-medium);
+}
+
+[data-auth-form] .card-header {
+  justify-content: center;
+  text-align: center;
+}
+
+[data-auth-form] .btn-primary {
+  inline-size: 100%;
+}
+
+[data-auth-form] > .card-desc {
+  text-align: center;
+}
+
+.auth-sublinks {
+  justify-content: center;
 }
 
 .auth-link {
