@@ -27,20 +27,20 @@ In accordance with WCAG 2.1 AA and assessment guidelines, every field across the
 
 ## 2. Before-Fix Accessibility Audit Matrix
 
-*Note: As instructed, entries remain blank until tested live with macOS VoiceOver by the learner to record actual observed speech without invention.*
+The matrix distinguishes learner reports, historical screenshots and code inspection. Missing historical observations are explicitly identified.
 
 | Form & Field Control | 1. Colour Independence | 2. Keyboard Reachability | 3. Visible Focus | 4. Error Association (`aria-describedby` & `invalid`) | 5. Screen Reader Announcement (Before Fix) | Status / Defect Notes |
 |---|---|---|---|---|---|---|
-| **Signup:** Full Name (`#signup-name`) |  |  | After empty submission returned focus here, the learner saw a blinking cursor inside the field and an outline around it. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the name error (see transcript below). |  |
-| **Signup:** Email Address (`#signup-email`) |  | Tab moved focus from Full Name to Email. | The learner saw the outline move to Email and a blinking cursor inside the field. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the email error (see transcript below). |  |
-| **Signup:** Password (`#signup-password`) |  | Reached with Tab. | Outline and blinking cursor. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the empty-password error (see transcript below). |  |
+| **Signup:** Full Name (`#signup-name`) | Warning icon and written message in [screenshot 05](../evidence/05-empty-field-error.png). | Keyboard submission returned focus here. | After empty submission returned focus here, the learner saw a blinking cursor inside the field and an outline around it. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the name error (see transcript below). |  |
+| **Signup:** Email Address (`#signup-email`) | Warning icon and format guidance in [screenshot 07](../evidence/07-email-realtime-signup.png). | Tab moved focus from Full Name to Email. | The learner saw the outline move to Email and a blinking cursor inside the field. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the email error (see transcript below). |  |
+| **Signup:** Password (`#signup-password`) | Visual cue during the original error was not recorded. The saved password close-up shows the field before an error. | Reached with Tab. | Outline and blinking cursor. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the empty-password error (see transcript below). |  |
 | **Signup:** Terms Checkbox (`#signup-terms`) | Visible error when unchecked: “You must agree to the Terms of Service to create an account”. | Learner reached the checkbox by keyboard and reported that pressing Enter ticked it during this test. | Learner saw an outline around the focused checkbox. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | Learner heard the label and checkbox role. On unchecking, the learner reported “i must agree to the terms of service before i can create an account”. | Heard “checked box” after pressing Space to select it. Exact spoken state on unchecking was not reported. |
-| **Signup:** Submit Button (`button[type="submit"]`) |  | Reached by keyboard and activated with Enter. | Learner saw no visible change when the button received keyboard focus. | N/A (errors belong to the fields). | On focus returning to Full Name: “Please enter your name so we know who to address when you visit the shop” | With required fields empty, pressing Enter moved focus to Full Name. |
+| **Signup:** Submit Button (`button[type="submit"]`) | Field-level errors are recorded on the affected input. | Reached by keyboard and activated with Enter. | Learner saw no visible change when the button received keyboard focus. | N/A (errors belong to the fields). | On focus returning to Full Name: “Please enter your name so we know who to address when you visit the shop” | With required fields empty, pressing Enter moved focus to Full Name. |
 | **Login:** Email Address (`#login-email`) | Visible error: “Please enter your email address to access your account.” | Reached with Tab. | Outline and blinking cursor. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | On leaving the empty field with Tab: “Please enter your email address to access your account” |  |
 | **Login:** Password (`#login-password`) | Visible error: “Please enter your password” | Reached with Tab. | Outline and blinking cursor. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | On leaving the empty field with Tab, the learner reported “please enter the your password”. |  |
-| **Login:** Submit Button (`button[type="submit"]`) |  | Reached with Tab and activated with Enter. | Visible outline. | N/A (errors belong to the fields). | On focus returning to Email, the learner reported “please enter your emai address to access your account”. | With both fields empty, focus moved to Email. |
+| **Login:** Submit Button (`button[type="submit"]`) | Field-level errors are recorded on the affected input. | Reached with Tab and activated with Enter. | Visible outline. | N/A (errors belong to the fields). | On focus returning to Email, the learner reported “please enter your emai address to access your account”. | With both fields empty, focus moved to Email. |
 | **Reset:** Email Address (`#reset-email`) | Learner saw an error message at the email field. | Shift + Tab returned focus from the reset button to Email. | Learner saw a blinking cursor inside the email field. | Code review: linked to its own alert via aria-describedby. Validation sets aria-invalid on error and removes it on clearing. | On leaving the empty field with Tab, the learner reported “please enter your email address to access your account”. | The announcement uses login wording on the reset form. |
-| **Reset:** Submit Button (`button[type="submit"]`) |  | Learner reached the button with Tab and activated it with Enter. | Learner saw an outline around the button when it received keyboard focus. | N/A (errors belong to the fields). | Learner paraphrase: VoiceOver asked for an email address to receive a password-reset link. | On repeat, the learner confirmed that focus was on the Email field after Enter and that VoiceOver asked them to enter their email. Wording is paraphrased. |
+| **Reset:** Submit Button (`button[type="submit"]`) | Field-level errors are recorded on the affected input. | Learner reached the button with Tab and activated it with Enter. | Learner saw an outline around the button when it received keyboard focus. | N/A (errors belong to the fields). | Learner paraphrase: VoiceOver asked for an email address to receive a password-reset link. | On repeat, the learner confirmed that focus was on the Email field after Enter and that VoiceOver asked them to enter their email. Wording is paraphrased. |
 
 ---
 
@@ -101,7 +101,7 @@ This confirms an audible checked state in that test.
 - **Steps to reproduce:** Open `/auth?mode=reset`. Focus the Email field and press `Tab` to leave it empty.
 - **What happened:** The reset form handler called `validateEmail(rEmail, 'login', false)`. Both inline alert and VoiceOver announced: *"Please enter your email address to access your account."* This told users trying to reset their password how to log into their account.
 - **What should happen:** The message must be specific to password recovery: *"Enter your email address to request a password reset."*
-- **Remedy applied:** In [`app/public/js/auth.js`](file:///Users/blk/Developer/Five5%20assessment%20task/app/public/js/auth.js), updated `validateEmail` to handle `mode === 'reset'` with text `"Enter your email address to request a password reset."` and bound reset form listeners to `'reset'`. Verified in evidence `evidence/after-fix-reset-email-correct-wording.png`.
+- **Remedy applied:** In [`app/public/js/auth.js`](../../app/public/js/auth.js), updated `validateEmail` to handle `mode === 'reset'` with text `"Enter your email address to request a password reset."` and bound reset form listeners to `'reset'`. Verified in evidence `evidence/after-fix-reset-email-correct-wording.png`.
 
 ### Defect 2: Primary button focus indicator styling and contrast
 - **Steps to reproduce:** Tab to the "Sign up" button on dark theme (`/auth?mode=signup`) and compare with "Log in" on `/auth?mode=login`.
@@ -119,21 +119,21 @@ This confirms an audible checked state in that test.
 
 ### Defect 3: Signup password requirements were absent from HTML and not linked via `aria-describedby`
 - **Steps to reproduce:** Open `/auth?mode=signup` and press `Tab` to focus the Password field.
-- **What happened:** VoiceOver announced only *"Password, secure edit text"*. The 15-character minimum requirement was missing from the HTML markup and not associated via `aria-describedby`. Screen-reader users had no way of knowing the password length rules until after failing validation.
+- **What happened:** The exact initial-focus announcement was not recorded. The 15-character minimum requirement was missing from the HTML markup and not associated via `aria-describedby`. Screen-reader users had no way of knowing the password length rules until after failing validation.
 - **What should happen:** Requirements must be visible and programmatically linked so VoiceOver announces the requirement before the user types.
-- **Remedy applied:** In [`app/views/auth.ejs`](file:///Users/blk/Developer/Five5%20assessment%20task/app/views/auth.ejs), added `<p id="signup-password-hint">Must be at least 15 characters long. Spaces are allowed.</p>` and linked the input using `aria-describedby="signup-password-hint signup-password-error"`.
+- **Remedy applied:** In [`app/views/auth.ejs`](../../app/views/auth.ejs), added `<p id="signup-password-hint">Must be at least 15 characters long. Spaces are allowed.</p>` and linked the input using `aria-describedby="signup-password-hint signup-password-error"`.
 
 ### Defect 4: Six text inputs lacked required-state markers (distinguished from Terms checkbox)
 - **Steps to reproduce:** Tab through the fields on `/auth?mode=signup`, `/auth?mode=login`, or `/auth?mode=reset`.
-- **What happened:** The **six text inputs** (`#signup-name`, `#signup-email`, `#signup-password`, `#login-email`, `#login-password`, `#reset-email`) completely lacked a required-state marker—having neither HTML `required` nor `aria-required="true"`. Because the forms specify `novalidate`, assistive technology had no programmatic indication that these text fields were mandatory upon initial focus. In contrast, the **Terms checkbox** (`#signup-terms`) already had the native HTML `required` attribute in markup.
+- **What happened:** The **six text inputs** (`#signup-name`, `#signup-email`, `#signup-password`, `#login-email`, `#login-password`, `#reset-email`) completely lacked a required-state marker—having neither HTML `required` nor `aria-required="true"`. Without a required-state marker, assistive technology had no programmatic indication that these text fields were mandatory upon initial focus. In contrast, the **Terms checkbox** (`#signup-terms`) already had the native HTML `required` attribute in markup.
 - **What should happen:** All mandatory fields must programmatically communicate their required status to assistive technology on initial focus.
-- **Remedy applied:** In [`app/views/auth.ejs`](file:///Users/blk/Developer/Five5%20assessment%20task/app/views/auth.ejs), added explicit `aria-required="true"` to the six text inputs (`#signup-name`, `#signup-email`, `#signup-password`, `#login-email`, `#login-password`, `#reset-email`), and also added `aria-required="true"` to `#signup-terms` to ensure programmatic parity across assistive technologies.
+- **Remedy applied:** In [`app/views/auth.ejs`](../../app/views/auth.ejs), added explicit `aria-required="true"` to the six text inputs (`#signup-name`, `#signup-email`, `#signup-password`, `#login-email`, `#login-password`, `#reset-email`), and also added `aria-required="true"` to `#signup-terms` to ensure programmatic parity across assistive technologies.
 
 ---
 
 ## 5. After-Fix Accessibility Audit Matrix & Verification Transcript
 
-Learner retest. The spoken errors below were reported during validation. Announcements on first entering untouched fields are still unconfirmed.
+Learner retest. The spoken errors below were reported during validation. The Login rows also include the later initial-focus retest.
 
 | Control | Learner observation | Result |
 |---|---|---|
@@ -141,6 +141,9 @@ Learner retest. The spoken errors below were reported during validation. Announc
 | Signup full name | “Please enter your name so we know who to address when you visit the shop.invalid data menu pop edit text” | Empty-field error heard. |
 | Signup email | “An email address is required to send your fitting confirmations and receipts invalid data menu pop up email with autofill” | Empty-field error heard. “Required” occurs in the error text. The separate required-state announcement is unconfirmed. |
 | Signup password | “Please choose a password to protect your account.invalid data with menu pop up” | Empty-field error heard. The 15-character guidance was not reported during this interaction. |
+| Login email | On first focus: “email required”. After pressing Tab with Email empty: “email please enter your email to access ypur account”. | VoiceOver announced the required state on entry and the empty-email instruction on leaving. |
+| Login password | On first focus: “password required”. After pressing Tab with Password empty: “please enter your password”. | VoiceOver announced the required state on entry and the empty-password instruction on leaving. |
+| Login submit button | With both fields empty, the learner heard “login dimmed button”. After Enter, focus returned to Email. The learner paraphrased the next instruction as being asked to enter their email before logging in. | The inactive button was reachable by keyboard, its state was announced, and focus returned to the first empty field. |
 | Sign up button | Learner saw an outline when the button received focus. | Visible focus observed in this run. Theme and contrast were not measured in this manual check. |
 
 ### Follow-up learner retest
@@ -153,3 +156,7 @@ Learner retest. The spoken errors below were reported during validation. Announc
 ### Post-redesign VoiceOver walkthrough
 
 After the grouped Signup, Login and Reset walkthrough, the learner reported “for this all came through the same from the last audit”. This is one overall observation. No new field-by-field quotations or separate focus destinations were supplied for this run. The earlier transcripts and the before-fix Reset paraphrase retain their original context.
+
+### Subsequent button and checkbox checks
+
+The [Step 7 learner walkthrough](validation-rules.md#learner-voiceover-walkthrough-for-step-7) records the Signup Terms focus recovery, both password toggles, and the Reset button announcement with empty and valid email. The same walkthrough records the Signup password guidance on focus. Earlier paraphrases and missing historical speech remain identified in their original rows.

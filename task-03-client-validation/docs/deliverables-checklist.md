@@ -2,16 +2,16 @@
 
 Copied filenames from the original assessment. Unchecked means not verified for submission, even if a file exists. Consult assessment-requirements.txt for mandatory behaviour, alternatives, optional recordings, interview questions and marking. File presence alone is not completion.
 
-- [ ] README.md
+- [x] README.md
 - [x] spa-rationale.md
 - [x] field-justification.md
 - [x] validation-rules.md
 - [x] terms-note.md (adapted from Automattic Terms of Service Section 2 under CC BY-SA 4.0)
 - [x] enumeration.md
-- [ ] accessibility-audit.md
+- [x] accessibility-audit.md (review reconciled; historical limitations documented)
 - [x] client-side-is-not-security.md
 - [x] rollback.md
-- [ ] defects.md
+- [x] defects.md
 - [ ] interview-answers.md
 - [x] 01-page-count-before.txt
 - [x] 02-page-count-after.txt
@@ -32,6 +32,13 @@ Copied filenames from the original assessment. Unchecked means not verified for 
 - [x] 17-commit-list-and-rollback.txt
 - [ ] 18-walkthrough.mp4
 
-- [ ] All numbered steps and evidence alternatives checked against the original task.
+- [x] All numbered steps and evidence alternatives checked against the original task. Open items are listed below.
 - [ ] Required interview answers and wrong-answer analysis reviewed by learner.
 - [ ] Genuine defects, reasons, commits and viva preparation complete.
+
+
+## Submission review
+
+- All required documents and numbered evidence files are present, including the permitted three-image sequences for 09 and 10. Items 11, 12 and 18 are optional bonus recordings.
+- The Login Email, Password and submit-button retests are documented in the accessibility audit. Signup Terms focus recovery and the Reset button state announcements are documented in the Step 7 learner walkthrough in [validation rules](validation-rules.md). Screenshots 05 and 07 confirm written errors and icons for Signup Name and Email. The original visual error cue for Signup Password was not recorded. Retain the distinction between historical observations, code checks and current retests.
+- All 14 numbered answers, the wrong-answer analysis and the additional enumeration answer are present. All 14 numbered answer bodies have been verified at 200 words each, excluding headings and horizontal rules. Learner viva review remains pending.
