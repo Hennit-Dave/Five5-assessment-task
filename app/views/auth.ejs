@@ -1,0 +1,123 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <!-- All three forms are in the page. Only the one matching ?mode= is visible. Without JavaScript,
+       in-page links navigate directly and the server picks the form; with JavaScript, /js/auth.js switches
+       the visible form without reloading the page. -->
+  <section class="card" data-auth-form="signup" data-title="<%= authModes.signup.title %>"<%- mode !== 'signup' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Create your account</h1>
+        <p class="card-desc nc-type-body-medium">Follow your outfit from first fitting to collection.</p>
+      </div>
+    </div>
+    <form method="POST" action="/auth/signup" novalidate style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Full name</label>
+        <input class="form-control" type="text" id="signup-name" name="name" autocomplete="name" aria-required="true" aria-describedby="signup-name-error">
+        <div class="form-error" id="signup-name-error" role="alert"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Email</label>
+        <input class="form-control" type="email" id="signup-email" name="email" autocomplete="email" aria-required="true" aria-describedby="signup-email-error">
+        <div class="form-error" id="signup-email-error" role="alert"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-password">Password</label>
+        <div class="password-input-wrap">
+          <input class="form-control" type="password" id="signup-password" name="password" autocomplete="new-password" aria-required="true" aria-describedby="signup-password-hint signup-password-error">
+          <button type="button" class="password-toggle-btn" aria-label="Show password" aria-controls="signup-password">
+            <svg class="password-icon-show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <svg class="password-icon-hide" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" hidden>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </button>
+        </div>
+        <p id="signup-password-hint" class="nc-type-body-small nc-visually-hidden" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">Must be at least 15 characters long. Spaces are allowed.</p>
+        <div class="form-error" id="signup-password-error" role="alert"></div>
+      </div>
+      <div class="form-group">
+        <div class="form-checkbox">
+          <input type="checkbox" id="signup-terms" name="terms" required aria-required="true" aria-describedby="signup-terms-error">
+          <label for="signup-terms" class="nc-type-body-medium">
+            I agree to the <a class="auth-link" href="/terms" target="_blank" rel="noopener">Terms of Service</a>
+          </label>
+        </div>
+        <div class="form-error" id="signup-terms-error" role="alert"></div>
+      </div>
+      <div>
+        <button class="btn btn-primary" type="submit" aria-disabled="true">Sign up</button>
+      </div>
+    </form>
+    <p class="card-desc nc-type-body-medium">
+      Already have an account? <a class="auth-link" href="/auth?mode=login" data-auth-mode="login">Log in</a>
+    </p>
+  </section>
+
+  <section class="card" data-auth-form="login" data-title="<%= authModes.login.title %>"<%- mode !== 'login' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Log in</h1>
+        <p class="card-desc nc-type-body-medium">Welcome back to Nit's Cut.</p>
+      </div>
+    </div>
+    <form method="POST" action="/auth/login" novalidate style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input class="form-control" type="email" id="login-email" name="email" autocomplete="email" aria-required="true" aria-describedby="login-email-error">
+        <div class="form-error" id="login-email-error" role="alert"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <div class="password-input-wrap">
+          <input class="form-control" type="password" id="login-password" name="password" autocomplete="current-password" aria-required="true" aria-describedby="login-password-error">
+          <button type="button" class="password-toggle-btn" aria-label="Show password" aria-controls="login-password">
+            <svg class="password-icon-show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            <svg class="password-icon-hide" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" hidden>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+          </button>
+        </div>
+        <div class="form-error" id="login-password-error" role="alert"></div>
+      </div>
+      <div>
+        <button class="btn btn-primary" type="submit" aria-disabled="true">Log in</button>
+      </div>
+    </form>
+    <div class="auth-sublinks card-desc nc-type-body-medium">
+      <a class="auth-link" href="/auth?mode=signup" data-auth-mode="signup">Create an account</a>
+      <a class="auth-link" href="/auth?mode=reset" data-auth-mode="reset">Forgot your password?</a>
+    </div>
+  </section>
+
+  <section class="card" data-auth-form="reset" data-title="<%= authModes.reset.title %>"<%- mode !== 'reset' ? ' hidden' : '' %>>
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Reset your password</h1>
+        <p class="card-desc nc-type-body-medium">Enter your email and we will help you get back in.</p>
+      </div>
+    </div>
+    <form method="POST" action="/auth/reset" novalidate style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <div class="form-group">
+        <label class="form-label" for="reset-email">Email</label>
+        <input class="form-control" type="email" id="reset-email" name="email" autocomplete="email" aria-required="true" aria-describedby="reset-email-error">
+        <div class="form-error" id="reset-email-error" role="alert"></div>
+      </div>
+      <div>
+        <button class="btn btn-primary" type="submit" aria-disabled="true">Send reset link</button>
+      </div>
+    </form>
+    <p class="card-desc nc-type-body-medium">
+      <a class="auth-link" href="/auth?mode=login" data-auth-mode="login">Back to log in</a>
+    </p>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

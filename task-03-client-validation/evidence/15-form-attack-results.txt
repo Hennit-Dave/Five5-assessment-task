@@ -1,0 +1,124 @@
+# Evidence 15 — Form Attack Results (Through the Browser)
+# Task 3, Step 8: Systematic Testing of Client-Side Validation Rules
+# Application: Nit's Cut Client Authentication Forms (/auth?mode=signup, login, reset)
+# Environment: Google Chrome (Headless CDP Automation)
+# Date: 2026-11-03
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+This test systematically attempts to defeat every client-side validation rule
+implemented across the four categories using the exact browser inputs specified
+in the assessment brief. It evaluates both expected rejections (properly blocked
+by client rules) and boundary loopholes where unexpected or extreme data passes
+client-side checks.
+
+================================================================================
+DETAILED ATTACK VECTOR TEST RESULTS
+================================================================================
+
+[Test 01] Full Name (Signup) :: Empty Name on blur
+  - Tested Input: "" (empty string)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ Please enter your name so we know who to address when you visit the shop."
+  - Outcome: BLOCKED by client-side rule (required field check on blur).
+
+[Test 02] Full Name (Signup) :: Single-character name ("A")
+  - Tested Input: "A" (1 character)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ Please enter at least two characters, including a letter."
+  - Outcome: BLOCKED by client-side rule (minimum 2 characters requirement).
+
+[Test 03] Full Name (Signup) :: Pure punctuation name ("...")
+  - Tested Input: "..." (3 punctuation characters, 0 letters)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ Please enter at least two characters, including a letter."
+  - Outcome: BLOCKED by client-side rule (must contain at least one letter).
+
+[Test 04] Full Name (Signup) :: Name with surrounding whitespace ("   Adeyemi   ")
+  - Tested Input: "   Adeyemi   " (raw length 13, trimmed length 7)
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Outcome: PASSED client-side validation. The trimmed value passes the rule, but the raw DOM value in input.value retains surrounding spaces until form submit.
+
+[Test 05] Full Name (Signup) :: Excessive length name (5,008 characters)
+  - Exact Length Tested: 5008 characters ("Adeyemi " + 5,000 "A"s)
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Submit Button State: Active when paired with valid email, password, and terms.
+  - Outcome: PASSED client-side validation. Observation: No error was displayed; the client-side rule checks only minimum length (>= 2) and lacks an upper bound (maxlength).
+
+[Test 06] Email (Signup) :: Empty Email on blur
+  - Tested Input: "" (empty string)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ An email address is required to send your fitting confirmations and receipts."
+  - Outcome: BLOCKED by client-side rule (required email check on blur).
+
+[Test 07] Email (Signup) :: Exact brief input "a@b" (No top-level domain)
+  - Tested Input: "a@b" (3 characters, missing domain TLD)
+  - aria-invalid: "true"
+  - Visible Error Observed: "⚠ Please enter a valid email address (e.g. name@example.com)."
+  - Submit Button State: Inactive (aria-disabled="true")
+  - Submit Attempt Result: Attempting to submit blocked by guard (e.preventDefault()); exactly 0 POST requests sent to /auth/signup. Focus recovered to #signup-email.
+  - Outcome: BLOCKED by client-side real-time regex (/^[^\s@]+@[^\s@]+\.[^\s@]+$/). Zero network traffic generated.
+
+[Test 08] Email (Signup) :: Minimal regex matching address ("a@b.c")
+  - Tested Input: "a@b.c" (5 characters, minimal structure)
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Outcome: PASSED client-side validation. Observation: Syntactically matches regex structure local@domain.tld, even though ".c" is not an authentic registered TLD. Client regex cannot verify domain existence.
+
+[Test 09] Email (Signup) :: Excessive length email (3,018 characters)
+  - Exact Length Tested: 3018 characters ("folake" + 3,000 "a"s + "@example.com")
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Outcome: PASSED client-side validation. Observation: Matches EMAIL_REGEX and passes without error because no maximum length limit is enforced on the frontend.
+
+[Test 10] Password (Signup) :: 14-character boundary password ("12345678901234")
+  - Exact Length Tested: 14 characters (1 below minimum threshold)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ Password must be at least 15 characters long."
+  - Outcome: BLOCKED by client-side rule (15-character minimum passphrase threshold).
+
+[Test 11] Password (Signup) :: Password of pure whitespace ("               ", 15 spaces)
+  - Exact Length Tested: 15 space characters
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ Password cannot consist solely of spaces."
+  - Outcome: BLOCKED by client-side rule (all-whitespace passphrase rejection via !val.trim()).
+
+[Test 12] Password (Signup) :: Valid 23-character passphrase ("bespoke lagos suit 2026")
+  - Exact Length Tested: 23 characters (passphrase containing letters and internal spaces)
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Outcome: PASSED client-side validation (preserves spaces in multi-word passphrases).
+
+[Test 13] Password (Signup) :: Excessive length password (10,016 characters)
+  - Exact Length Tested: 10016 characters ("ValidPassphrase!" + 10,000 "X"s)
+  - aria-invalid: null
+  - Error Banner Observed: None
+  - Submit Button State: Active when paired with valid name, email, and terms.
+  - Outcome: PASSED client-side validation. Observation: Passes Array.from().length >= 15 with no error displayed; frontend defines no maximum password length.
+
+[Test 14] Terms of Service (Signup) :: Unchecked Terms on submit attempt
+  - Tested Input: Checkbox unchecked (checked = false)
+  - aria-invalid: "true"
+  - Error Banner Observed: "⚠ You must agree to the Terms of Service to create an account."
+  - Submit Button State: Inactive (aria-disabled="true")
+  - Submit Attempt Result: Blocked by submit guard; focus recovered directly to #signup-terms.
+  - Outcome: BLOCKED by client-side rule (mandatory agreement required).
+
+================================================================================
+SYNTHESIS OF CLIENT-SIDE FINDINGS
+================================================================================
+1. Input "a@b" from Assessment Brief:
+   - Evaluated live on 'input' event by validateEmail().
+   - Failed regex (/^[^\s@]+@[^\s@]+\.[^\s@]+$/) due to missing dot/TLD.
+   - Set aria-invalid="true" and displayed "Please enter a valid email address (e.g. name@example.com)."
+   - Submit button remained inactive (aria-disabled="true").
+   - Click/Enter attempt triggered e.preventDefault(); 0 POST requests reached the network.
+
+2. Long-Input Tests (Actual Tested Lengths):
+   - Name: 5,008 characters. Result: No field error; submit button enabled once other fields were valid.
+   - Email: 3,018 characters. Result: No field error; EMAIL_REGEX matched local@domain.tld without length constraint.
+   - Password: 10,016 characters. Result: No field error; satisfied Array.from(val).length >= 15 with no upper cap.
+   - Summary: Client-side validation enforces only minimum thresholds and structure, leaving upper bounds unpoliced.

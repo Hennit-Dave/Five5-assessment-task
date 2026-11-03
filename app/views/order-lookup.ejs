@@ -1,0 +1,79 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <nav class="auth-switch" aria-label="Order input demonstration options">
+    <a href="/orders/lookup?version=number" class="btn <%= version === 'number' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large"<%- version === 'number' ? ' aria-current="page"' : '' %>>Version A: Number Input (Defect)</a>
+    <a href="/orders/lookup?version=text" class="btn <%= version === 'text' ? 'btn-active' : 'btn-secondary' %> nc-type-label-large"<%- version === 'text' ? ' aria-current="page"' : '' %>>Version B: Text Input (Working)</a>
+  </nav>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Find Your Order Reference</h1>
+        <p class="card-desc nc-type-body-medium">
+          Demonstration for Task 3 Step 4: Entering the numerical digits of an order reference (proposed example NC-0042).
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">
+          <%= version === 'number' ? 'Version A: Obvious type is the wrong one (<input type="number">)' : 'Version B: Text input with numeric mode (<input type="text" inputmode="numeric">)' %>
+        </p>
+        <p>
+          <%= version === 'number' 
+            ? 'This input uses type="number" with an explicit starting value of 0. Try typing 400 (results in 0400), correcting it by deleting the leading zero, or entering 0042.'
+            : 'This input uses type="text" with inputmode="numeric". It preserves leading zeros as a string, rejects non-digits, and avoids stepper arrows.' %>
+        </p>
+      </div>
+
+      <% if (version === 'number') { %>
+        <form method="POST" action="/orders/lookup" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);">
+          <input type="hidden" name="version" value="number">
+          <div class="form-group">
+            <label class="form-label" for="order-ref-num">Order Reference Digits</label>
+            <input class="form-control" type="number" id="order-ref-num" name="order_ref" value="0" aria-describedby="order-ref-hint">
+            <p id="order-ref-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
+              Explicit default value is set to 0. Steppers appear.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-primary" type="submit">Look up reference</button>
+          </div>
+        </form>
+      <% } else { %>
+        <form method="POST" action="/orders/lookup" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);">
+          <input type="hidden" name="version" value="text">
+          <div class="form-group">
+            <label class="form-label" for="order-ref-text">Order Reference Digits</label>
+            <input class="form-control" type="text" inputmode="numeric" pattern="[0-9]*" id="order-ref-text" name="order_ref" placeholder="e.g. 0042" autocomplete="off" aria-describedby="order-ref-hint">
+            <p id="order-ref-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
+              Accepts only digits; preserves leading zeros as a string without spinners.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-primary" type="submit">Look up reference</button>
+          </div>
+        </form>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<script>
+  // In the text input version, restrict input strictly to digits
+  var textInput = document.getElementById('order-ref-text');
+  if (textInput) {
+    textInput.addEventListener('input', function (e) {
+      var cleaned = e.target.value.replace(/\D/g, '');
+      if (e.target.value !== cleaned) {
+        e.target.value = cleaned;
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>
+

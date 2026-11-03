@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
       metaDescription: "Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.",
       isMarketingPage: true,
       activePath: '/',
-      theme: 'dark',
       inquiries: inquiries,
       successMessage: null,
       errorMessage: null,
@@ -52,7 +51,6 @@ app.get('/', (req, res) => {
       metaDescription: "Error loading Nit's Cut client portal.",
       isMarketingPage: false,
       activePath: '/',
-      theme: 'dark',
       inquiries: [],
       successMessage: null,
       errorMessage: `Database query failed: ${err.message}`,
@@ -67,8 +65,123 @@ app.get('/services', (req, res) => {
     pageTitle: "Bespoke Tailoring Services — Nit's Cut",
     metaDescription: "Explore our handcrafted Senator native wear, traditional Agbada, and bespoke trousers.",
     isMarketingPage: true,
-    activePath: '/services',
-    theme: 'dark'
+    activePath: '/services'
+  });
+});
+
+// Single authentication page (Task 3 Step 1). One route; the ?mode= query parameter selects which
+// of the three forms is visible. This replaces the intermediate separate /signup, /login and /reset
+// pages, which are kept only in Git history (commit 7da3fce) and in evidence/01-page-count-before.txt.
+const AUTH_MODES = {
+  signup: { title: "Sign up — Nit's Cut" },
+  login: { title: "Log in — Nit's Cut" },
+  reset: { title: "Reset password — Nit's Cut" }
+};
+app.get('/auth', (req, res) => {
+  const mode = req.query.mode;
+  if (typeof mode !== 'string' || !Object.hasOwn(AUTH_MODES, mode)) {
+    return res.redirect(302, '/auth?mode=login');
+  }
+  res.render('auth', {
+    pageTitle: AUTH_MODES[mode].title,
+    isMarketingPage: false,
+    activePath: '/auth',
+    mode,
+    authModes: AUTH_MODES,
+    scripts: ['/js/auth.js']
+  });
+});
+
+// Terms of Service Route (Step 2 Draft placeholder awaiting approved source)
+app.get('/terms', (req, res) => {
+  res.render('terms', {
+    pageTitle: "Terms of Service (Assessment Draft) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/terms'
+  });
+});
+
+// Prototype Auth Form POST Handlers (Task 3 Step 2)
+// Uses explicit HTTP POST to keep credentials and personal details out of URLs and query logs.
+app.post('/auth/signup', (req, res) => {
+  const { name, email, terms } = req.body || {};
+  // Explicitly avoid logging password; pass status to prototype response view
+  res.status(200).render('auth-result', {
+    pageTitle: "Signup Received (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    action: 'signup',
+    name: typeof name === 'string' ? name.trim() : '',
+    email: typeof email === 'string' ? email.trim() : '',
+    termsAccepted: terms === 'on' || terms === 'true'
+  });
+});
+
+app.post('/auth/login', (req, res) => {
+  const { email } = req.body || {};
+  // Explicitly avoid logging password
+  res.status(200).render('auth-result', {
+    pageTitle: "Login Received (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    action: 'login',
+    email: typeof email === 'string' ? email.trim() : ''
+  });
+});
+
+app.post('/auth/reset', (req, res) => {
+  const { email } = req.body || {};
+  res.status(200).render('auth-result', {
+    pageTitle: "Reset Requested (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth',
+    action: 'reset',
+    email: typeof email === 'string' ? email.trim() : ''
+  });
+});
+
+// Password Reset Recovery Code Demonstration Route (Task 3 Step 5)
+// Demonstrates sensitive data shape protection and enumeration prevention
+app.get('/auth/recovery', (req, res) => {
+  res.render('recovery', {
+    pageTitle: "Enter Recovery Code (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/recovery'
+  });
+});
+
+app.post('/auth/recovery', (req, res) => {
+  // Do not log or echo submitted recovery codes or their lengths to result views
+  res.status(200).render('recovery-result', {
+    pageTitle: "Recovery Submission Received (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/recovery'
+  });
+});
+
+// Order Reference Lookup Demonstration Route (Task 3 Step 4)
+// Demonstrates input type selection for numerical identifiers (e.g. NC-0042 digits)
+app.get('/orders/lookup', (req, res) => {
+  const version = req.query.version === 'text' ? 'text' : 'number';
+  res.render('order-lookup', {
+    pageTitle: "Find Your Order (Reference Demonstration) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/orders/lookup',
+    version
+  });
+});
+
+app.post('/orders/lookup', (req, res) => {
+  const { order_ref, version } = req.body || {};
+  const submittedStr = typeof order_ref === 'string' ? order_ref : String(order_ref ?? '');
+  res.status(200).render('order-lookup-result', {
+    pageTitle: "Order Reference Submitted (Prototype) — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/orders/lookup',
+    version: version || 'number',
+    submittedValue: submittedStr,
+    submittedLength: submittedStr.length,
+    numericCoercion: Number(submittedStr)
   });
 });
 
@@ -90,7 +203,6 @@ app.post('/inquiries', (req, res) => {
     try { inquiries.push(...getAllInquiries()); } catch (_) {}
     return res.status(400).render('home', {
       pageTitle: "Inquiry Error — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: inquiries,
       successMessage: null,
@@ -113,7 +225,6 @@ app.post('/inquiries', (req, res) => {
 
     res.status(201).render('home', {
       pageTitle: "Inquiry Confirmed — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: inquiries,
       successMessage: `Bespoke tailoring inquiry #${record.id} successfully recorded for ${record.client_name}! Agreed fitting date: ${record.fitting_date}.`,
@@ -129,7 +240,6 @@ app.post('/inquiries', (req, res) => {
 
     res.status(500).render('home', {
       pageTitle: "Database Error — Nit's Cut",
-      theme: 'dark',
       activePath: '/',
       inquiries: [],
       successMessage: null,
@@ -144,7 +254,6 @@ app.use((req, res) => {
     pageTitle: "Page Not Found — Nit's Cut",
     metaDescription: "The requested page was not found on Nit's Cut portal.",
     isMarketingPage: false,
-    theme: 'dark',
     inquiries: [],
     successMessage: null,
     errorMessage: `Route ${req.originalUrl} was not found on this server.`,

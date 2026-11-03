@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Enter Recovery Code</h1>
+        <p class="card-desc nc-type-body-medium">
+          Step 2 Prototype: Entering the proposed password-reset code. Generic guidance protects the sensitive code format against enumeration attacks.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype Notice</p>
+        <p>
+          This is an educational prototype demonstration. In this prototype, recovery codes are not generated, stored in a database, checked against expiry windows, or used to unlock user accounts.
+        </p>
+      </div>
+
+      <form method="POST" action="/auth/recovery" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="recovery-code">Recovery Code</label>
+          <input class="form-control" type="text" id="recovery-code" name="recovery_code" aria-describedby="recovery-code-hint" autocomplete="off">
+          <p id="recovery-code-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
+            Enter the code from your recovery message.
+          </p>
+          <div id="recovery-code-error" class="field-error nc-type-body-small" role="alert" style="display: none; color: var(--nc-color-error); margin-top: var(--nc-space-1);"></div>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="submit">Verify Code</button>
+        </div>
+      </form>
+
+      <p style="margin-top: var(--nc-space-4);">
+        <a href="/auth?mode=reset" class="auth-link">&larr; Back to reset request (email-only)</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<script>
+  var recoveryForm = document.querySelector('form[action="/auth/recovery"]');
+  if (recoveryForm) {
+    recoveryForm.addEventListener('submit', function (e) {
+      var input = document.getElementById('recovery-code');
+      var err = document.getElementById('recovery-code-error');
+      var val = (input.value || '').trim();
+      if (!val) {
+        e.preventDefault();
+        err.textContent = 'Please enter the code from your recovery message.';
+        err.style.display = 'block';
+        input.setAttribute('aria-invalid', 'true');
+        input.focus();
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

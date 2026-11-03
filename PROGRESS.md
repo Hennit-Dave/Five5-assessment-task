@@ -1,6 +1,6 @@
 # Five5 progress
 
-Updated 2026-11-02. Active task: Task 2 — All technical deliverables, evidence captures, enquiry form preservation, model comparison notes, and documentation completed. Task 1: completed and committed locally. Tasks 3–5: not started.
+Updated 2026-11-02. Active task: Task 3 (Step 1 completed locally on branch `feature/task-03-client-validation`). Task 2: All technical deliverables and evidence complete (independent human README test pending). Task 1: completed and committed locally on `main`. Tasks 4–5: not started.
 
 ## Confirmed work
 - Fictional men's tailoring business Nit's Cut; observed missed deadlines during training (power outages and single-tailor overload), not a verified interview.
@@ -33,6 +33,26 @@ Updated 2026-11-02. Active task: Task 2 — All technical deliverables, evidence
   5. Fluid typography verified across 3 widths in `evidence/20-responsive-three-widths.png`.
   6. Documented in `docs/information-design.md`.
 - Task 2 Interview Defence & Defects: answered all 15 interview defence questions in `docs/interview-answers.md` (all 160–199 words, strictly under 200 words), and documented defects D9–D13 in `docs/defects.md`.
+
+- Task 3 Step 1 (Collapse Authentication Pages):
+  1. Defined strict page counting rule: distinct URL paths returning HTTP 200 with `text/html`.
+  2. Probed original app at `6bf5748`: 2 user-facing pages (`/`, `/services`), 0 authentication pages.
+  3. Created and committed minimal separate-page baseline at `7da3fce`: 5 user-facing pages, 3 auth pages (`/signup`, `/login`, `/reset`). Verified that baseline switches triggered full page Document reloads and destroyed browser DOM state. Captured in `task-03-client-validation/evidence/01-page-count-before.txt`.
+  4. Consolidate into single route `GET /auth` using query parameter `?mode=login|signup|reset`. Inactive forms hidden with HTML `hidden` attribute and CSS `[hidden] { display: none !important; }`. Client script `app/public/js/auth.js` intercepts switcher clicks, pushes URL state, updates `aria-current="page"`, updates `document.title`, and moves focus to form `<h1>`.
+  5. Probed consolidated app: 3 user-facing pages (`/`, `/services`, `/auth`), 1 auth page. Former baseline routes return 404. Captured in `evidence/02-page-count-after.txt`.
+  6. Captured genuine browser address bars in `evidence/03-url-states.png` (2080x4688 Retina PNG) and preserved illustration in `evidence/03a-url-states-illustration.png`.
+  7. Verified 0 server requests and 0 new Document loads across 6 client switches, DOM window marker survival, unchanged `performance.timeOrigin`, verified direct links and F5 refreshes, and documented statelessness in `evidence/04-form-switch-logs.txt`.
+  8. Authored `docs/spa-rationale.md` detailing user experience comparison, benefits of instant switching, and legitimate cases for separate pages. Committed at `6985b52` and `aab231d`.
+- Task 3 Step 2 (Information Design & Credential Safety):
+  1. Developed three-tier field justification in `docs/field-justification.md`. Kept phone collection at tailoring enquiry (`POST /inquiries`); supported single-name clients (mononyms) on registration while eliminating redundant confirm-password, shipping address, and fake badges.
+  2. Selected Option 1 for terms: adapted Section 2 of Automattic published Terms of Service under CC BY-SA 4.0; removed termination-at-any-time clause; documented edits in `docs/terms-note.md` and live at `/terms`.
+  3. Configured explicit HTTP POST methods on all auth forms (`/auth/signup`, `/auth/login`, `/auth/reset`) with prototype confirmation view (`app/views/auth-result.ejs`). Verified that submitting by button or Enter key keeps fictional credentials out of URLs and observed logs in `evidence/04a-form-post-credentials-test.txt`. Committed at `01bb288`.
+- Task 3 Step 3 (Client-Side Validation across Four Categories):
+  1. Documented rule derivations, failure outcomes, and trade-offs in `docs/validation-rules.md`. Single-name support (min 2 chars + letter) blocks single-character entries while allowing mononyms (e.g. Sade, Dapo).
+  2. Implemented Category 1 empty-field validation on blur (`evidence/05-empty-field-error.png`).
+  3. Implemented Category 2 business length/structure validation (`evidence/06-length-rule-blocking.png`).
+  4. Implemented Category 3 real-time email format on signup (`evidence/07-email-realtime-signup.png`) vs submit-time email format on login (`evidence/08-email-on-submit-login.png`).
+  5. Implemented Category 4 accessible error architecture: `aria-invalid`, `aria-describedby`, `role="alert"`, non-color indicators (icon + text), and submit focus recovery to first invalid field.
 
 ## Outstanding Task 2 learner actions
 - Hand repository link to an independent peer tester unfamiliar with the project, collect their verbatim setup experience, and record in `docs/readme-test.md`.

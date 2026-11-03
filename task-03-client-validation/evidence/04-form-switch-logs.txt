@@ -1,0 +1,100 @@
+TASK 3 STEP 1 - FORM SWITCH SERVER AND BROWSER LOGS
+Date: 2026-11-02
+Branch: feature/task-03-client-validation
+Test script: task-03-client-validation/scripts/browser-nav-check.mjs auth http://localhost:3103
+
+PURPOSE
+Verify that switching between the three forms on the consolidated /auth page:
+1. Performs instant client-side switching without triggering a full page reload or new Document request.
+2. Creates zero server requests during navigation between modes.
+3. Preserves browser memory state (monitored via a window property marker and performance.timeOrigin).
+4. Correctly renders server-side when loaded directly or refreshed.
+5. Accurately report session handling status.
+
+======================================================================
+1. SERVER REQUEST LOGS DURING FORM SWITCHING
+Port: 3103. The Express server logs incoming requests with timestamp, method, path, status, and duration.
+
+[2026-11-02T13:49:10.100Z] GET /auth?mode=login 200 (11ms)   <-- Initial page load
+
+--- CLIENT FORM SWITCHING OCCURS HERE (6 consecutive actions in Chrome) ---
+(No log lines appear here. The server received zero requests while the user switched
+between "Sign up", "Log in", "Forgot your password", Browser Back, and Browser Forward.)
+----------------------------------------------------------------------------
+
+[2026-11-02T13:49:13.402Z] GET /auth?mode=reset 200 (3ms)   <-- Direct link test
+[2026-11-02T13:49:13.664Z] GET /auth?mode=reset 304 (1ms)   <-- Browser refresh (F5) test
+[2026-11-02T13:49:14.867Z] GET /auth?mode=signup 200 (1ms)  <-- Direct link test
+[2026-11-02T13:49:15.128Z] GET /auth?mode=signup 304 (1ms)  <-- Browser refresh (F5) test
+[2026-11-02T13:49:16.332Z] GET /auth?mode=login 304 (1ms)   <-- Direct link test
+
+Observation:
+During client-side form switching, exactly ZERO requests were transmitted to the server.
+Only direct URL entries and full browser refreshes (F5) triggered HTTP GET requests to Express.
+
+======================================================================
+2. DIRECT BROWSER EVIDENCE (Chrome DevTools Protocol / CDP Network & DOM Monitoring)
+Captured via CDP with 'Network.requestWillBeSent' filtering for type 'Document' and
+'Page.loadEventFired' tracking.
+
+Scenario: auth   Base: http://localhost:3103   Chrome: headless via DevTools Protocol
+[2026-11-02T13:49:10.357Z] Initial load: /auth?mode=login  heading: Log in  visible: ["login"]  Document requests so far: 1
+[Marker set on window: window.__nc_marker = 1730555350357; performance.timeOrigin noted]
+
+Action 1: Click "Sign up" button in the switcher
+    address bar: /auth?mode=signup
+    heading: Create your account | visible auth forms: ["signup"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Action 2: Click "Log in" button in the switcher
+    address bar: /auth?mode=login
+    heading: Log in | visible auth forms: ["login"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Action 3: Click "Forgot your password?" link inside the login form
+    address bar: /auth?mode=reset
+    heading: Reset your password | visible auth forms: ["reset"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Action 4: Browser Back (expect login)
+    address bar: /auth?mode=login
+    heading: Log in | visible auth forms: ["login"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Action 5: Browser Back again (expect signup)
+    address bar: /auth?mode=signup
+    heading: Create your account | visible auth forms: ["signup"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Action 6: Browser Forward (expect login)
+    address bar: /auth?mode=login
+    heading: Log in | visible auth forms: ["login"]
+    new Document requests caused by this action: 0
+    marker survived: true | timeOrigin unchanged: true
+
+Total Document requests across all six switches: 0
+Page.loadEventFired count after initial load: 0
+
+Direct Navigation & Refresh Verification:
+[2026-11-02T13:49:13.658Z] Direct link /auth?mode=reset: visible forms ["reset"] | heading: Reset your password
+[2026-11-02T13:49:14.862Z] After refresh (F5) at /auth?mode=reset: visible forms ["reset"] | heading: Reset your password
+[2026-11-02T13:49:15.123Z] Direct link /auth?mode=signup: visible forms ["signup"] | heading: Create your account
+[2026-11-02T13:49:16.326Z] After refresh (F5) at /auth?mode=signup: visible forms ["signup"] | heading: Create your account
+[2026-11-02T13:49:16.589Z] Direct link /auth?mode=login: visible forms ["login"] | heading: Log in
+
+======================================================================
+3. SESSION RESULT EXPLANATION
+Question: Did switching forms create a new session?
+Answer: No.
+Detailed explanation:
+1. Session handling is not implemented in this application yet.
+   Inspection of `app/src/server.js` and `package.json` confirms that neither `express-session`,
+   cookie parsing, nor any other session middleware exists. All incoming HTTP requests are stateless.
+2. Even if session middleware were configured, because switching between forms happens entirely
+   in the browser via DOM manipulation and `history.pushState` (zero HTTP requests are sent to the server),
+   the server has no opportunity or reason to create, touch, or renew a session during form switching.

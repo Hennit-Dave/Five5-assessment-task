@@ -1,0 +1,46 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">
+          <%= action === 'signup' ? 'Signup Received (Prototype)' : (action === 'login' ? 'Login Received (Prototype)' : 'Password Reset Requested (Prototype)') %>
+        </h1>
+        <p class="card-desc nc-type-body-medium">
+          <% if (action === 'signup') { %>
+            Prototype submission received. In this prototype, signing up does not create a database account or save your details.
+          <% } else if (action === 'login') { %>
+            Prototype submission received. In this prototype, logging in does not start a user session or set authentication cookies.
+          <% } else { %>
+            Prototype submission received. In this prototype, requesting a reset does not generate a token or send an email.
+          <% } %>
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype status</p>
+        <p>This prototype demonstrates form layout, HTTP POST method handling, and credential safety without persistent database writes or session cookies.</p>
+        <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
+          <% if (locals.name) { %><li><strong>Name submitted:</strong> <%= name %></li><% } %>
+          <% if (locals.email) { %><li><strong>Email submitted:</strong> <%= email %></li><% } %>
+          <% if (locals.termsAccepted !== undefined) { %><li><strong>Terms accepted:</strong> <%= termsAccepted ? 'Yes' : 'No' %></li><% } %>
+        </ul>
+        <% if (action === 'reset') { %>
+          <div style="margin-top: var(--nc-space-3); padding-top: var(--nc-space-2); border-top: 1px solid var(--nc-color-outline-variant);">
+            <p style="margin-bottom: var(--nc-space-2);">Next step in recovery workflow demonstration:</p>
+            <a href="/auth/recovery" class="btn btn-secondary nc-type-label-large">Proceed to Prototype Code Entry &rarr;</a>
+          </div>
+        <% } %>
+      </div>
+
+      <p style="margin-top: var(--nc-space-4);">
+        <a href="/auth?mode=login" class="auth-link">&larr; Return to authentication page</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

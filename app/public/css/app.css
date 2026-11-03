@@ -10,7 +10,7 @@
 body {
   margin: var(--nc-space-0);
   padding: var(--nc-space-0);
-  background-color: var(--nc-color-background);
+  background: linear-gradient(to bottom, var(--nc-color-primary-container), var(--nc-color-background));
   color: var(--nc-color-on-background);
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
@@ -51,6 +51,7 @@ body {
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.15s ease;
+  border-radius: var(--nc-radius-button);
 }
 
 .brand:hover {
@@ -63,8 +64,9 @@ body {
   justify-content: center;
   width: var(--nc-space-8);
   height: var(--nc-space-8);
-  background-color: var(--nc-color-primary-container);
-  color: var(--nc-color-on-primary-container);
+  background-color: var(--nc-color-primary);
+  color: var(--nc-color-on-primary);
+  border: var(--nc-border-width) solid var(--nc-color-outline-variant);
   border-radius: var(--nc-radius-button);
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -256,6 +258,52 @@ body {
   outline-offset: var(--nc-focus-ring-offset);
 }
 
+/* Password visibility toggle (Task 3, Step 7) */
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+}
+
+.password-input-wrap .form-control {
+  inline-size: 100%;
+  padding-inline-end: 2.75rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  inset-inline-end: var(--nc-space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  padding: var(--nc-space-1);
+  border: none;
+  background: transparent;
+  color: var(--nc-color-on-surface-variant);
+  border-radius: var(--nc-radius-button);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.password-toggle-btn:hover {
+  color: var(--nc-color-on-surface);
+}
+
+.password-toggle-btn:focus,
+.password-toggle-btn:focus-visible {
+  outline: var(--nc-focus-ring-width) solid var(--nc-color-primary);
+  outline-offset: var(--nc-focus-ring-offset);
+}
+
+.password-toggle-btn svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  display: block;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -274,6 +322,7 @@ body {
   transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
+.btn:focus,
 .btn:focus-visible {
   outline: var(--nc-focus-ring-width) solid var(--nc-color-primary);
   outline-offset: var(--nc-focus-ring-offset);
@@ -291,6 +340,27 @@ body {
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-primary[aria-disabled="true"] {
+  background-color: var(--nc-color-surface-container-high);
+  color: var(--nc-color-on-surface-variant);
+  border: var(--nc-border-width) solid var(--nc-color-outline-variant);
+  cursor: not-allowed;
+  opacity: 0.8;
+  transform: none;
+}
+
+.btn-primary[aria-disabled="true"]:hover {
+  background-color: var(--nc-color-surface-container-high);
+  color: var(--nc-color-on-surface-variant);
+  transform: none;
+}
+
+.btn-primary[aria-disabled="true"]:focus,
+.btn-primary[aria-disabled="true"]:focus-visible {
+  outline: var(--nc-focus-ring-width) solid var(--nc-color-primary);
+  outline-offset: var(--nc-focus-ring-offset);
 }
 
 .btn-secondary {
@@ -315,6 +385,98 @@ body {
   color: var(--nc-color-on-primary-container);
   border: var(--nc-border-width) solid var(--nc-color-primary);
   font-weight: 700;
+}
+
+/* Authentication page (/auth): one page, three forms selected by ?mode= */
+[hidden] {
+  display: none !important;
+}
+
+main:has([data-auth-form]) {
+  flex: 1;
+  justify-content: center;
+}
+
+[data-auth-form] {
+  inline-size: 100%;
+  max-inline-size: min(var(--nc-layout-copy-max), calc(var(--nc-layout-heading-max) * 2));
+  margin-inline: auto;
+  padding: clamp(var(--nc-card-padding), 5%, var(--nc-space-8));
+  border-radius: var(--nc-radius-card);
+  background: var(--nc-color-surface-container-low);
+  box-shadow: var(--nc-shadow-medium);
+}
+
+[data-auth-form] .card-header {
+  justify-content: center;
+  text-align: center;
+}
+
+[data-auth-form] .btn-primary {
+  inline-size: 100%;
+}
+
+[data-auth-form] > .card-desc {
+  text-align: center;
+}
+
+.auth-sublinks {
+  justify-content: center;
+}
+
+.auth-link {
+  color: var(--nc-color-primary);
+  text-decoration: underline;
+}
+
+.auth-sublinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-3);
+  align-items: center;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nc-space-2);
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: var(--nc-space-0-5);
+  accent-color: var(--nc-color-primary);
+  cursor: pointer;
+}
+
+.form-checkbox label {
+  cursor: pointer;
+  color: var(--nc-color-on-surface);
+  line-height: 1.4;
+}
+
+/* Accessible Form Validation Error States (Category 4) */
+.form-control[aria-invalid="true"] {
+  border-color: var(--nc-color-error);
+}
+
+.form-control[aria-invalid="true"]:focus-visible {
+  outline-color: var(--nc-color-error);
+}
+
+.form-error {
+  display: none;
+  font-size: var(--nc-type-body-small-font-size, 0.875rem);
+  color: var(--nc-color-error);
+  margin-top: var(--nc-space-1);
+  line-height: 1.4;
+}
+
+.form-error:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-1);
 }
 
 .nc-visually-hidden {

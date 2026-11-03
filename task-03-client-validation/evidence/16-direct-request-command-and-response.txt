@@ -1,0 +1,241 @@
+# Evidence 16 — Direct Request Commands and Responses (Bypassing Browser Validation)
+# Task 3, Step 8: Attack Around the Form (Direct Endpoint Requests)
+# Target: Nit's Cut Prototype Server (http://localhost:3000/auth/signup)
+# Date: 2026-11-03
+
+================================================================================
+REQUEST 1: INVALID VALUES & FORMATS (NAME < 2, MALFORMED EMAIL, PASSWORD < 15)
+================================================================================
+
+--- 1A. EXACT COMMAND EXECUTED ---
+curl -i -X POST http://localhost:3000/auth/signup -H "Content-Type: application/x-www-form-urlencoded" --data "name=A&email=not-an-email&password=short"
+
+--- 1B. EXACT SERVER RESPONSE RECEIVED (HEADERS & BODY) ---
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 4231
+ETag: W/"1087-mJllEj8NEELqrfBbJqamT3jJdeI"
+Date: Tue, 03 Nov 2026 14:23:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup Received (Prototype) — Nit&#39;s Cut</title>
+  
+  <!-- 2. Tagline & 3. SEO Meta Description (under 10 words: 9 words) -->
+  <meta name="description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  
+    <!-- Non-marketing or error routes explicitly set noindex; omitting the tag defaults to index/follow -->
+    <meta name="robots" content="noindex, nofollow">
+  
+
+  <!-- 4. Self-Crafted Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- 5. Open Graph Meta Tags for Rich Social Sharing -->
+  <meta property="og:site_name" content="Nit's Cut">
+  <meta property="og:title" content="Signup Received (Prototype) — Nit&#39;s Cut">
+  <meta property="og:description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/images/nc-og-preview.png">
+
+  <!-- Self-Hosted Stylesheets & Design Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/nc-tokens.css">
+  <link rel="stylesheet" href="/css/nc-layout-tokens.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="topbar">
+      <a href="/auth?mode=signup" data-auth-mode="signup" class="brand" aria-label="Nit's Cut — Sign up">
+        <span class="brand-badge nc-type-title-medium" aria-hidden="true">NC</span>
+        <div class="brand-info">
+          <p class="brand-name nc-type-title-medium">Nit's Cut</p>
+          <p class="brand-sub nc-type-body-small">Bespoke Men's Tailoring · Native Wear, Trousers &amp; Shirts</p>
+        </div>
+      </a>
+      <nav class="topbar-nav" style="display: flex; gap: var(--nc-space-2); align-items: center;" aria-label="Main Navigation">
+        <a href="/" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Portal Home</a>
+        <a href="/services" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Services</a>
+      </nav>
+    </header>
+
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">
+          Signup Received (Prototype)
+        </h1>
+        <p class="card-desc nc-type-body-medium">
+          
+            Prototype submission received. In this prototype, signing up does not create a database account or save your details.
+          
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype status</p>
+        <p>This prototype demonstrates form layout, HTTP POST method handling, and credential safety without persistent database writes or session cookies.</p>
+        <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
+          <li><strong>Name submitted:</strong> A</li>
+          <li><strong>Email submitted:</strong> not-an-email</li>
+          <li><strong>Terms accepted:</strong> No</li>
+        </ul>
+        
+      </div>
+
+      <p style="margin-top: var(--nc-space-4);">
+        <a href="/auth?mode=login" class="auth-link">&larr; Return to authentication page</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+    <footer class="footer">
+      <p class="footer-text nc-type-body-small">Nit's Cut Workshop · Bespoke Men's Native Wear, Trousers &amp; Shirts</p>
+      <p class="footer-text nc-type-label-small">Server-Rendered Node.js &amp; Express · Tokenized UI</p>
+    </footer>
+  </div>
+  
+</body>
+</html>
+
+
+
+
+================================================================================
+REQUEST 2: COMPLETELY EMPTY MANDATORY FIELDS (EMPTY NAME, EMPTY EMAIL, EMPTY PASSWORD)
+================================================================================
+
+--- 2A. EXACT COMMAND EXECUTED ---
+curl -i -X POST http://localhost:3000/auth/signup -H "Content-Type: application/x-www-form-urlencoded" --data "name=&email=&password="
+
+--- 2B. EXACT SERVER RESPONSE RECEIVED (HEADERS & BODY) ---
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 4133
+ETag: W/"1025-6F/4DgKL6UPk+F2Yw84XqKL07Bc"
+Date: Tue, 03 Nov 2026 14:23:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup Received (Prototype) — Nit&#39;s Cut</title>
+  
+  <!-- 2. Tagline & 3. SEO Meta Description (under 10 words: 9 words) -->
+  <meta name="description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  
+    <!-- Non-marketing or error routes explicitly set noindex; omitting the tag defaults to index/follow -->
+    <meta name="robots" content="noindex, nofollow">
+  
+
+  <!-- 4. Self-Crafted Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- 5. Open Graph Meta Tags for Rich Social Sharing -->
+  <meta property="og:site_name" content="Nit's Cut">
+  <meta property="og:title" content="Signup Received (Prototype) — Nit&#39;s Cut">
+  <meta property="og:description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/images/nc-og-preview.png">
+
+  <!-- Self-Hosted Stylesheets & Design Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/nc-tokens.css">
+  <link rel="stylesheet" href="/css/nc-layout-tokens.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="topbar">
+      <a href="/auth?mode=signup" data-auth-mode="signup" class="brand" aria-label="Nit's Cut — Sign up">
+        <span class="brand-badge nc-type-title-medium" aria-hidden="true">NC</span>
+        <div class="brand-info">
+          <p class="brand-name nc-type-title-medium">Nit's Cut</p>
+          <p class="brand-sub nc-type-body-small">Bespoke Men's Tailoring · Native Wear, Trousers &amp; Shirts</p>
+        </div>
+      </a>
+      <nav class="topbar-nav" style="display: flex; gap: var(--nc-space-2); align-items: center;" aria-label="Main Navigation">
+        <a href="/" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Portal Home</a>
+        <a href="/services" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Services</a>
+      </nav>
+    </header>
+
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">
+          Signup Received (Prototype)
+        </h1>
+        <p class="card-desc nc-type-body-medium">
+          
+            Prototype submission received. In this prototype, signing up does not create a database account or save your details.
+          
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype status</p>
+        <p>This prototype demonstrates form layout, HTTP POST method handling, and credential safety without persistent database writes or session cookies.</p>
+        <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
+          
+          
+          <li><strong>Terms accepted:</strong> No</li>
+        </ul>
+        
+      </div>
+
+      <p style="margin-top: var(--nc-space-4);">
+        <a href="/auth?mode=login" class="auth-link">&larr; Return to authentication page</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+    <footer class="footer">
+      <p class="footer-text nc-type-body-small">Nit's Cut Workshop · Bespoke Men's Native Wear, Trousers &amp; Shirts</p>
+      <p class="footer-text nc-type-label-small">Server-Rendered Node.js &amp; Express · Tokenized UI</p>
+    </footer>
+  </div>
+  
+</body>
+</html>
+
+
+
+
+================================================================================
+TECHNICAL SUMMARY & OBSERVATIONS
+================================================================================
+1. Request 1 (Structurally Invalid Values):
+   - Command: curl -i -X POST http://localhost:3000/auth/signup -H "Content-Type: application/x-www-form-urlencoded" --data "name=A&email=not-an-email&password=short"
+   - Server Response Status: HTTP/1.1 200 OK
+   - What it demonstrated: Bypasses the 2-character name rule, the email regex rule, the 15-character password rule, and terms agreement. The server echoes "Name submitted: A", "Email submitted: not-an-email", and "Terms accepted: No".
+
+2. Request 2 (Completely Empty Mandatory Fields):
+   - Command: curl -i -X POST http://localhost:3000/auth/signup -H "Content-Type: application/x-www-form-urlencoded" --data "name=&email=&password="
+   - Server Response Status: HTTP/1.1 200 OK
+   - What it demonstrated: Bypasses mandatory/required field checks completely. The server renders the result view without error; name and email are blank strings, and terms defaults to "No".
+
+3. Meaning of HTTP 200 in the Prototype:
+   - HTTP 200 OK here indicates only that the Express server route successfully received the POST request and rendered its HTML template view ('auth-result.ejs').
+   - It does NOT indicate that an account was created, saved to a database, or that a user session was established (no database write or session middleware exists in this prototype).

@@ -3,6 +3,9 @@
       <p class="footer-text nc-type-label-small">Server-Rendered Node.js &amp; Express · Tokenized UI</p>
     </footer>
   </div>
+  <% (locals.scripts || []).forEach(function (src) { %>
+  <script src="<%= src %>"></script>
+  <% }); %>
 </body>
 </html>
 

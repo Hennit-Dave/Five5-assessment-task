@@ -1,0 +1,38 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Terms of Service</h1>
+        <p class="card-desc nc-type-body-medium">Assessment Draft — Adapted under Creative Commons Attribution-ShareAlike 4.0 International.</p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
+      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Assessment draft notice</p>
+        <p>This wording is adapted strictly from the account-use provisions of Section 2 (&ldquo;Your Account&rdquo;) of the published <a href="https://wordpress.com/tos/" target="_blank" rel="noopener" class="auth-link">Automattic Terms of Service</a>. It focuses exclusively on account accuracy and credential safeguarding for an appointment and tailoring portal. Broader platform termination, blog hosting, and payment rules were excluded. No deposit, refund, or alteration policies have been invented.</p>
+      </div>
+
+      <h2 class="nc-type-title-medium" style="color: var(--nc-color-on-surface); margin-top: var(--nc-space-2);">1. Account Registration and Accuracy</h2>
+      <p>Where use of Nit's Cut services requires an account, you agree to provide complete and accurate information and to keep the information current so that we can communicate with you regarding your account, orders, and fitting appointments.</p>
+
+      <h2 class="nc-type-title-medium" style="color: var(--nc-color-on-surface); margin-top: var(--nc-space-2);">2. Account Security and Password Confidentiality</h2>
+      <p>You are solely responsible and liable for all activities that occur under your account. You are also responsible for maintaining the security of your account, which includes keeping your password secure and confidential.</p>
+
+      <div style="margin-top: var(--nc-space-4); padding-top: var(--nc-space-3); border-top: 1px solid var(--nc-color-outline-variant);" class="nc-type-body-small">
+        <p><strong>Licence and Attribution:</strong></p>
+        <p>These terms are adapted from Section 2 of the <a href="https://wordpress.com/tos/" target="_blank" rel="noopener" class="auth-link">Automattic Terms of Service</a>, published by Automattic Inc. under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" class="auth-link">Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) licence</a>.</p>
+        <p style="margin-top: var(--nc-space-1);"><strong>Changes from original:</strong> Narrowed strictly to Section 2 account-use sentences (registration accuracy and password security). Removed all clauses concerning blog hosting, eCommerce sales, domain registration, payment fees, user content liabilities, and unilateral termination. Wording was adapted strictly for client account management and appointment communications.</p>
+        <p style="margin-top: var(--nc-space-1);">This adapted text is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" class="auth-link">CC BY-SA 4.0</a>.</p>
+      </div>
+
+      <p style="margin-top: var(--nc-space-3);">
+        <a href="/auth?mode=signup" class="auth-link">&larr; Return to sign up</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
