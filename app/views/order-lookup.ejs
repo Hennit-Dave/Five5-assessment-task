@@ -29,6 +29,12 @@
         </p>
       </div>
 
+      <% if (locals.errorMessage) { %>
+        <div class="form-error-banner" role="alert" tabindex="-1" id="order-server-error">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
       <% if (version === 'number') { %>
         <form method="POST" action="/orders/lookup" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);">
           <input type="hidden" name="version" value="number">
@@ -64,6 +70,8 @@
 
 <script>
   // In the text input version, restrict input strictly to digits
+  var orderServerBanner = document.getElementById('order-server-error');
+  if (orderServerBanner) { orderServerBanner.focus(); }
   var textInput = document.getElementById('order-ref-text');
   if (textInput) {
     textInput.addEventListener('input', function (e) {

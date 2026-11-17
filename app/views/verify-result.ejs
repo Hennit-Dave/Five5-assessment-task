@@ -1,0 +1,31 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card" style="max-width: 520px; width: 100%; margin: 0 auto;">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Email Verified</h1>
+        <p class="card-desc nc-type-body-medium">
+          Your email address has been confirmed.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: var(--nc-space-3);" class="nc-type-body-medium">
+      <div class="result-notice" role="status">
+        Verification complete for <strong><%= email %></strong> at <code><%= verifiedAt %></code>.
+      </div>
+
+      <p style="color: var(--nc-color-on-surface-variant);">
+        In this prototype, persistent sign-in sessions are not yet active. You can return to the sign-in screen to test credential verification.
+      </p>
+
+      <p style="margin-top: var(--nc-space-2);">
+        <a href="/auth?mode=login" class="btn btn-primary" style="text-decoration: none; display: inline-block;">Continue to Sign In</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
