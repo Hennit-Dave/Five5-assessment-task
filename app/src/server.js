@@ -1,7 +1,42 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createInquiry, getAllInquiries } from './db.js';
+import { performance } from 'node:perf_hooks';
+import {
+  createInquiry,
+  getAllInquiries,
+  createUser,
+  findUserByEmail,
+  verifyUserCredentials,
+  DuplicateEmailError
+} from './db.js';
+import {
+  normalizeEmail,
+  normalizePassword,
+  validateEmail,
+  validateName,
+  validateSignupPassword
+} from './auth.js';
+import {
+  SignupSchema,
+  LoginSchema,
+  ResetSchema,
+  RecoverySchema,
+  OrderLookupSchema,
+  VerifyCodeSchema,
+  ResendVerificationSchema,
+  getFirstErrorMessage
+} from './schemas.js';
+import { createAuthRateLimiters } from './rateLimit.js';
+import { checkPasswordBreached, OUTCOMES as BREACH_OUTCOMES } from './breachCheck.js';
+import {
+  issueVerificationCode,
+  verifyEmailCode,
+  assertVerificationSecretConfigured,
+  VerificationConfigError,
+  EXPIRY_MINUTES
+} from './verification.js';
+import { enqueueVerificationEmail, sendVerificationEmail } from './email.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -101,47 +136,461 @@ app.get('/terms', (req, res) => {
   });
 });
 
-// Prototype Auth Form POST Handlers (Task 3 Step 2)
-// Uses explicit HTTP POST to keep credentials and personal details out of URLs and query logs.
-app.post('/auth/signup', (req, res) => {
-  const { name, email, terms } = req.body || {};
-  // Explicitly avoid logging password; pass status to prototype response view
-  res.status(200).render('auth-result', {
-    pageTitle: "Signup Received (Prototype) — Nit's Cut",
-    isMarketingPage: false,
-    activePath: '/auth',
-    action: 'signup',
-    name: typeof name === 'string' ? name.trim() : '',
-    email: typeof email === 'string' ? email.trim() : '',
-    termsAccepted: terms === 'on' || terms === 'true'
-  });
+// Authentication Endpoints (Task 4 Step 6: Schema Validation at the Boundary)
+// Rate limiting (Step 8) runs after body parsing and BEFORE schema validation, hashing
+// and database work. It is IP-only, in-memory, and `trust proxy` is intentionally left off.
+const authLimiters = createAuthRateLimiters(AUTH_MODES);
+
+// Zod schemas execute at the HTTP boundary immediately after body parsing.
+// Passwords are NEVER logged or echoed to response views.
+// Downstream handlers use parsed schema output for business actions.
+
+app.post('/auth/signup', ...authLimiters.signup, async (req, res) => {
+  const valStart = performance.now();
+  const parseResult = SignupSchema.safeParse(req.body || {});
+  const valDuration = performance.now() - valStart;
+  res.setHeader('X-Validation-Duration-Ms', valDuration.toFixed(4));
+
+  const rawName = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
+  const rawEmail = typeof req.body?.email === 'string' ? normalizeEmail(req.body.email) : '';
+  const safeFormData = { name: rawName, email: rawEmail };
+
+  if (!parseResult.success) {
+    const msg = getFirstErrorMessage(parseResult.error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, error: msg });
+    }
+    return res.status(400).render('auth', {
+      mode: 'signup',
+      pageTitle: AUTH_MODES.signup.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
+
+  const { name, email, password, termsAccepted } = parseResult.data;
+
+  // Task 4 Step 9: Breached Password Check (k-anonymity hash-prefix lookup)
+  // Evaluated strictly after schema validation and strictly before Argon2id hashing or database writes.
+  const breachResult = await checkPasswordBreached(password);
+
+  if (breachResult.outcome === BREACH_OUTCOMES.BREACHED) {
+    const msg = 'This password has appeared in a known data breach. Please choose a different password to protect your account.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, error: msg });
+    }
+    return res.status(400).render('auth', {
+      mode: 'signup',
+      pageTitle: AUTH_MODES.signup.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
+
+  if (breachResult.outcome === BREACH_OUTCOMES.UNAVAILABLE) {
+    // Fail-closed policy for assessment: return HTTP 503 and create zero accounts
+    const msg = 'Password verification is temporarily unavailable. Please try again in a few moments.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(503).json({ success: false, error: msg });
+    }
+    return res.status(503).render('auth', {
+      mode: 'signup',
+      pageTitle: AUTH_MODES.signup.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
+
+  try {
+    // Validate verification HMAC secret BEFORE creating any user or verification record
+    assertVerificationSecretConfigured();
+
+    const user = await createUser({
+      email,
+      password,
+      fullName: name
+    });
+
+    console.log(`[Auth] User created: id=${user.id}, email=${user.email}, role=${user.role}`);
+
+    // Task 4 Step 10: Issue 6-digit verification code and dispatch email.
+    // Strict recipient allowlist (TEST_RECIPIENT_EMAIL) is enforced inside sendVerificationEmail / enqueueVerificationEmail
+    // before any SMTP connection; neither NODE_ENV nor EMAIL_DELIVERY_MODE can bypass it.
+    const codeIssue = issueVerificationCode({ userId: user.id, ignoreCooldown: true });
+    const deliveryMode = process.env.EMAIL_DELIVERY_MODE || 'job';
+
+    if (codeIssue.ok && deliveryMode !== 'disabled') {
+      if (deliveryMode === 'sync') {
+        try {
+          await sendVerificationEmail({
+            toEmail: user.email,
+            fullName: user.fullName,
+            code: codeIssue.code,
+            expiryMinutes: EXPIRY_MINUTES
+          });
+        } catch (emailErr) {
+          if (emailErr?.code === 'RECIPIENT_NOT_ALLOWED') {
+            console.warn(`[Email] Sync delivery blocked before SMTP connection: ${emailErr.message}`);
+          } else {
+            throw emailErr;
+          }
+        }
+      } else {
+        enqueueVerificationEmail({
+          toEmail: user.email,
+          fullName: user.fullName,
+          code: codeIssue.code,
+          expiryMinutes: EXPIRY_MINUTES
+        });
+      }
+    }
+
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(201).json({ success: true, user });
+    }
+
+    res.status(201).render('auth-result', {
+      pageTitle: "Account Created — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth',
+      action: 'signup',
+      user,
+      termsAccepted,
+      notice: "Your client account has been created. In this prototype, persistent sign-in sessions are not yet active."
+    });
+  } catch (err) {
+    if (err instanceof DuplicateEmailError || err.code === 'EMAIL_EXISTS') {
+      const msg = 'An account with this email address already exists. Please log in or request a password reset.';
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(409).json({ success: false, error: msg });
+      }
+      return res.status(409).render('auth', {
+        mode: 'signup',
+        pageTitle: AUTH_MODES.signup.title,
+        isMarketingPage: false,
+        activePath: '/auth',
+        authModes: AUTH_MODES,
+        scripts: ['/js/auth.js'],
+        errorMessage: msg,
+        formData: safeFormData
+      });
+    }
+
+    console.error('[Auth Error] Signup failed:', err.message);
+    const msg = 'Account registration failed due to an internal server error.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: msg });
+    }
+    res.status(500).render('auth', {
+      mode: 'signup',
+      pageTitle: AUTH_MODES.signup.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
 });
 
-app.post('/auth/login', (req, res) => {
-  const { email } = req.body || {};
-  // Explicitly avoid logging password
-  res.status(200).render('auth-result', {
-    pageTitle: "Login Received (Prototype) — Nit's Cut",
-    isMarketingPage: false,
-    activePath: '/auth',
-    action: 'login',
-    email: typeof email === 'string' ? email.trim() : ''
-  });
+app.post('/auth/login', ...authLimiters.login, async (req, res) => {
+  const valStart = performance.now();
+  const parseResult = LoginSchema.safeParse(req.body || {});
+  const valDuration = performance.now() - valStart;
+  res.setHeader('X-Validation-Duration-Ms', valDuration.toFixed(4));
+
+  const rawEmail = typeof req.body?.email === 'string' ? normalizeEmail(req.body.email) : '';
+  const safeFormData = { email: rawEmail };
+
+  if (!parseResult.success) {
+    const msg = 'Invalid email or password.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(401).json({ success: false, error: msg });
+    }
+    return res.status(401).render('auth', {
+      mode: 'login',
+      pageTitle: AUTH_MODES.login.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
+
+  const { email, password } = parseResult.data;
+
+  try {
+    const user = await verifyUserCredentials(email, password);
+    if (!user) {
+      const msg = 'Invalid email or password.';
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(401).json({ success: false, error: msg });
+      }
+      return res.status(401).render('auth', {
+        mode: 'login',
+        pageTitle: AUTH_MODES.login.title,
+        isMarketingPage: false,
+        activePath: '/auth',
+        authModes: AUTH_MODES,
+        scripts: ['/js/auth.js'],
+        errorMessage: msg,
+        formData: safeFormData
+      });
+    }
+
+    console.log(`[Auth] User authenticated: id=${user.id}, email=${user.email}, role=${user.role}`);
+
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(200).json({ success: true, user });
+    }
+
+    res.status(200).render('auth-result', {
+      pageTitle: "Login Successful — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth',
+      action: 'login',
+      user,
+      notice: "Your details were verified successfully. In this prototype, persistent sign-in sessions are not yet active."
+    });
+  } catch (err) {
+    console.error('[Auth Error] Login failed:', err.message);
+    const msg = 'Login failed due to an internal server error.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: msg });
+    }
+    res.status(500).render('auth', {
+      mode: 'login',
+      pageTitle: AUTH_MODES.login.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
 });
 
-app.post('/auth/reset', (req, res) => {
-  const { email } = req.body || {};
+app.post('/auth/reset', ...authLimiters.reset, (req, res) => {
+  const valStart = performance.now();
+  const parseResult = ResetSchema.safeParse(req.body || {});
+  const valDuration = performance.now() - valStart;
+  res.setHeader('X-Validation-Duration-Ms', valDuration.toFixed(4));
+
+  const rawEmail = typeof req.body?.email === 'string' ? normalizeEmail(req.body.email) : '';
+  const safeFormData = { email: rawEmail };
+
+  if (!parseResult.success) {
+    const msg = getFirstErrorMessage(parseResult.error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, error: msg });
+    }
+    return res.status(400).render('auth', {
+      mode: 'reset',
+      pageTitle: AUTH_MODES.reset.title,
+      isMarketingPage: false,
+      activePath: '/auth',
+      authModes: AUTH_MODES,
+      scripts: ['/js/auth.js'],
+      errorMessage: msg,
+      formData: safeFormData
+    });
+  }
+
+  const { email } = parseResult.data;
+  const resetNotice = "If an account exists for this email address, password reset instructions will be sent. In this prototype, automated email sending is not yet active.";
+
+  if (req.headers.accept && req.headers.accept.includes('application/json')) {
+    return res.status(200).json({
+      success: true,
+      message: resetNotice
+    });
+  }
+
   res.status(200).render('auth-result', {
-    pageTitle: "Reset Requested (Prototype) — Nit's Cut",
+    pageTitle: "Password Reset Requested — Nit's Cut",
     isMarketingPage: false,
     activePath: '/auth',
     action: 'reset',
-    email: typeof email === 'string' ? email.trim() : ''
+    email,
+    notice: resetNotice
   });
 });
 
 // Password Reset Recovery Code Demonstration Route (Task 3 Step 5)
 // Demonstrates sensitive data shape protection and enumeration prevention
+// Email Verification Routes (Task 4 Step 10)
+app.get('/auth/verify', (req, res) => {
+  const email = typeof req.query.email === 'string' ? normalizeEmail(req.query.email) : '';
+  res.render('verify', {
+    pageTitle: "Verify Your Email — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/verify',
+    email
+  });
+});
+
+app.post('/auth/verify', ...authLimiters.verify, (req, res) => {
+  const rawEmail = typeof req.body?.email === 'string' ? normalizeEmail(req.body.email) : '';
+  const parseResult = VerifyCodeSchema.safeParse(req.body ?? {});
+
+  if (!parseResult.success) {
+    const msg = getFirstErrorMessage(parseResult.error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, error: msg });
+    }
+    return res.status(400).render('verify', {
+      pageTitle: "Verify Your Email — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/verify',
+      errorMessage: msg,
+      email: rawEmail
+    });
+  }
+
+  const { email, code } = parseResult.data;
+  let result;
+  try {
+    assertVerificationSecretConfigured();
+    result = verifyEmailCode({ email, code });
+  } catch (err) {
+    console.error('[Auth Error] Email verification failed:', err.message);
+    const msg = 'Email verification is temporarily unavailable due to a configuration error.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: msg });
+    }
+    return res.status(500).render('verify', {
+      pageTitle: "Verify Your Email — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/verify',
+      errorMessage: msg,
+      email
+    });
+  }
+
+  if (!result.ok) {
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, reason: result.reason, error: result.message });
+    }
+    return res.status(400).render('verify', {
+      pageTitle: "Verify Your Email — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/verify',
+      errorMessage: result.message,
+      email
+    });
+  }
+
+  console.log(`[Auth] Email verified: userId=${result.userId}, email=${result.email}`);
+
+  if (req.headers.accept && req.headers.accept.includes('application/json')) {
+    return res.status(200).json({ success: true, email: result.email, verifiedAt: result.verifiedAt });
+  }
+
+  return res.status(200).render('verify-result', {
+    pageTitle: "Email Verified — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/verify',
+    email: result.email,
+    verifiedAt: result.verifiedAt
+  });
+});
+
+app.post('/auth/verify/resend', ...authLimiters.resend, (req, res) => {
+  const rawEmail = typeof req.body?.email === 'string' ? normalizeEmail(req.body.email) : '';
+  const parseResult = ResendVerificationSchema.safeParse(req.body ?? {});
+
+  if (!parseResult.success) {
+    const msg = getFirstErrorMessage(parseResult.error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(400).json({ success: false, error: msg });
+    }
+    return res.status(400).render('verify', {
+      pageTitle: "Verify Your Email — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/verify',
+      errorMessage: msg,
+      email: rawEmail
+    });
+  }
+
+  const { email } = parseResult.data;
+
+  try {
+    assertVerificationSecretConfigured();
+  } catch (err) {
+    console.error('[Auth Error] Resend verification failed:', err.message);
+    const msg = 'Email verification is temporarily unavailable due to a configuration error.';
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: msg });
+    }
+    return res.status(500).render('verify', {
+      pageTitle: "Verify Your Email — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/verify',
+      errorMessage: msg,
+      email
+    });
+  }
+
+  const user = findUserByEmail(email);
+
+  if (user && !user.email_verified_at) {
+    const issue = issueVerificationCode({ userId: user.id });
+    if (!issue.ok && issue.reason === 'COOLDOWN') {
+      res.setHeader('Retry-After', String(issue.retryAfterSeconds));
+      const msg = `Please wait ${issue.retryAfterSeconds} seconds before requesting a new verification code.`;
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(429).json({ success: false, reason: 'COOLDOWN', retryAfterSeconds: issue.retryAfterSeconds, error: msg });
+      }
+      return res.status(429).render('verify', {
+        pageTitle: "Verify Your Email — Nit's Cut",
+        isMarketingPage: false,
+        activePath: '/auth/verify',
+        errorMessage: msg,
+        email
+      });
+    }
+
+    if (issue.ok && process.env.EMAIL_DELIVERY_MODE !== 'disabled') {
+      enqueueVerificationEmail({
+        toEmail: user.email,
+        fullName: user.full_name,
+        code: issue.code,
+        expiryMinutes: EXPIRY_MINUTES
+      });
+    }
+  }
+
+  const infoMsg = 'If an unverified account exists for this email address, a new 6-digit verification code has been queued for delivery.';
+  if (req.headers.accept && req.headers.accept.includes('application/json')) {
+    return res.status(200).json({ success: true, message: infoMsg });
+  }
+
+  return res.status(200).render('verify', {
+    pageTitle: "Verify Your Email — Nit's Cut",
+    isMarketingPage: false,
+    activePath: '/auth/verify',
+    infoMessage: infoMsg,
+    email
+  });
+});
+
 app.get('/auth/recovery', (req, res) => {
   res.render('recovery', {
     pageTitle: "Enter Recovery Code (Prototype) — Nit's Cut",
@@ -151,6 +600,16 @@ app.get('/auth/recovery', (req, res) => {
 });
 
 app.post('/auth/recovery', (req, res) => {
+  const parseResult = RecoverySchema.safeParse(req.body ?? {});
+  if (!parseResult.success) {
+    const msg = getFirstErrorMessage(parseResult.error);
+    return res.status(400).render('recovery', {
+      pageTitle: "Enter Recovery Code (Prototype) — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/auth/recovery',
+      errorMessage: msg
+    });
+  }
   // Do not log or echo submitted recovery codes or their lengths to result views
   res.status(200).render('recovery-result', {
     pageTitle: "Recovery Submission Received (Prototype) — Nit's Cut",
@@ -172,13 +631,24 @@ app.get('/orders/lookup', (req, res) => {
 });
 
 app.post('/orders/lookup', (req, res) => {
-  const { order_ref, version } = req.body || {};
-  const submittedStr = typeof order_ref === 'string' ? order_ref : String(order_ref ?? '');
+  const parseResult = OrderLookupSchema.safeParse(req.body ?? {});
+  if (!parseResult.success) {
+    const rawVersion = req.body && req.body.version === 'text' ? 'text' : 'number';
+    return res.status(400).render('order-lookup', {
+      pageTitle: "Find Your Order (Reference Demonstration) — Nit's Cut",
+      isMarketingPage: false,
+      activePath: '/orders/lookup',
+      version: rawVersion,
+      errorMessage: getFirstErrorMessage(parseResult.error)
+    });
+  }
+  const { order_ref, version } = parseResult.data;
+  const submittedStr = order_ref;
   res.status(200).render('order-lookup-result', {
     pageTitle: "Order Reference Submitted (Prototype) — Nit's Cut",
     isMarketingPage: false,
     activePath: '/orders/lookup',
-    version: version || 'number',
+    version,
     submittedValue: submittedStr,
     submittedLength: submittedStr.length,
     numericCoercion: Number(submittedStr)

@@ -1,0 +1,29 @@
+=== Task 4 Step 4: Argon2id Hashed Twice Verification ===
+Date: 2026-11-09T11:06:15.657Z
+Host machine: Mac (Darwin arm64 - Apple M3 Pro)
+Node.js runtime: v24.16.0
+Library: argon2 v0.45.2 (installed)
+
+--- Argon2id Configuration (RFC 9106 Section 7.4 Profile) ---
+  - Algorithm: Argon2id (type = 2)
+  - Memory cost: 65536 KiB (64 MiB)
+  - Time cost (iterations): 3
+  - Parallelism (lanes/threads): 4
+  - Output hash length: 32 bytes
+
+--- Fictional Test Input ---
+  - Test password: "BespokeKaftan#2026!"
+
+--- Generated Complete Modular Crypt Hashes ---
+Hash 1: $argon2id$v=19$m=65536,t=3,p=4$IafeEyrA1A1itEglSwvOIw$Gb/NtNsB7acXWw1iLaP6tv1zEL+J0CAh13Kj/p5Iahc
+Hash 2: $argon2id$v=19$m=65536,t=3,p=4$aaJruPfqBf5JsXVaQfdd5Q$PXyd6m216vQTpZcWjRTg6Z8Z/lI9oqEXznRTBktCpq8
+
+--- Verification Checks ---
+1. Do the two encoded hashes differ? YES (different)
+2. Does the correct password verify against Hash 1? YES (valid)
+3. Does the correct password verify against Hash 2? YES (valid)
+4. Does an incorrect password fail against Hash 1? YES (correctly rejected)
+5. Does an incorrect password fail against Hash 2? YES (correctly rejected)
+
+--- One-Line Explanation of Why the Two Outputs Differ ---
+Each Argon2id invocation automatically generates a fresh, cryptographically secure 16-byte random salt, ensuring identical passwords produce entirely different encoded hashes.

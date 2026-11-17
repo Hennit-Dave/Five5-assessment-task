@@ -6,30 +6,83 @@
     <div class="card-header">
       <div>
         <h1 class="card-title nc-type-headline-medium" tabindex="-1">
-          <%= action === 'signup' ? 'Signup Received (Prototype)' : (action === 'login' ? 'Login Received (Prototype)' : 'Password Reset Requested (Prototype)') %>
+          <% if (locals.user && action === 'signup') { %>
+            Account Created — Nit's Cut
+          <% } else if (locals.user && action === 'login') { %>
+            Login Successful — Nit's Cut
+          <% } else if (action === 'signup') { %>
+            Registration Received (Prototype)
+          <% } else if (action === 'login') { %>
+            Sign-in Received (Prototype)
+          <% } else { %>
+            Password Reset Requested — Nit's Cut
+          <% } %>
         </h1>
         <p class="card-desc nc-type-body-medium">
-          <% if (action === 'signup') { %>
-            Prototype submission received. In this prototype, signing up does not create a database account or save your details.
+          <% if (locals.user && action === 'signup') { %>
+            Your client profile is now registered.
+          <% } else if (locals.user && action === 'login') { %>
+            Welcome back to Nit's Cut. Your details have been verified.
+          <% } else if (action === 'signup') { %>
+            Prototype submission received.
           <% } else if (action === 'login') { %>
-            Prototype submission received. In this prototype, logging in does not start a user session or set authentication cookies.
+            Prototype submission received.
           <% } else { %>
-            Prototype submission received. In this prototype, requesting a reset does not generate a token or send an email.
+            Password reset request received.
           <% } %>
         </p>
       </div>
     </div>
     <div style="display: flex; flex-direction: column; gap: var(--nc-space-3); color: var(--nc-color-on-surface-variant);" class="nc-type-body-medium">
-      <div style="padding: var(--nc-space-3); border: 1px solid var(--nc-color-outline-variant); border-radius: 4px; background: var(--nc-color-surface-container-high);">
-        <p style="color: var(--nc-color-on-surface); font-weight: 600;">Prototype status</p>
-        <p>This prototype demonstrates form layout, HTTP POST method handling, and credential safety without persistent database writes or session cookies.</p>
+      <div class="result-card-inner">
+        <p style="color: var(--nc-color-on-surface); font-weight: 600;">
+          <%= locals.user ? 'Account confirmation' : 'Submission status' %>
+        </p>
         <ul style="margin-left: var(--nc-space-4); margin-top: var(--nc-space-2);">
-          <% if (locals.name) { %><li><strong>Name submitted:</strong> <%= name %></li><% } %>
-          <% if (locals.email) { %><li><strong>Email submitted:</strong> <%= email %></li><% } %>
-          <% if (locals.termsAccepted !== undefined) { %><li><strong>Terms accepted:</strong> <%= termsAccepted ? 'Yes' : 'No' %></li><% } %>
+          <% if (locals.user && locals.user.fullName) { %>
+            <li><strong>Client name:</strong> <%= user.fullName %></li>
+          <% } else if (locals.name) { %>
+            <li><strong>Name submitted:</strong> <%= name %></li>
+          <% } %>
+
+          <% if (locals.user && locals.user.email) { %>
+            <li><strong>Email address:</strong> <code><%= user.email %></code></li>
+          <% } else if (locals.email) { %>
+            <li><strong>Email address:</strong> <code><%= email %></code></li>
+          <% } %>
+
+          <% if (locals.user && locals.user.role) { %>
+            <li><strong>Account type:</strong> <%= user.role === 'client' ? 'Client' : user.role %></li>
+          <% } %>
+
+          <% if (locals.termsAccepted !== undefined) { %>
+            <li><strong>Terms accepted:</strong> <%= termsAccepted ? 'Yes' : 'No' %></li>
+          <% } %>
         </ul>
+
+        <% if (locals.notice) { %>
+          <div class="result-notice">
+            <p><strong>Prototype notice:</strong> <%= notice %></p>
+          </div>
+        <% } else if (locals.sessionNotice) { %>
+          <div class="result-notice">
+            <p><strong>Prototype notice:</strong> <%= sessionNotice %></p>
+          </div>
+        <% } else if (locals.resetNotice) { %>
+          <div class="result-notice">
+            <p><strong>Prototype notice:</strong> <%= resetNotice %></p>
+          </div>
+        <% } %>
+
+        <% if (action === 'signup' && locals.user) { %>
+          <div class="result-notice">
+            <p style="margin-bottom: var(--nc-space-2);">A 6-digit verification code has been queued for delivery to <strong><%= user.email %></strong>.</p>
+            <a href="/auth/verify?email=<%= encodeURIComponent(user.email) %>" class="btn btn-primary nc-type-label-large">Verify Email Address &rarr;</a>
+          </div>
+        <% } %>
+
         <% if (action === 'reset') { %>
-          <div style="margin-top: var(--nc-space-3); padding-top: var(--nc-space-2); border-top: 1px solid var(--nc-color-outline-variant);">
+          <div class="result-notice">
             <p style="margin-bottom: var(--nc-space-2);">Next step in recovery workflow demonstration:</p>
             <a href="/auth/recovery" class="btn btn-secondary nc-type-label-large">Proceed to Prototype Code Entry &rarr;</a>
           </div>

@@ -132,12 +132,13 @@
       return isBlur ? setError(input, emptyMsg) : clearError(input);
     }
     if (mode === 'signup') {
-      // Check if password consists solely of whitespace
-      if (!val.trim()) {
+      // Trim leading and trailing whitespace per assessment policy before evaluating length
+      var trimmed = val.trim();
+      if (!trimmed) {
         return setError(input, 'Password cannot consist solely of spaces.');
       }
-      // Count Unicode code points (handles multi-byte and surrogate pairs accurately)
-      var codePoints = Array.from(val).length;
+      // Count Unicode code points on the trimmed password (handles multi-byte and surrogate pairs accurately)
+      var codePoints = Array.from(trimmed).length;
       if (codePoints < 15) {
         return setError(input, 'Password must be at least 15 characters long.');
       }
@@ -172,8 +173,8 @@
 
   function isSignupPasswordValid(input) {
     if (!input) return false;
-    var val = input.value;
-    return val.trim().length > 0 && Array.from(val).length >= 15;
+    var trimmed = input.value.trim();
+    return Array.from(trimmed).length >= 15;
   }
 
   function isLoginPasswordValid(input) {
@@ -450,4 +451,8 @@
   // Initial setup
   setupPasswordToggles();
   updateAllButtonStates();
+  var initialBanner = forms[currentMode] ? forms[currentMode].querySelector('.form-error-banner') : null;
+  if (initialBanner) {
+    initialBanner.focus();
+  }
 })();

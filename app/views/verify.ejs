@@ -1,0 +1,83 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <section class="card" style="max-width: 520px; width: 100%; margin: 0 auto;">
+    <div class="card-header">
+      <div>
+        <h1 class="card-title nc-type-headline-medium" tabindex="-1">Verify Your Email</h1>
+        <p class="card-desc nc-type-body-medium">
+          Enter the 6-digit verification code sent to your email address.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+      <% if (locals.infoMessage) { %>
+        <div class="result-notice" role="status" tabindex="-1" id="verify-status-notice">
+          <%= infoMessage %>
+        </div>
+      <% } %>
+
+      <% if (locals.errorMessage) { %>
+        <div class="form-error-banner" role="alert" tabindex="-1" id="verify-server-error">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/auth/verify" novalidate style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+        <div class="form-group">
+          <label class="form-label" for="verify-email">Email</label>
+          <input class="form-control" type="email" id="verify-email" name="email" value="<%= locals.email ? email : '' %>" autocomplete="email" aria-required="true">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="verify-code">6-digit verification code</label>
+          <input class="form-control" type="text" id="verify-code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" aria-required="true" aria-describedby="verify-code-hint">
+          <p id="verify-code-hint" class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant); margin-top: var(--nc-space-1);">
+            Codes expire after 10 minutes and can only be used once.
+          </p>
+        </div>
+
+        <div>
+          <button class="btn btn-primary" type="submit">Verify Email</button>
+        </div>
+      </form>
+
+      <div style="border-top: var(--nc-border-width) solid var(--nc-color-outline-variant); padding-top: var(--nc-space-3);">
+        <form method="POST" action="/auth/verify/resend" novalidate style="display: flex; align-items: center; justify-content: space-between; gap: var(--nc-space-3); flex-wrap: wrap;">
+          <input type="hidden" name="email" id="resend-email-hidden" value="<%= locals.email ? email : '' %>">
+          <span class="nc-type-body-small" style="color: var(--nc-color-on-surface-variant);">
+            Didn't receive a code? (60-second cooldown)
+          </span>
+          <button class="btn btn-secondary" type="submit">Resend Code</button>
+        </form>
+      </div>
+
+      <p style="margin-top: var(--nc-space-2);">
+        <a href="/auth?mode=login" class="auth-link">&larr; Back to sign in</a>
+      </p>
+    </div>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var errBanner = document.getElementById('verify-server-error');
+    if (errBanner) {
+      errBanner.focus();
+    } else {
+      var statusNotice = document.getElementById('verify-status-notice');
+      if (statusNotice) { statusNotice.focus(); }
+    }
+    var emailInput = document.getElementById('verify-email');
+    var hiddenResend = document.getElementById('resend-email-hidden');
+    if (emailInput && hiddenResend) {
+      emailInput.addEventListener('input', function () {
+        hiddenResend.value = emailInput.value;
+      });
+    }
+  })();
+</script>
+
+<%- include('partials/footer') %>

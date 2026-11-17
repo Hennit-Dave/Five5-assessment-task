@@ -1,0 +1,65 @@
+EVIDENCE 14: RATE LIMIT TRIGGERED, THEN BYPASSED BY A SECOND LOCAL SOURCE ADDRESS (TASK 4 STEP 8)
+Generated: 2026-11-09T16:46:17.876Z
+Script: task-04-server-security/scripts/test-step8-rate-limits.mjs
+Scope: a local source-address demonstration on one machine. It is NOT proof of changing public IP networks.
+================================================================================
+Server: app/src/server.js on port 3110, DATABASE_PATH=app/data/step5_test.db (isolated), one process for the whole run.
+express-rate-limit version: 8.7.3
+Settings under test: login 5/15 min, signup 5/hour, reset 3/hour, per client address; all POSTs counted; in-memory store; trust proxy OFF.
+Addresses discovered at test time: loopback 127.0.0.1; non-internal IPv4: 192.168.1.53 (en0)
+
+PART 1: TRIGGER EACH LIMIT (all requests from destination http://127.0.0.1)
+-----------------------------------------------------------------------
+
+SIGNUP  POST /auth/signup  limit 5  request kind: validation failure (400)
+  request 1: HTTP 400  ratelimit: limit=5, remaining=4, reset=3600 | ratelimit-policy: 5;w=3600  limiter used=1/5
+  request 2: HTTP 400  ratelimit: limit=5, remaining=3, reset=3600 | ratelimit-policy: 5;w=3600  limiter used=2/5
+  request 3: HTTP 400  ratelimit: limit=5, remaining=2, reset=3600 | ratelimit-policy: 5;w=3600  limiter used=3/5
+  request 4: HTTP 400  ratelimit: limit=5, remaining=1, reset=3600 | ratelimit-policy: 5;w=3600  limiter used=4/5
+  request 5: HTTP 400  ratelimit: limit=5, remaining=0, reset=3600 | ratelimit-policy: 5;w=3600  limiter used=5/5
+  request 6: HTTP 429  ratelimit: limit=5, remaining=0, reset=3600 | ratelimit-policy: 5;w=3600 | retry-after: 3600
+    customer-facing banner: "Too many attempts. Please wait about 60 minutes and try again."
+    server-side diagnostic (not shown to customers): peer=::ffff:127.0.0.1 req.ip=::ffff:127.0.0.1 limiterKey=127.0.0.1
+  JSON client request: HTTP 429  ratelimit: limit=5, remaining=0, reset=3600 | ratelimit-policy: 5;w=3600 | retry-after: 3600  body={"success":false,"error":"Too many attempts. Please wait about 60 minutes and try again.","retryAfterSeconds":3600}
+    page leaks password? no (password field has no value attribute)
+
+LOGIN  POST /auth/login  limit 5  request kind: wrong password (401)
+  request 1: HTTP 401  ratelimit: limit=5, remaining=4, reset=900 | ratelimit-policy: 5;w=900  limiter used=1/5
+  request 2: HTTP 401  ratelimit: limit=5, remaining=3, reset=900 | ratelimit-policy: 5;w=900  limiter used=2/5
+  request 3: HTTP 401  ratelimit: limit=5, remaining=2, reset=900 | ratelimit-policy: 5;w=900  limiter used=3/5
+  request 4: HTTP 401  ratelimit: limit=5, remaining=1, reset=900 | ratelimit-policy: 5;w=900  limiter used=4/5
+  request 5: HTTP 401  ratelimit: limit=5, remaining=0, reset=900 | ratelimit-policy: 5;w=900  limiter used=5/5
+  request 6: HTTP 429  ratelimit: limit=5, remaining=0, reset=900 | ratelimit-policy: 5;w=900 | retry-after: 900
+    customer-facing banner: "Too many attempts. Please wait about 15 minutes and try again."
+    server-side diagnostic (not shown to customers): peer=::ffff:127.0.0.1 req.ip=::ffff:127.0.0.1 limiterKey=127.0.0.1
+  JSON client request: HTTP 429  ratelimit: limit=5, remaining=0, reset=900 | ratelimit-policy: 5;w=900 | retry-after: 900  body={"success":false,"error":"Too many attempts. Please wait about 15 minutes and try again.","retryAfterSeconds":900}
+
+RESET  POST /auth/reset  limit 3  request kind: valid email (200)
+  request 1: HTTP 200  ratelimit: limit=3, remaining=2, reset=3600 | ratelimit-policy: 3;w=3600  limiter used=1/3
+  request 2: HTTP 200  ratelimit: limit=3, remaining=1, reset=3600 | ratelimit-policy: 3;w=3600  limiter used=2/3
+  request 3: HTTP 200  ratelimit: limit=3, remaining=0, reset=3600 | ratelimit-policy: 3;w=3600  limiter used=3/3
+  request 4: HTTP 429  ratelimit: limit=3, remaining=0, reset=3600 | ratelimit-policy: 3;w=3600 | retry-after: 3600
+    customer-facing banner: "Too many attempts. Please wait about 60 minutes and try again."
+    server-side diagnostic (not shown to customers): peer=::ffff:127.0.0.1 req.ip=::ffff:127.0.0.1 limiterKey=127.0.0.1
+  JSON client request: HTTP 429  ratelimit: limit=3, remaining=0, reset=3600 | ratelimit-policy: 3;w=3600 | retry-after: 3600  body={"success":false,"error":"Too many attempts. Please wait about 60 minutes and try again.","retryAfterSeconds":3600}
+
+PART 2: LOCAL SOURCE-ADDRESS DEMONSTRATION (login endpoint, same server process, no reset)
+-----------------------------------------------------------------------------------------
+Step 1. Address A via http://127.0.0.1: another login request -> HTTP 429  ratelimit: limit=5, remaining=0, reset=900 | ratelimit-policy: 5;w=900 | retry-after: 900
+        observed peer=::ffff:127.0.0.1 req.ip=::ffff:127.0.0.1 limiterKey=127.0.0.1
+Step 2. Same request sent to http://192.168.1.53 (this machine's own LAN address)
+        -> HTTP 401  ratelimit: limit=5, remaining=4, reset=900 | ratelimit-policy: 5;w=900
+        observed peer=::ffff:192.168.1.53 req.ip=::ffff:192.168.1.53 limiterKey=192.168.1.53 used=1/5
+        server-observed peer addresses distinct? YES  (A key=127.0.0.1, B key=192.168.1.53)
+        second address rate-limited? NO (limit not applied to the new address)
+Step 3. Original address A again via http://127.0.0.1: HTTP 429  ratelimit: limit=5, remaining=0, reset=900 | ratelimit-policy: 5;w=900 | retry-after: 900  -> still blocked
+        observed peer=::ffff:127.0.0.1 limiterKey=127.0.0.1
+
+FORGED HEADER CHECK (trust proxy is off)
+  From address A with "X-Forwarded-For: 203.0.113.77": HTTP 429  ratelimit: limit=5, remaining=0, reset=899 | ratelimit-policy: 5;w=900 | retry-after: 899
+  observed peer=::ffff:127.0.0.1 req.ip=::ffff:127.0.0.1 limiterKey=127.0.0.1 xForwardedForReceived=203.0.113.77
+  forged header bypassed the limit? NO (still HTTP 429, key unchanged)
+
+INTEGRITY
+  test DB users: 21 -> 21 (no accounts were created by these requests)
+  real database SHA-256 unchanged: true (cc94f733c7d564f1ba837834ed6f01a4611957cf8f43d873e14bee4bad3e882d)

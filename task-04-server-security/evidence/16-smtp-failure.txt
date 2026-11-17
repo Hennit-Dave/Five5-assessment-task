@@ -1,0 +1,54 @@
+================================================================
+TASK 4 STEP 10: EARLIER SMTP TEST EXECUTION FAILURES (EXIT CODE 1)
+================================================================
+Date: 2026-11-16
+Script: task-04-server-security/scripts/test-smtp-connection.mjs
+
+IMPORTANT LABELING NOTE:
+The earlier test runs that exited with code 1 were LOCAL execution and
+sandbox network-isolation failures, NOT remote SMTP server authentication
+rejections from Resend. No remote SMTP failure was invented.
+
+----------------------------------------------------------------
+FAILURE 1: Local ESM Module Resolution Error (Exit Code 1)
+----------------------------------------------------------------
+Cause: Nodemailer v10.6.0 exposes its ESM entry point at
+       `dist/esm/nodemailer.js`, not `lib/nodemailer.js`.
+
+Actual Output:
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/blk/Developer/Five5 assessment task/app/node_modules/nodemailer/lib/nodemailer.js' imported from /Users/blk/Developer/Five5 assessment task/task-04-server-security/scripts/test-smtp-connection.mjs
+
+Fix Applied:
+Updated import path in test-smtp-connection.mjs to:
+  `../../app/node_modules/nodemailer/dist/esm/nodemailer.js`
+
+----------------------------------------------------------------
+FAILURE 2: Local Sandbox Network Isolation (Exit Code 1)
+----------------------------------------------------------------
+Cause: Standard sandbox mode intentionally blocks outbound DNS and TCP
+       connections to external hosts such as `smtp.resend.com`.
+
+Actual Redacted Output:
+================================================================
+NIT'S CUT — RESEND SMTP CONNECTION TEST
+================================================================
+SMTP Host:    smtp.resend.com
+SMTP Port:    587 (STARTTLS required)
+SMTP User:    resend
+API key:      configured
+From Address: Nit's Cut <onboarding@resend.dev>
+To Recipient: d***2@gmail.com
+----------------------------------------------------------------
+[1/2] Connecting to SMTP server and verifying credentials...
+----------------------------------------------------------------
+✗ SMTP CONNECTION FAILED:
+  Error Code:    EDNS
+  SMTP Response: getaddrinfo ENOTFOUND smtp.resend.com
+  SMTP Command:  CONN
+----------------------------------------------------------------
+
+Resolution:
+Re-executed with elevated network permission outside the sandbox
+(`BypassSandbox: true`), which resolved `smtp.resend.com`, completed
+STARTTLS + authentication, and yielded HTTP-free SMTP 250 acceptance
+(recorded in `17-smtp-success.txt`).

@@ -1,0 +1,158 @@
+{
+  "signup_valid": {
+    "name": "signup_valid",
+    "description": "Valid Signup (boundary validation + Argon2id hash + DB insert)",
+    "clientStats": {
+      "mean": 25.96290419999999,
+      "median": 25.911145999999974,
+      "min": 25.06108299999994,
+      "max": 26.853624999999965,
+      "stdDev": 0.5831306015298433,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      26.853624999999965,
+      26.79570799999999,
+      26.150083999999993,
+      25.85912499999995,
+      25.735541000000012,
+      25.623042000000055,
+      25.963167,
+      26.438041999999996,
+      25.149625000000015,
+      25.06108299999994
+    ],
+    "serverValSamples": []
+  },
+  "signup_invalid_short_pwd": {
+    "name": "signup_invalid_short_pwd",
+    "description": "Invalid Signup: Short Password (boundary rejection, skips Argon2id & DB)",
+    "clientStats": {
+      "mean": 0.7751581999999985,
+      "median": 0.7714374999999905,
+      "min": 0.7031670000000076,
+      "max": 0.8572499999999081,
+      "stdDev": 0.044996622010539146,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      0.7831660000000511,
+      0.7661249999999882,
+      0.7031670000000076,
+      0.8572499999999081,
+      0.7264999999999873,
+      0.7449159999999893,
+      0.7561670000000049,
+      0.8378750000000537,
+      0.799666000000002,
+      0.7767499999999927
+    ],
+    "serverValSamples": []
+  },
+  "signup_invalid_no_terms": {
+    "name": "signup_invalid_no_terms",
+    "description": "Invalid Signup: Missing Terms (boundary rejection, skips Argon2id & DB)",
+    "clientStats": {
+      "mean": 0.7308041999999887,
+      "median": 0.7263125000000059,
+      "min": 0.6177500000000009,
+      "max": 0.8288330000000315,
+      "stdDev": 0.05754232377093396,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      0.7462919999999258,
+      0.6177500000000009,
+      0.7916669999999613,
+      0.7161250000000337,
+      0.7364999999999782,
+      0.6878330000000688,
+      0.8288330000000315,
+      0.7832079999999451,
+      0.7036249999999882,
+      0.6962089999999534
+    ],
+    "serverValSamples": []
+  },
+  "login_valid": {
+    "name": "login_valid",
+    "description": "Valid Login (boundary validation + DB select + Argon2id verify)",
+    "clientStats": {
+      "mean": 28.18145430000003,
+      "median": 26.552999999999997,
+      "min": 25.85779100000002,
+      "max": 39.157291999999984,
+      "stdDev": 3.8413019043633745,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      25.85779100000002,
+      29.59745900000007,
+      39.157291999999984,
+      28.73991699999999,
+      26.877917000000025,
+      26.339000000000055,
+      26.142875000000004,
+      26.09891700000003,
+      26.76699999999994,
+      26.23637500000018
+    ],
+    "serverValSamples": []
+  },
+  "login_invalid_empty_pwd": {
+    "name": "login_invalid_empty_pwd",
+    "description": "Invalid Login: Empty Password (boundary rejection, skips DB & Argon2id)",
+    "clientStats": {
+      "mean": 0.8608333000000357,
+      "median": 0.844188000000031,
+      "min": 0.7102500000000873,
+      "max": 0.9928749999999127,
+      "stdDev": 0.09283201139155677,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      0.800666000000092,
+      0.7102500000000873,
+      0.9777500000000146,
+      0.9758750000000873,
+      0.8192920000001322,
+      0.8077499999999418,
+      0.7614580000001752,
+      0.8933329999999842,
+      0.8690839999999298,
+      0.9928749999999127
+    ],
+    "serverValSamples": []
+  },
+  "reset_valid": {
+    "name": "reset_valid",
+    "description": "Password Reset: Valid Email (boundary validation + generic notice)",
+    "clientStats": {
+      "mean": 0.7254873999999745,
+      "median": 0.7181665000000521,
+      "min": 0.6531250000000455,
+      "max": 0.8487079999999878,
+      "stdDev": 0.06875655139287537,
+      "samples": 10
+    },
+    "serverValStats": null,
+    "clientSamples": [
+      0.8487079999999878,
+      0.7160000000001219,
+      0.7266250000000127,
+      0.6591670000000249,
+      0.6656659999998737,
+      0.7605409999998756,
+      0.6626669999998285,
+      0.6531250000000455,
+      0.7203329999999823,
+      0.8420419999999922
+    ],
+    "serverValSamples": []
+  }
+}

@@ -1,0 +1,22 @@
+=== Task 4 Step 3 (Exercise 2): Add Required Column to Populated Table (Failure) ===
+Disposable database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+Real app database (app/data/nits_cut.db) is NOT touched.
+
+--- Running migration runner against disposable database ---
+[Migrate] Target database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+[Migrate] Migrations directory: /Users/blk/Developer/Five5 assessment task/task-04-server-security/migrations-exercises/bad-required-column
+[Migrate] APPLYING: 001-seed-populated-inquiries.sql [sha256:f29dc3b435c8]...
+[Migrate] APPLIED: 001-seed-populated-inquiries.sql at 2026-11-08T16:47:22.714Z
+[Migrate] APPLYING: 002-add-required-branch-code-fail.sql [sha256:88bd8ca6b35e]...
+
+[Migrate ERROR] SQLITE_ERROR: Cannot add a NOT NULL column with default value NULL
+
+--- Migration runner exit code: 1 (expected: 1) ---
+--- Verifying populated rows in disposable database remain intact after rollback ---
+id     client_name        garment_type      fitting_date
+--  -----------------  -------------------  ------------
+ 1  Chinedu Okafor     Agbada Three-Piece   2026-11-18
+ 2  Babatunde Adeleke  Senator Native Wear  2026-11-24
+            filename                     applied_at
+--------------------------------  ------------------------
+001-seed-populated-inquiries.sql  2026-11-08T16:47:22.714Z

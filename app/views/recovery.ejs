@@ -20,6 +20,12 @@
         </p>
       </div>
 
+      <% if (locals.errorMessage) { %>
+        <div class="form-error-banner" role="alert" tabindex="-1" id="recovery-server-error">
+          <%= errorMessage %>
+        </div>
+      <% } %>
+
       <form method="POST" action="/auth/recovery" style="display: flex; flex-direction: column; gap: var(--nc-layout-gap); margin-top: var(--nc-space-2);" novalidate>
         <div class="form-group">
           <label class="form-label" for="recovery-code">Recovery Code</label>
@@ -42,6 +48,8 @@
 </main>
 
 <script>
+  var serverBanner = document.getElementById('recovery-server-error');
+  if (serverBanner) { serverBanner.focus(); }
   var recoveryForm = document.querySelector('form[action="/auth/recovery"]');
   if (recoveryForm) {
     recoveryForm.addEventListener('submit', function (e) {
