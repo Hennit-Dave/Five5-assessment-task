@@ -1,0 +1,74 @@
+===============================================================================
+EVIDENCE 11: HTTP SCHEMA VALIDATION TIMING BENCHMARK REPORT (TASK 4 STEP 6)
+===============================================================================
+Generated: 2026-11-09T14:46:16.229Z
+Host Hardware: Apple M3 Pro (Node v24.16.0)
+Target Database: app/data/step5_test.db (Isolated test database)
+Real Database: app/data/nits_cut.db (SHA-256 confirmed 100% untouched)
+Measurement Protocol: performance.now() elapsed wall-clock duration over loopback
+Iterations: 3 warm-ups + 10 measured requests per scenario
+Assertions: Every request (warm-up and measured) verified for HTTP status and content
+
+PROVENANCE & METHODOLOGY NOTE:
+- Baseline data was captured against the pre-Zod hand-written implementation
+  and is preserved unchanged in evidence/baseline-timing.json.
+- Post-Zod verification data was captured against the Zod schema boundary implementation
+  and is stored in evidence/post-zod-verification.json.
+- Total request latency includes HTTP connection, body parsing, validation, controller logic,
+  cryptographic operations (Argon2id), SQLite I/O, and EJS template rendering.
+- Validation-only duration records server performance.now() strictly around schema.safeParse().
+
+-------------------------------------------------------------------------------
+TABLE 1: TOTAL HTTP REQUEST LATENCY — PRE-ZOD BASELINE VS POST-ZOD VERIFICATION
+-------------------------------------------------------------------------------
+Scenario                           Baseline Mean (ms)  Post-Zod Mean (ms)  Delta (ms)  Ratio
+---------------------------------  ------------------  ------------------  ----------  -----
+signup_valid                                   25.963              25.783      -0.180  0.99x
+signup_invalid_short_pwd                        0.775               0.817      +0.042  1.05x
+signup_invalid_no_terms                         0.731               0.829      +0.098  1.13x
+login_valid                                    28.181              25.417      -2.764  0.90x
+login_invalid_empty_pwd                         0.861               0.819      -0.042  0.95x
+reset_valid                                     0.725               0.666      -0.060  0.92x
+
+-------------------------------------------------------------------------------
+TABLE 2: ISOLATED POST-ZOD VALIDATION-ONLY TIME (SERVER schema.safeParse() DURATION)
+-------------------------------------------------------------------------------
+Scenario                           Mean (ms)          Median (ms)        Min / Max (ms)
+---------------------------------  -----------------  -----------------  --------------------------
+signup_valid                               0.0323 ms          0.0330 ms  0.0246 / 0.0367 ms
+signup_invalid_short_pwd                   0.0175 ms          0.0169 ms  0.0116 / 0.0250 ms
+signup_invalid_no_terms                    0.0132 ms          0.0122 ms  0.0096 / 0.0190 ms
+login_valid                                0.0219 ms          0.0200 ms  0.0159 / 0.0362 ms
+login_invalid_empty_pwd                    0.0104 ms          0.0094 ms  0.0058 / 0.0171 ms
+reset_valid                                0.0080 ms          0.0071 ms  0.0053 / 0.0143 ms
+
+-------------------------------------------------------------------------------
+OBSERVATIONS & ANALYSIS
+-------------------------------------------------------------------------------
+1. ISOLATED SCHEMA VALIDATION OVERHEAD:
+   The server-side measurement around schema.safeParse() demonstrates that Zod
+   schema execution adds minimal CPU overhead (mean ~0.02 to 0.04 ms per request,
+   representing tens of microseconds) for short string schemas.
+
+2. TOTAL REQUEST TIME DIFFERENCES:
+   Total request latency differences between the pre-Zod and post-Zod test runs
+   reflect multiple system-level factors rather than schema execution alone:
+   - Host CPU scheduling and thread execution across Argon2id worker lanes (p=4);
+   - Operating system memory management and garbage collection timing;
+   - SQLite file system write latency during transactional database inserts;
+   - Express view compilation and template rendering variability.
+   The schema execution itself accounts for only ~0.04 ms of the request.
+
+3. THE CLASSROOM "2-3 SECOND DELAY" DISCUSSION:
+   The assessment notes: "In class, validation added a noticeable two to three second
+   delay on signup. Find your number and submit it. If your number is high, say what you
+   think is causing it rather than accepting it."
+   In our local tests, schema validation alone did not produce multi-second delays.
+   Without access to the specific classroom implementation, potential hypotheses for
+   unexpected multi-second delays in other setups include:
+   - Synchronous network calls (such as DNS MX lookups or external breached-password APIs)
+     invoked during request validation;
+   - Cryptographic work factors configured far higher than necessary (e.g. excessive
+     Argon2id time cost or memory allocation causing OS paging);
+   - Synchronous disk I/O, database connection contention, or un-indexed queries on the hot path;
+   - Re-compiling or dynamically loading heavy modules inside route callbacks.

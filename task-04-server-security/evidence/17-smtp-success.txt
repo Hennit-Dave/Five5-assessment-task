@@ -1,0 +1,37 @@
+================================================================
+TASK 4 STEP 10: GENUINE RESEND SMTP CONNECTION & DELIVERY EVIDENCE
+================================================================
+Date: 2026-11-16
+Script: task-04-server-security/scripts/test-smtp-connection.mjs
+Transport: Resend SMTP (smtp.resend.com:587, STARTTLS required)
+
+--- Redacted Command Output (Task 5468, Exit Code 0) ---
+================================================================
+NIT'S CUT — RESEND SMTP CONNECTION TEST
+================================================================
+SMTP Host:    smtp.resend.com
+SMTP Port:    587 (STARTTLS required)
+SMTP User:    resend
+API key:      configured
+From Address: Nit's Cut <onboarding@resend.dev>
+To Recipient: d***2@gmail.com
+----------------------------------------------------------------
+[1/2] Connecting to SMTP server and verifying credentials...
+  ✓ SMTP handshake and authentication verified successfully.
+[2/2] Transmitting single test email over SMTP...
+----------------------------------------------------------------
+✓ SMTP ACCEPTANCE CONFIRMED:
+  Message ID:    <bf110d0d-611b-727c-f5c7-a34a63b4678e@resend.dev>
+  SMTP Response: 250 01a1e4f5-ec5f-774f-ae55-c1c3a86fc5d3
+  Accepted by:   ["d***2@gmail.com"]
+----------------------------------------------------------------
+IMPORTANT DISTINCTION:
+  - SMTP Acceptance: The Resend SMTP relay accepted the message (SMTP code 250).
+  - Inbox Delivery:  Please check your Gmail inbox (and Spam folder) to confirm
+                     actual end-to-end receipt of the message.
+================================================================
+
+--- End-to-End Delivery Confirmation ---
+- SMTP Relay Acceptance: Confirmed (SMTP 250, Message ID <bf110d0d-611b-727c-f5c7-a34a63b4678e@resend.dev>).
+- Inbox Delivery: Confirmed by learner on 2026-11-16 ("I confirm the SMTP test email arrived in my Gmail inbox.").
+- Restriction Note: The domain-free sender (onboarding@resend.dev) is restricted by Resend to sending only to the account owner's registered email address for testing, not for general customer delivery.

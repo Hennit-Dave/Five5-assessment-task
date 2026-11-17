@@ -1,0 +1,278 @@
+{
+  "signup_valid": {
+    "name": "signup_valid",
+    "description": "Valid Signup (boundary validation + Argon2id hash + DB insert)",
+    "expectedStatus": 201,
+    "expectedContent": "Account Created",
+    "clientStats": {
+      "mean": 25.782983400000013,
+      "median": 25.66466650000004,
+      "min": 25.256209000000013,
+      "max": 26.925792,
+      "stdDev": 0.48235532683348054,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.032290000000000006,
+      "median": 0.03295,
+      "min": 0.0246,
+      "max": 0.0367,
+      "stdDev": 0.003256516543793383,
+      "samples": 10
+    },
+    "clientSamples": [
+      25.585208000000023,
+      25.687167000000045,
+      25.66525000000007,
+      25.758959000000004,
+      25.46808299999998,
+      25.664083000000005,
+      25.256209000000013,
+      26.426791999999978,
+      25.392291,
+      26.925792
+    ],
+    "serverValSamples": [
+      0.0367,
+      0.033,
+      0.0313,
+      0.0329,
+      0.0309,
+      0.0333,
+      0.036,
+      0.0246,
+      0.03,
+      0.0342
+    ]
+  },
+  "signup_invalid_short_pwd": {
+    "name": "signup_invalid_short_pwd",
+    "description": "Invalid Signup: Short Password (boundary rejection, skips Argon2id & DB)",
+    "expectedStatus": 400,
+    "expectedContent": "Password must be at least 15 characters long.",
+    "clientStats": {
+      "mean": 0.8167332000000102,
+      "median": 0.7834164999999871,
+      "min": 0.7042500000000018,
+      "max": 1.037458000000015,
+      "stdDev": 0.113791300663804,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.01752,
+      "median": 0.01695,
+      "min": 0.0116,
+      "max": 0.025,
+      "stdDev": 0.003871123867819267,
+      "samples": 10
+    },
+    "clientSamples": [
+      0.7042500000000018,
+      0.8107499999999845,
+      0.7967499999999745,
+      1.037458000000015,
+      1.0319580000000315,
+      0.7750419999999849,
+      0.7300420000000258,
+      0.7213330000000724,
+      0.7679580000000215,
+      0.7917909999999893
+    ],
+    "serverValSamples": [
+      0.0147,
+      0.0169,
+      0.0201,
+      0.02,
+      0.025,
+      0.0213,
+      0.017,
+      0.0132,
+      0.0154,
+      0.0116
+    ]
+  },
+  "signup_invalid_no_terms": {
+    "name": "signup_invalid_no_terms",
+    "description": "Invalid Signup: Missing Terms (boundary rejection, skips Argon2id & DB)",
+    "expectedStatus": 400,
+    "expectedContent": "You must agree to the Terms of Service to create an account.",
+    "clientStats": {
+      "mean": 0.8292749999999955,
+      "median": 0.7619795000000522,
+      "min": 0.671291999999994,
+      "max": 1.1936660000000074,
+      "stdDev": 0.15141176522120517,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.013210000000000003,
+      "median": 0.012199999999999999,
+      "min": 0.0096,
+      "max": 0.019,
+      "stdDev": 0.0026871732359488847,
+      "samples": 10
+    },
+    "clientSamples": [
+      0.6983339999999316,
+      0.7325409999999692,
+      0.7192499999999882,
+      0.7581670000000713,
+      0.9298750000000382,
+      1.1936660000000074,
+      0.9164579999999205,
+      0.9073750000000018,
+      0.671291999999994,
+      0.7657920000000331
+    ],
+    "serverValSamples": [
+      0.0123,
+      0.0117,
+      0.0121,
+      0.0112,
+      0.0139,
+      0.0146,
+      0.0165,
+      0.019,
+      0.0112,
+      0.0096
+    ]
+  },
+  "login_valid": {
+    "name": "login_valid",
+    "description": "Valid Login (boundary validation + DB select + Argon2id verify)",
+    "expectedStatus": 200,
+    "expectedContent": "Login Successful",
+    "clientStats": {
+      "mean": 25.41737069999998,
+      "median": 25.19206250000002,
+      "min": 24.79950000000008,
+      "max": 26.946750000000065,
+      "stdDev": 0.6410462860235713,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.02194,
+      "median": 0.02,
+      "min": 0.0159,
+      "max": 0.0362,
+      "stdDev": 0.0057933064824847655,
+      "samples": 10
+    },
+    "clientSamples": [
+      26.231124999999906,
+      24.79950000000008,
+      25.107124999999996,
+      25.002749999999992,
+      25.378957999999898,
+      26.946750000000065,
+      25.51258299999995,
+      25.277000000000044,
+      24.89670799999999,
+      25.021207999999888
+    ],
+    "serverValSamples": [
+      0.0205,
+      0.0214,
+      0.0195,
+      0.019,
+      0.0258,
+      0.0265,
+      0.0362,
+      0.0175,
+      0.0171,
+      0.0159
+    ]
+  },
+  "login_invalid_empty_pwd": {
+    "name": "login_invalid_empty_pwd",
+    "description": "Invalid Login: Empty Password (boundary rejection, skips DB & Argon2id)",
+    "expectedStatus": 401,
+    "expectedContent": "Invalid email or password.",
+    "clientStats": {
+      "mean": 0.8187999000000218,
+      "median": 0.772145999999907,
+      "min": 0.6148330000000897,
+      "max": 1.1443750000000819,
+      "stdDev": 0.1686262196862992,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.010350000000000002,
+      "median": 0.0094,
+      "min": 0.0058,
+      "max": 0.0171,
+      "stdDev": 0.0034823124500825593,
+      "samples": 10
+    },
+    "clientSamples": [
+      0.9072920000000977,
+      0.7837080000001606,
+      1.0903749999999945,
+      1.1443750000000819,
+      0.7284579999998186,
+      0.6288750000001073,
+      0.6148330000000897,
+      0.769457999999986,
+      0.7748339999998279,
+      0.7457910000000538
+    ],
+    "serverValSamples": [
+      0.0171,
+      0.012,
+      0.0081,
+      0.0138,
+      0.0078,
+      0.0065,
+      0.0058,
+      0.0103,
+      0.0136,
+      0.0085
+    ]
+  },
+  "reset_valid": {
+    "name": "reset_valid",
+    "description": "Password Reset: Valid Email (boundary validation + generic notice)",
+    "expectedStatus": 200,
+    "expectedContent": "Password Reset Requested",
+    "clientStats": {
+      "mean": 0.6655457999999953,
+      "median": 0.6506459999999379,
+      "min": 0.5599580000000515,
+      "max": 0.8853750000000673,
+      "stdDev": 0.0919214348928576,
+      "samples": 10
+    },
+    "serverValStats": {
+      "mean": 0.007979999999999998,
+      "median": 0.0071,
+      "min": 0.0053,
+      "max": 0.0143,
+      "stdDev": 0.0026209921785461322,
+      "samples": 10
+    },
+    "clientSamples": [
+      0.6631669999999303,
+      0.5602080000001024,
+      0.61262499999998,
+      0.5599580000000515,
+      0.6112499999999272,
+      0.8853750000000673,
+      0.6381249999999454,
+      0.6780839999998989,
+      0.7404160000000957,
+      0.7062499999999545
+    ],
+    "serverValSamples": [
+      0.0065,
+      0.0053,
+      0.008,
+      0.0065,
+      0.0074,
+      0.0143,
+      0.0114,
+      0.0061,
+      0.0075,
+      0.0068
+    ]
+  }
+}

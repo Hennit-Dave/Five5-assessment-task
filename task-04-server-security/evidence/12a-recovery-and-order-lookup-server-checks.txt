@@ -1,0 +1,51 @@
+EVIDENCE 12a: RECOVERY AND ORDER-LOOKUP SERVER-SIDE CHECKS (TASK 4 STEP 7)
+Generated: 2026-11-09T16:16:46.121Z
+Script: task-04-server-security/scripts/test-step7-recovery-order.mjs
+Server: app/src/server.js on port 3109, DATABASE_PATH=app/data/step5_test.db (isolated). Test DB opened read-only by the script.
+These are NEW results from the current code. They are separate from, and do not replace, evidence 12.
+Summary: 41 passed, 0 failed
+================================================================================
+RECOVERY  POST /auth/recovery
+PASS  valid non-empty code -> 200
+PASS  valid code is not echoed
+PASS  valid response claims no real verification
+PASS  whitespace-padded non-empty code -> 200
+PASS  empty code -> 400
+PASS  empty code shows generic message
+PASS  whitespace-only code -> 400
+PASS  omitted field -> 400
+PASS  omitted field shows generic message, no type text
+PASS  array via repeated key -> 400
+PASS  JSON null -> 400
+PASS  JSON object -> 400
+PASS  JSON number -> 400
+PASS  rejection page has no six-digit hint
+PASS  rejection page does not echo submitted value
+
+ORDER LOOKUP  POST /orders/lookup
+PASS  text "0042" -> 200
+PASS  text leading zeros preserved ("0042", length 4)
+PASS  text empty -> 200 (client permits empty)
+PASS  text non-digits -> 400
+PASS  text "-1" -> 400
+PASS  text "1.5" -> 400
+PASS  number "0042" -> 200 (raw string kept)
+PASS  number default "0" -> 200
+PASS  number empty -> 200 (client permits empty)
+PASS  number "-3.5e2" -> 200 (valid HTML number)
+PASS  number "abc" -> 400
+PASS  number "1,5" -> 400
+PASS  missing version -> 400
+PASS  unsupported version -> 400
+PASS  omitted order_ref -> 400
+PASS  omitted order_ref has no type text
+PASS  array via repeated key -> 400
+PASS  JSON null -> 400
+PASS  JSON array -> 400
+PASS  JSON object -> 400
+PASS  JSON number (not a string) -> 400
+PASS  JSON array version -> 400
+PASS  type-error pages show no internal type text
+PASS  test DB users count unchanged  -> 21 -> 21
+PASS  test DB inquiries count unchanged  -> 0 -> 0
+PASS  real database SHA-256 unchanged  -> cc94f733c7d564f1ba837834ed6f01a4611957cf8f43d873e14bee4bad3e882d

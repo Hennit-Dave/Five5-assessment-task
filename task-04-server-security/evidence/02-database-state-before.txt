@@ -1,0 +1,49 @@
+=== READ-ONLY DATABASE INSPECTION: app/data/nits_cut.db (2026-11-08 10:04:31 CST) ===
+$ sqlite3 -readonly app/data/nits_cut.db
+
+--- Objects in sqlite_master ---
+type             name               tbl_name
+-----  ------------------------  ---------------
+index  idx_inquiries_created_at  inquiries
+table  inquiries                 inquiries
+table  sqlite_sequence           sqlite_sequence
+
+--- Columns: PRAGMA table_info('inquiries') ---
+cid      name         type    not_null      dflt_value      pk
+---  -------------  --------  --------  ------------------  --
+  0  id             INTEGER          0                       1
+  1  client_name    TEXT             1                       0
+  2  phone          TEXT             1                       0
+  3  garment_type   TEXT             1                       0
+  4  fabric_choice  TEXT             1                       0
+  5  fitting_date   TEXT             1                       0
+  6  status         TEXT             1  'Inquiry Received'   0
+  7  created_at     DATETIME         1  CURRENT_TIMESTAMP    0
+
+--- Indexes: PRAGMA index_list('inquiries') ---
+          name            is_unique  column_name
+------------------------  ---------  -----------
+idx_inquiries_created_at          0  created_at
+
+--- Row counts ---
+table_name  row_count
+----------  ---------
+inquiries           2
+
+--- Settings and integrity ---
+journal_mode  user_version  integrity_check
+------------  ------------  ---------------
+wal                      0  ok
+
+--- Proposed Task 4 tables found in this database ---
+proposed_present
+----------------
+               0
+
+--- File SHA-256 hashes (shasum -a 256) ---
+Taken before any inspection (2026-11-08 09:59 CST) and again after all inspections (10:04 CST). Identical for all three files.
+97e8d54f8a7255106f66cf1b213c4a4d7b558d21310b1c2bfedc3d0d526dddda  app/data/nits_cut.db
+f7216661f4e4cdd6b73f52972991c0eb45cfef694ab71b8d64f2a2cb3d0e9bc6  app/data/nits_cut.db-wal
+1c24300a2a4e50ee8a0e7534bdf85e80ad2bacb2dca54bb86f4008b2e0075b62  app/data/nits_cut.db-shm
+Note: the -shm file modification time changes when SQLite attaches to the WAL index; its contents hash was unchanged.
+The application was not started and no migration ran.

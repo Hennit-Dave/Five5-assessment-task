@@ -1,0 +1,92 @@
+=== Task 4 Step 3 (Exercise 3): Three-Step Required Column Addition ===
+Disposable database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+Real app database (app/data/nits_cut.db) is NOT touched.
+
+======================================================================
+STEP 1 OF 3 (EXPAND): Add branch_code as optional (nullable)
+======================================================================
+[Migrate] Target database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+[Migrate] Migrations directory: /Users/blk/Developer/Five5 assessment task/task-04-server-security/migrations-exercises/three-step-step1-expand
+[Migrate] SKIP (already applied at 2026-11-08T16:47:22.714Z): 001-seed-populated-inquiries.sql [sha256:f29dc3b435c8]
+[Migrate] APPLYING: 002a-add-branch-code-optional.sql [sha256:bc772ab82f58]...
+[Migrate] APPLIED: 002a-add-branch-code-optional.sql at 2026-11-08T16:48:21.459Z
+
+[Migrate Summary] journal_mode=wal | foreign_keys=1
+[Migrate Summary] Recorded migrations in schema_migrations (2):
+  - 001-seed-populated-inquiries.sql | sha256:f29dc3b435c8... | applied_at=2026-11-08T16:47:22.714Z
+  - 002a-add-branch-code-optional.sql | sha256:bc772ab82f58... | applied_at=2026-11-08T16:48:21.459Z
+[Migrate Summary] Application tables (2):
+  - inquiries: 2 row(s)
+  - schema_migrations: 2 row(s)
+[Migrate Summary] Explicit indexes (1):
+  - idx_inquiries_created_at on inquiries
+--- Rows after Step 1 (branch_code is NULL on existing rows): ---
+id     client_name     branch_code
+--  -----------------  -----------
+ 1  Chinedu Okafor     <NULL>
+ 2  Babatunde Adeleke  <NULL>
+
+======================================================================
+STEP 2 OF 3 (BACKFILL): Populate branch_code for existing rows
+======================================================================
+[Migrate] Target database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+[Migrate] Migrations directory: /Users/blk/Developer/Five5 assessment task/task-04-server-security/migrations-exercises/three-step-step2-backfill
+[Migrate] SKIP (already applied at 2026-11-08T16:47:22.714Z): 001-seed-populated-inquiries.sql [sha256:f29dc3b435c8]
+[Migrate] SKIP (already applied at 2026-11-08T16:48:21.459Z): 002a-add-branch-code-optional.sql [sha256:bc772ab82f58]
+[Migrate] APPLYING: 002b-backfill-branch-code.sql [sha256:abf762fd9456]...
+[Migrate] APPLIED: 002b-backfill-branch-code.sql at 2026-11-08T16:48:21.502Z
+
+[Migrate Summary] journal_mode=wal | foreign_keys=1
+[Migrate Summary] Recorded migrations in schema_migrations (3):
+  - 001-seed-populated-inquiries.sql | sha256:f29dc3b435c8... | applied_at=2026-11-08T16:47:22.714Z
+  - 002a-add-branch-code-optional.sql | sha256:bc772ab82f58... | applied_at=2026-11-08T16:48:21.459Z
+  - 002b-backfill-branch-code.sql | sha256:abf762fd9456... | applied_at=2026-11-08T16:48:21.502Z
+[Migrate Summary] Application tables (2):
+  - inquiries: 2 row(s)
+  - schema_migrations: 3 row(s)
+[Migrate Summary] Explicit indexes (1):
+  - idx_inquiries_created_at on inquiries
+--- Rows after Step 2 (branch_code backfilled to 'LAGOS-VI'): ---
+id     client_name     branch_code
+--  -----------------  -----------
+ 1  Chinedu Okafor     LAGOS-VI
+ 2  Babatunde Adeleke  LAGOS-VI
+
+======================================================================
+STEP 3 OF 3 (CONTRACT / ENFORCE): Rebuild table with branch_code NOT NULL
+======================================================================
+[Migrate] Target database: /Users/blk/Developer/Five5 assessment task/app/data/step3_disposable_required_col.db
+[Migrate] Migrations directory: /Users/blk/Developer/Five5 assessment task/task-04-server-security/migrations-exercises/three-step-step3-enforce
+[Migrate] SKIP (already applied at 2026-11-08T16:47:22.714Z): 001-seed-populated-inquiries.sql [sha256:f29dc3b435c8]
+[Migrate] SKIP (already applied at 2026-11-08T16:48:21.459Z): 002a-add-branch-code-optional.sql [sha256:bc772ab82f58]
+[Migrate] SKIP (already applied at 2026-11-08T16:48:21.502Z): 002b-backfill-branch-code.sql [sha256:abf762fd9456]
+[Migrate] APPLYING: 002c-enforce-branch-code-not-null.sql [sha256:27899b093fad]...
+[Migrate] APPLIED: 002c-enforce-branch-code-not-null.sql at 2026-11-08T16:48:21.542Z
+
+[Migrate Summary] journal_mode=wal | foreign_keys=1
+[Migrate Summary] Recorded migrations in schema_migrations (4):
+  - 001-seed-populated-inquiries.sql | sha256:f29dc3b435c8... | applied_at=2026-11-08T16:47:22.714Z
+  - 002a-add-branch-code-optional.sql | sha256:bc772ab82f58... | applied_at=2026-11-08T16:48:21.459Z
+  - 002b-backfill-branch-code.sql | sha256:abf762fd9456... | applied_at=2026-11-08T16:48:21.502Z
+  - 002c-enforce-branch-code-not-null.sql | sha256:27899b093fad... | applied_at=2026-11-08T16:48:21.542Z
+[Migrate Summary] Application tables (2):
+  - inquiries: 2 row(s)
+  - schema_migrations: 4 row(s)
+[Migrate Summary] Explicit indexes (1):
+  - idx_inquiries_created_at on inquiries
+--- PRAGMA table_info(inquiries) after Step 3 (branch_code notnull = 1): ---
+cid      name         type    notnull      dflt_value      pk
+---  -------------  --------  -------  ------------------  --
+  0  id             INTEGER         0                       1
+  1  client_name    TEXT            1                       0
+  2  phone          TEXT            1                       0
+  3  garment_type   TEXT            1                       0
+  4  fabric_choice  TEXT            1                       0
+  5  fitting_date   TEXT            1                       0
+  6  status         TEXT            1  'Inquiry Received'   0
+  7  created_at     DATETIME        1  CURRENT_TIMESTAMP    0
+  8  branch_code    TEXT            1                       0
+
+--- Verifying NOT NULL constraint now blocks inserting a NULL branch_code: ---
+Error in 2nd command line argument: NOT NULL constraint failed: inquiries.branch_code
+NULL insert exit code: 1 (expected non-zero because branch_code is now NOT NULL)

@@ -1,0 +1,34 @@
+[Migrate] Target database: /Users/blk/Developer/Five5 assessment task/app/data/nits_cut.db
+[Migrate] Migrations directory: /Users/blk/Developer/Five5 assessment task/app/migrations
+[Migrate] APPLYING: 001-initial-schema.sql [sha256:25ee36520d54]...
+[Migrate] APPLIED: 001-initial-schema.sql at 2026-11-08T16:45:05.607Z
+[Migrate] APPLYING: 002-task04-core-schema.sql [sha256:672b3b73fb2f]...
+[Migrate] APPLIED: 002-task04-core-schema.sql at 2026-11-08T16:45:05.612Z
+
+[Migrate Summary] journal_mode=wal | foreign_keys=1
+[Migrate Summary] Recorded migrations in schema_migrations (2):
+  - 001-initial-schema.sql | sha256:25ee36520d54... | applied_at=2026-11-08T16:45:05.607Z
+  - 002-task04-core-schema.sql | sha256:672b3b73fb2f... | applied_at=2026-11-08T16:45:05.612Z
+[Migrate Summary] Application tables (10):
+  - document_chunks: 0 row(s)
+  - inquiries: 2 row(s)
+  - orders: 0 row(s)
+  - payment_attempt_events: 0 row(s)
+  - payment_attempts: 0 row(s)
+  - payments: 0 row(s)
+  - schema_migrations: 2 row(s)
+  - sessions: 0 row(s)
+  - users: 0 row(s)
+  - verification_codes: 0 row(s)
+[Migrate Summary] Explicit indexes (11):
+  - idx_inquiries_created_at on inquiries
+  - idx_orders_user_id on orders
+  - idx_payment_attempt_events_attempt_occurred on payment_attempt_events
+  - idx_payment_attempts_order_id on payment_attempts
+  - idx_payment_attempts_status_created_at on payment_attempts
+  - idx_payment_attempts_user_id on payment_attempts
+  - idx_payments_order_id on payments
+  - idx_payments_paid_at on payments
+  - idx_payments_user_id on payments
+  - idx_sessions_user_id on sessions
+  - idx_verification_codes_user_expires on verification_codes

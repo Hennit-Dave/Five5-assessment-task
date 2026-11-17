@@ -1,0 +1,76 @@
+=== Task 4 Step 4: Password Hashing Timing Benchmark ===
+Date: 2026-11-09T11:21:12.883Z
+Host machine: Hennits-Mac.local (Darwin arm64 / 27.2.0)
+CPU model: Apple M3 Pro (12 logical cores, 2400 MHz)
+Total system RAM: 18.00 GB
+Node.js runtime: v24.16.0
+Argon2 library: argon2 v0.45.2 (installed)
+Execution model: sequential hash calls (Argon2id configured with parallelism = 4 lanes)
+Timer: performance.now() measuring elapsed wall-clock duration
+
+--- Test Password ---
+Fictional test password: "BespokeKaftan#2026!"
+
+--- Argon2id Benchmark Parameters (RFC 9106 Section 7.4 Profile) ---
+  - Type: Argon2id (type = 2)
+  - Memory cost: 65536 KiB (64 MiB)
+  - Time cost (passes): 3
+  - Parallelism: 4 lanes
+  - Hash length: 32 bytes
+
+--- Phase 1: Warm-up (unmetered) ---
+Executing 2 Argon2id warm-up hashes... done.
+Executing 1000 SHA-256 warm-up hashes... done.
+
+--- Phase 2: Timing Argon2id (10 sequential iterations, p=4) ---
+Argon2id measurement complete: 233.196 ms elapsed wall-clock time.
+
+--- Phase 3: Timing SHA-256 (250,000 sequential iterations) ---
+SHA-256 measurement complete: 105.544 ms elapsed wall-clock time.
+
+======================================================================
+TIMING RESULTS SUMMARY (ELAPSED WALL-CLOCK TIME)
+======================================================================
+Argon2id total duration:        233.196 ms for 10 iterations
+Argon2id average time per hash: 23.320 ms/hash
+Argon2id sequential throughput: 42.88 hashes/sec
+
+SHA-256 total duration:         105.544 ms for 250,000 iterations
+SHA-256 average time per hash:  0.000422 ms/hash (0.422 µs/hash)
+SHA-256 sequential throughput:  2,368,683 hashes/sec
+
+======================================================================
+STEP-BY-STEP ARITHMETIC
+======================================================================
+1. Milliseconds per hash (total ms / iterations):
+   - Argon2id: 233.196 ms / 10 = 23.3196 ms/hash
+   - SHA-256:  105.544 ms / 250000 = 0.0004222 ms/hash
+
+2. Local sequential hashes per second (1000 ms / ms per hash):
+   - Argon2id: 1000 / 23.3196 = 42.88 hashes/sec
+   - SHA-256:  1000 / 0.0004222 = 2,368,683 hashes/sec
+
+3. Relative slowdown ratio (Argon2id ms per hash / SHA-256 ms per hash):
+   - Ratio: 23.3196 / 0.0004222 = 55,237x slower
+   - In other words, Argon2id is approximately 55,237 times slower than SHA-256 in sequential execution on this host.
+
+======================================================================
+SECURITY ANALYSIS & HARDWARE CONTEXT
+======================================================================
+1. The Inversion:
+   - For our application, evaluating Argon2id once during an authentication request costs ~23 ms
+     of elapsed wall-clock time, which is acceptable for a user waiting on network round-trips.
+   - For an attacker attempting offline password recovery against a stolen database,
+     every candidate guess requires dedicating both repeated compute passes and a substantial
+     64 MiB memory buffer, multiplying the resource cost of each tested password.
+
+2. Hardware & Architecture Context:
+   - This benchmark measures sequential execution on a general-purpose host CPU with p=4.
+   - An attacker's actual guessing throughput depends heavily on their hardware architecture
+     (such as GPU clusters, FPGAs, or custom ASICs) and optimized cracking implementations.
+   - However, Argon2id's 64 MiB memory requirement creates a significant physical memory footprint
+     per worker, making concurrent guesses far more hardware-intensive than for memory-free
+     algorithms like SHA-256, which can run millions of instances in parallel with negligible RAM.
+   - These resource requirements represent a real server cost: authentication capacity is finite,
+     reinforcing why backend rate limiting and boundary controls (Step 8) are necessary.
+======================================================================

@@ -1,0 +1,223 @@
+================================================================================
+EVIDENCE 12: DIRECT HTTP REQUEST ATTACK — TASK 3 (BEFORE) VS TASK 4 (AFTER)
+================================================================================
+Assessment Requirement: Task 4 Step 7 ("Every client-side rule, enforced again on the server")
+Authentic Historical Test Date: 2026-11-03 (from Task 3 Evidence 16)
+New Verification Test Date:     2026-11-09T14:56:01.698Z
+Target Endpoint:                POST http://localhost:3108/auth/signup
+Isolated Test Database:         app/data/step5_test.db
+Protected Real Database:        app/data/nits_cut.db (SHA-256 confirmed untouched)
+
+PURPOSE & METHODOLOGY:
+In Task 3 Step 8, client-side validation rules (name length >= 2 with letter, email format regex,
+password length >= 15, terms checkbox) were bypassed entirely by sending direct HTTP POST requests
+around the browser form using curl. The Task 3 prototype server blindly accepted the direct request,
+returning HTTP 200 OK.
+
+In Task 4 Step 7, we repeat that exact direct request against the hardened Express server
+equipped with boundary schema validation (Zod). We record the actual refusal status, verify that
+zero database rows are created, and contrast the historical Task 3 acceptance with the Task 4 refusal.
+
+================================================================================
+1. THE ATTACK: ORIGINAL TASK 3 COMMAND AND ACTUAL TASK 4 REPLAY
+================================================================================
+A. ORIGINAL TASK 3 COMMAND (historical; run against port 3000 on 2026-11-03):
+curl -i -X POST http://localhost:3000/auth/signup \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "name=A&email=not-an-email&password=short"
+
+B. ACTUAL TASK 4 REPLAY (new test; sent by scripts/test-step7-direct-request.mjs to port 3108):
+   POST http://localhost:3108/auth/signup
+   Content-Type: application/x-www-form-urlencoded
+   Body: name=A&email=not-an-email&password=short
+   The method, path, content type and payload are identical to the original command.
+   Only the test port differs (3108 isolated test server instead of 3000), plus the replay
+   was issued with Node fetch rather than the curl binary.
+
+Payload Analysis:
+- name: "A"               (Violates Category 2 name rule: < 2 characters)
+- email: "not-an-email"   (Violates Category 3 email rule: fails regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+- password: "short"       (Violates Category 2 password rule: < 15 Unicode code points)
+- terms: [omitted]        (Violates Category 1 terms rule: unchecked / missing)
+
+================================================================================
+2. HISTORICAL TASK 3 RESPONSE (BEFORE SERVER-SIDE ENFORCEMENT)
+================================================================================
+Source: task-03-client-validation/evidence/16-direct-request-command-and-response.txt
+Captured: 2026-11-03 14:23:10 GMT
+
+Status: HTTP/1.1 200 OK
+Headers & Body Snippet:
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 4231
+ETag: W/"1087-mJllEj8NEELqrfBbJqamT3jJdeI"
+Date: Tue, 03 Nov 2026 14:23:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup Received (Prototype) — Nit's Cut</title>
+  ...
+</head>
+<body>
+  ...
+  <section class="card">
+    <div class="card-header">
+      <h1 class="card-title">Signup Received (Prototype)</h1>
+      <p class="card-desc">Prototype submission received...</p>
+    </div>
+    <div class="nc-type-body-medium">
+      <p>Prototype status</p>
+      <ul>
+        <li><strong>Name submitted:</strong> A</li>
+        <li><strong>Email submitted:</strong> not-an-email</li>
+        <li><strong>Terms accepted:</strong> No</li>
+      </ul>
+    </div>
+  </section>
+  ...
+</body>
+</html>
+
+Task 3 Result Analysis:
+- Server Status: HTTP 200 OK.
+- Client Rules Enforced: NONE. The server had no boundary validation.
+- Input Handling: Unsanitized, invalid values ("A", "not-an-email") were accepted and echoed
+  directly into the response HTML view ('auth-result.ejs').
+- Security Consequence: Client-side validation proved completely ineffective against automated
+  tools or attackers interacting directly with the HTTP boundary.
+
+================================================================================
+3. NEW TASK 4 RESPONSE (AFTER SERVER-SIDE ENFORCEMENT)
+================================================================================
+Captured: 2026-11-09T14:56:01.699Z
+Target Server: Express port 3108 with Zod boundary schema validation
+
+Status: HTTP/1.1 400 Bad Request
+Headers:
+HTTP/1.1 400 Bad Request
+connection: keep-alive
+content-length: 11332
+content-type: text/html; charset=utf-8
+date: Mon, 09 Nov 2026 14:56:01 GMT
+etag: W/"2c44-bmpKbu80zJue2+rLPQ7wuYjFzdk"
+keep-alive: timeout=5
+x-powered-by: Express
+x-validation-duration-ms: 0.9828
+
+Body (Rendered HTML Snippet):
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — Nit&#39;s Cut</title>
+  
+  <!-- 2. Tagline & 3. SEO Meta Description (under 10 words: 9 words) -->
+  <meta name="description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  
+    <!-- Non-marketing or error routes explicitly set noindex; omitting the tag defaults to index/follow -->
+    <meta name="robots" content="noindex, nofollow">
+  
+
+  <!-- 4. Self-Crafted Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- 5. Open Graph Meta Tags for Rich Social Sharing -->
+  <meta property="og:site_name" content="Nit's Cut">
+  <meta property="og:title" content="Sign up — Nit&#39;s Cut">
+  <meta property="og:description" content="Handcrafted Nigerian native wear, fitted trousers and bespoke shirts.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/images/nc-og-preview.png">
+
+  <!-- Self-Hosted Stylesheets & Design Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/nc-tokens.css">
+  <link rel="stylesheet" href="/css/nc-layout-tokens.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="page">
+
+    <header class="topbar">
+      <a href="/auth?mode=signup" data-auth-mode="signup" class="brand" aria-label="Nit's Cut — Sign up">
+        <span class="brand-badge nc-type-title-medium" aria-hidden="true">NC</span>
+        <div class="brand-info">
+          <p class="brand-name nc-type-title-medium">Nit's Cut</p>
+          <p class="brand-sub nc-type-body-small">Bespoke Men's Tailoring · Native Wear, Trousers &amp; Shirts</p>
+        </div>
+      </a>
+      <nav class="topbar-nav" style="display: flex; gap: var(--nc-space-2); align-items: center;" aria-label="Main Navigation">
+        <a href="/" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Portal Home</a>
+        <a href="/services" class="btn btn-secondary nc-type-label-large" style="text-decoration: none; padding-block: var(--nc-space-1-5); padding-inline: var(--nc-space-3);">Services</a>
+      </nav>
+    </header>
+
+
+<main style="display: flex; flex-direction: column; gap: var(--nc-layout-gap);">
+  <!-- All three forms are in the page. Only the one matching ?mode= is visible. Without JavaScript,
+    
+[... remainder of rendered auth.ejs HTML view ...]
+
+Task 4 Result Analysis:
+- Server Status: HTTP 400 Bad Request.
+- Boundary Validation: Triggered immediately after body parsing in SignupSchema.
+- Refusal Reason: Rejected on first failing field ('name' < 2 characters):
+  "Please enter at least two characters, including a letter, for your name."
+- Database Impact: ZERO rows created in SQLite database (verified count before = 21, after = 21).
+- Credential Safety: Submitted password ("short") was NEVER echoed back to the client form.
+- Safe Field Preservation: Submitted name ("A") and email ("not-an-email") were preserved in
+  HTML input value attributes to prevent accidental loss of user input.
+- Accessible Error Rendering: Rendered .form-error-banner with role="alert" and semantic tokens.
+
+================================================================================
+4. SIDE-BY-SIDE COMPARISON SUMMARY
+================================================================================
+Dimension                    Task 3 Prototype (Before)            Task 4 Hardened Server (After)
+---------------------------  -----------------------------------  -----------------------------------
+HTTP Status Code             HTTP 200 OK                          HTTP 400 Bad Request
+Request Outcome              Accepted                             Refused immediately at boundary
+Downstream Logic Execution   Rendered success template            Halted before hashing or database
+Password Hashing             None (no backend hashing)            Skipped (Argon2id never invoked)
+Database Row Creation        None (no DB connected in Task 3)     0 rows created (verified via SQL)
+Password Echo in Response    Omitted                              NEVER echoed (credential safety)
+Safe Field Preservation      Echoed in bulleted list              Preserved in form value attributes
+Accessibility Markup         Plain unordered list                 role="alert" error container
+
+================================================================================
+5. SUPPORTING VERIFICATION TESTS
+================================================================================
+In addition to the primary curl attack, the following supporting boundary vectors were tested:
+
+A. Empty Mandatory Fields (Task 3 Request 2 Repeat):
+   - Original Task 3 command (historical, port 3000): curl -i -X POST http://localhost:3000/auth/signup -H "Content-Type: application/x-www-form-urlencoded" --data "name=&email=&password="
+   - Task 4 replay (new, port 3108): same method, path, content type and payload.
+   - Response: HTTP 400 Bad Request
+   - Error: "Please enter your name so we know who to address."
+   - Database: 0 rows created.
+
+B. Malformed Field Types (Direct JSON API Submissions):
+   - Array Input (name: ["Ade", "Kolawole"]):   HTTP 400 Bad Request ("Please enter your name...")
+   - Object Input (name: { first: "Ade" }):      HTTP 400 Bad Request ("Please enter your name...")
+   - Null Input (name: null):                    HTTP 400 Bad Request ("Please enter your name...")
+   - Missing Password Field (omitted key):       HTTP 400 Bad Request ("Please choose a password...")
+   - Observation: Zod 4 custom error messages prevent leakage of internal type descriptions
+     (zero instances of "expected string, received array" exposed to clients).
+
+C. Attempted Privilege Escalation:
+   - Payload: name=Malicious Attacker&email=attacker@example.com&password=BespokeKaftan#2026!&terms=on&role=admin&is_admin=true
+   - Response: HTTP 201 Created (valid account credentials)
+   - Database Verification: User record created with role = 'client'.
+   - Observation: Schema .transform() strips injected role keys and strictly assigns customer role 'client'.
+
+================================================================================
+6. INTEGRITY & CONCLUSION
+================================================================================
+- Production Database (app/data/nits_cut.db): SHA-256 confirmed 100% untouched.
+- Conclusion: Every client-side rule from Task 3 is now enforced authoritatively on the server.
+  The direct HTTP attack that succeeded in Task 3 is completely neutralized in Task 4.

@@ -1,0 +1,26 @@
+================================================================
+TASK 4 STEP 10: VERIFIED USER & CONSUMED CODE DATABASE ROW
+================================================================
+Database: app/data/step5_test.db (isolated test database)
+User Email (masked): d***2@gmail.com
+
+--- users table ---
+id:                14
+role:              client
+email_verified_at: 2026-11-16T16:06:54.898Z
+created_at:        2026-11-16T15:46:52.437Z
+
+--- verification_codes table ---
+id:           24
+user_id:      14
+code_hash:    aae7b25562fc085ea1d6ebe42f5be64f33cecb0eae54a8fa7b213e20b29a0760
+purpose:      email_verification
+failed_tries: 0
+created_at:   2026-11-16T16:06:28.441Z
+expires_at:   2026-11-16T16:16:28.441Z
+used_at:      2026-11-16T16:06:54.898Z
+
+Atomic Consistency Check:
+  users.email_verified_at === verification_codes.used_at: true
+  Plaintext code stored in DB: NO (64-char HMAC-SHA256 hash only)
+================================================================

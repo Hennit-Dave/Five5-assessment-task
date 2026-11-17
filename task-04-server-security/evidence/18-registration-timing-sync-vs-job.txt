@@ -1,0 +1,20 @@
+================================================================
+TASK 4 STEP 10: REGISTRATION TIMING — SYNCHRONOUS VS BACKGROUND JOB
+================================================================
+Date: 2026-11-16T15:46:55.069Z
+Host: smtp.resend.com:587 (STARTTLS)
+Recipient: d***2@gmail.com (designated test recipient)
+Isolated Test DB: app/data/step5_test.db
+Password Policy: Argon2id + live HIBP check + Zod validation
+
+--- Measured HTTP POST /auth/signup Latency ---
+1. Synchronous SMTP inside request:  3839.18 ms  (HTTP 201, SMTP accepted=1)
+2. Background job (async dispatch):  841.62 ms  (HTTP 201, SMTP accepted=1)
+
+Observed Latency Reduction: 2997.57 ms (4.6x faster response)
+Total real emails sent during timing benchmark: 2
+
+Note: Sending synchronously inside the request forces the customer to wait for
+DNS, TCP handshake, STARTTLS negotiation, SMTP auth, and remote relay acceptance,
+and couples registration availability to external mail server latency.
+================================================================
